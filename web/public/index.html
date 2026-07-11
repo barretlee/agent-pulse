@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Agent Pulse：面向 CEO、投资负责人和 AI 从业者的行业认知时间轴。" />
+    <meta name="description" content="Agent Pulse：用 Today、六条趋势和两年演进理解 AI 行业变化。" />
     <meta name="theme-color" content="#080b12" />
-    <title>Agent Pulse · AI 行业认知主线</title>
+    <title>Agent Pulse · AI 行业决策面</title>
     <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="./assets/app.css" />
   </head>
@@ -15,10 +15,10 @@
     <header class="topbar">
       <a class="brand" href="#top" aria-label="Agent Pulse 首页">
         <span class="brand-mark"><i></i><i></i><i></i></span>
-        <span><strong>AGENT PULSE</strong><small>AI INDUSTRY INTELLIGENCE</small></span>
+        <span><strong>AGENT PULSE</strong><small>SIGNAL, NOT NOISE.</small></span>
       </a>
       <nav class="topnav" aria-label="页面导航">
-        <a href="#top">Today</a><a href="#timeline">Timeline</a><a href="#china">Radar</a><a href="#inbox">Inbox</a><a href="#evolution">Evolution</a>
+        <a href="#today">Today</a><a href="#trends">六条趋势</a><a href="#evolution">两年演进</a><a href="#more">更多</a>
       </nav>
       <div class="top-actions">
         <button class="icon-button" id="themeButton" type="button" aria-label="切换主题">◐</button>
@@ -27,126 +27,72 @@
     </header>
 
     <main id="top">
-      <section class="hero shell">
-        <div class="hero-copy">
-          <div class="eyebrow"><span class="live-dot"></span> SIGNAL DESK · EXECUTIVE VIEW</div>
-          <h1>看见 AI 的<br /><em>主线与转折</em></h1>
-          <p>不是新闻堆积。把技术、AGI、投资与商业化信号收敛成可验证的行业判断。</p>
-          <div class="hero-actions">
-            <a class="primary-button" href="#timeline">进入行业主线 <span>↓</span></a>
-            <span id="generatedAt" class="generated-at">正在载入最新情报…</span>
-          </div>
+      <section class="masthead shell">
+        <div class="masthead-copy">
+          <div class="eyebrow"><span class="live-dot"></span> EXECUTIVE INTELLIGENCE / CHINA + GLOBAL</div>
+          <h1>用三层信息，<br /><em>抓住 AI 的主线。</em></h1>
+          <p>先看今天必须知道什么，再看六条趋势往哪里走，最后回到两年演进判断变化是否成立。</p>
+          <div class="freshness"><span id="generatedAt">正在载入最新情报…</span><span class="freshness-rule">事实与推断分离</span></div>
         </div>
-        <fieldset class="signal-board" aria-label="行业情报指标">
-          <div class="board-head"><span>MARKET SIGNAL</span><span class="mono">LIVE / 24H</span></div>
-          <div class="signal-orbit"><div class="orbit-core"><strong id="heroScore">—</strong><small>最高价值</small></div></div>
-          <div class="board-stats">
-            <div><strong id="eventCount">—</strong><span>收敛事件</span></div>
-            <div><strong id="trackCount">—</strong><span>认知主线</span></div>
-            <div><strong id="actorCount">—</strong><span>关键角色</span></div>
-          </div>
-        </fieldset>
+        <aside class="pulse-summary" aria-label="当前情报概览">
+          <div class="pulse-score"><span>最高价值</span><strong id="heroScore">—</strong></div>
+          <div><span>公开节点</span><strong id="eventCount">—</strong></div>
+          <div><span>战略趋势</span><strong id="trendCount">6</strong></div>
+          <div><span>热点节点</span><strong id="hotCount">—</strong></div>
+        </aside>
       </section>
 
-      <section class="executive-strip">
-        <div class="shell strip-inner">
-          <span>CEO / INVESTMENT BRIEF</span>
-          <p id="executiveBrief">正在从重要事件中提炼本期判断…</p>
+      <section class="today-section shell" id="today">
+        <div class="section-head compact-head">
+          <div><span class="section-kicker">01 / TODAY</span><h2>最新决策面</h2></div>
+          <label class="search-control"><span>⌕</span><input id="searchInput" type="search" placeholder="按公司、技术或关键词搜索全部事件" /></label>
+        </div>
+        <div class="today-grid">
+          <article class="today-lead" id="todayLead"></article>
+          <div class="today-list" id="todayList"></div>
+        </div>
+        <div class="search-results" id="searchResults" hidden>
+          <div class="result-head"><strong>搜索结果</strong><span id="searchCount">0</span></div>
+          <div id="searchResultList"></div>
         </div>
       </section>
 
-      <section class="timeline-section shell" id="timeline">
-        <div class="section-heading">
-          <div><span class="section-index">01</span><p class="kicker">NARRATIVE TIMELINES</p><h2>行业认知主线</h2></div>
-          <p>选择一条主线，沿着关键节点理解能力、资本与商业模式如何相互推动。</p>
+      <section class="trends-section" id="trends">
+        <div class="shell">
+          <div class="section-head inverse">
+            <div><span class="section-kicker">02 / SIX SIGNAL LINES</span><h2>六条主线趋势</h2></div>
+            <p>同一事实只保留一份；趋势卡只给出方向、最新证据和节点数量，详细事件在需要时展开。</p>
+          </div>
+          <div class="trend-grid" id="trendGrid"></div>
         </div>
-        <div class="track-switcher" id="trackSwitcher" role="tablist" aria-label="认知主线"></div>
-        <div class="control-deck">
-          <label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="搜索公司、技术、关键词…" /></label>
-          <select id="categorySelect" aria-label="事件分类"><option value="">全部分类</option></select>
-          <fieldset class="view-toggle" aria-label="视图密度">
-            <button type="button" data-density="comfortable" class="active">舒展</button>
-            <button type="button" data-density="compact">紧凑</button>
+      </section>
+
+      <section class="evolution-section shell" id="evolution">
+        <div class="section-head">
+          <div><span class="section-kicker">03 / 24-MONTH VIEW</span><h2>两年演进摘要</h2></div>
+          <p>按半年观察被公开证据确认的关键转折。空白代表尚无达到发布门槛的节点，不代表行业没有变化。</p>
+        </div>
+        <div class="evolution-strip" id="evolutionStrip"></div>
+        <p class="coverage-note" id="coverageNote"></p>
+      </section>
+
+      <section class="more-section shell" id="more">
+        <div class="more-intro">
+          <div><span class="more-kicker">ON DEMAND</span><h2>需要时再下钻</h2><p>机会、角色、模型资源和系统进度不占据默认阅读路径。</p></div>
+          <fieldset class="tool-switcher" id="toolSwitcher" aria-label="更多情报工具">
+            <button type="button" data-tool="scout">✦ 星探机会</button>
+            <button type="button" data-tool="actors">⌬ 中国角色</button>
+            <button type="button" data-tool="resources">◇ 模型获取</button>
+            <button type="button" data-tool="product">◎ 系统水位</button>
           </fieldset>
         </div>
-        <div class="timeline-layout">
-          <aside class="timeline-rail"><span>NOW</span><div></div><small>PAST</small></aside>
-          <div class="timeline-list" id="timelineList" aria-live="polite"></div>
-          <aside class="timeline-context">
-            <div class="context-card sticky">
-              <span class="context-label">当前主线</span>
-              <strong id="activeTrackName">全部信号</strong>
-              <p id="activeTrackDescription">跨主线查看已经收敛的关键行业变化。</p>
-              <div class="context-metric"><span>节点</span><strong id="visibleCount">0</strong></div>
-              <div class="context-metric"><span>平均影响</span><strong id="averageImpact">0</strong></div>
-            </div>
-          </aside>
-        </div>
-        <div class="empty-state" id="emptyState" hidden>没有匹配的主线节点，请调整筛选条件。</div>
-      </section>
-
-      <section class="scout-section shell" id="inbox">
-        <div class="section-heading">
-          <div><span class="section-index">02</span><p class="kicker">INBOX / OPPORTUNITY SCOUT</p><h2>值得继续跟进的机会</h2></div>
-          <p>精灵不复述新闻。它从证据和主线交汇处寻找创业、内容与工作机会，并给出最小验证动作。</p>
-        </div>
-        <div class="scout-grid" id="scoutGrid"></div>
-      </section>
-
-      <section class="radar-section" id="china">
-        <div class="shell">
-          <div class="section-heading inverse">
-            <div><span class="section-index">03</span><p class="kicker">CHINA CATCH-UP RADAR</p><h2>中国牌桌角色</h2></div>
-            <p>不按声量排位，按能力、生态、商业和基础设施证据持续校准。</p>
-          </div>
-          <div class="radar-grid">
-            <div class="radar-map"><div class="radar-ring ring-one"></div><div class="radar-ring ring-two"></div><div class="radar-ring ring-three"></div><div class="radar-center">CN<br />AI</div><div id="radarDots"></div></div>
-            <div class="actor-list" id="actorList"></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="resources-section shell" id="resources">
-        <div class="section-heading">
-          <div><span class="section-index">04</span><p class="kicker">MODEL ACCESS & ECONOMICS</p><h2>模型获取资源</h2></div>
-          <p>优先展示官方入口与价格证据；第三方比价只作购买前参考，不混淆风险等级。</p>
-        </div>
-        <div class="resource-filters" id="resourceFilters"></div>
-        <div class="resource-grid" id="resourceGrid"></div>
-        <div class="priceai-note"><strong>进一步比价</strong><span>PriceAI 覆盖官方订阅、卡网、官方 API 与中转 API。Agent Pulse 不镜像其受限数据，仅提供明确归属的购买前入口。</span><a href="https://priceai.cc" target="_blank" rel="noopener">访问 PriceAI ↗</a></div>
-      </section>
-
-      <section class="evolution-section" id="evolution">
-        <div class="shell">
-          <div class="section-heading inverse">
-            <div><span class="section-index">05</span><p class="kicker">CAPABILITY & RELEASE EVOLUTION</p><h2>系统如何持续生长</h2></div>
-            <p>版本不只记录页面变化，也记录新增的处理、理解、挖掘、决策与治理能力，以及每项能力背后的证据水位。</p>
-          </div>
-          <div class="evolution-overview">
-            <div><span>VERSION</span><strong id="productVersion">—</strong></div>
-            <div><span>SOURCE CATALOG</span><strong id="sourceCoverage">—</strong></div>
-            <div><span>SYSTEM SCORE</span><strong id="systemScore">—</strong></div>
-            <p id="evaluationNote">评测载入中…</p>
-          </div>
-          <div class="roadmap-spine" id="roadmapSpine"></div>
-          <div class="evolution-columns">
-            <div><div class="evolution-title"><span>CAPABILITY MAP</span><h3>沉淀了什么能力</h3></div><div class="public-capabilities" id="publicCapabilities"></div></div>
-            <div><div class="evolution-title"><span>CHANGELOG</span><h3>每次发布改变了什么</h3></div><div class="release-list" id="releaseList"></div></div>
-          </div>
-        </div>
+        <div class="tool-panel" id="toolPanel" hidden></div>
       </section>
     </main>
 
-    <footer><div class="shell footer-inner"><div><strong>AGENT PULSE</strong><p>Signal, not noise.</p></div><p>事实与推断分离 · 一手来源优先 · 热度可解释</p><span id="footerTime">—</span></div></footer>
+    <footer><div class="shell footer-inner"><div><strong>AGENT PULSE</strong><p>Signal, not noise.</p></div><p>一手来源优先 · 热度可解释 · 详细信息按需展开</p><span id="footerTime">—</span></div></footer>
 
     <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
-    <aside class="scout-popover" id="scoutPopover" hidden aria-live="polite">
-      <button type="button" id="scoutDismiss" aria-label="关闭星探建议">×</button>
-      <span>✦ 星探精灵刚刚路过</span>
-      <strong id="scoutPopoverTitle"></strong>
-      <p id="scoutPopoverCopy"></p>
-      <a href="#inbox">去 Inbox 看看 →</a>
-    </aside>
     <aside class="detail-drawer" id="detailDrawer" aria-hidden="true" aria-label="事件详情">
       <button class="drawer-close" id="drawerClose" type="button" aria-label="关闭详情">×</button>
       <div class="drawer-scroll">

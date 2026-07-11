@@ -2,6 +2,33 @@
 
 所有值得用户感知的 Agent Pulse 变化都会记录在这里。版本遵循语义化版本，能力状态分为 planned、experimental 和 operational；只有拥有代码、测试或运行证据的能力才会进入 release。
 
+## [0.4.0] - 2026-07-11
+
+### Added
+
+- GitHub Actions 定时数据刷新：每 6 小时恢复仓库快照、采集、聚类、写入 JSON；有实质变化才提交并触发 Pages。
+- 可审计的 `data/snapshot/v1.json`，保存来源运行状态、Signal、Discovery、Event 和证据关联；SQLite 不进入 Git。
+- 2024-07 至 2026-07 两年行业基线：新增 30 个一手来源关键节点，与近期 6 个节点共同组成 36 个公开 Event。
+- 5 个行业发展阶段，以及技术、AGI、商业化、投资、中国追赶、模型经济学 6 条高层主线总结。
+- `narratives.json` 静态数据与主线/中国位置阶段对照。
+
+### Changed
+
+- GitHub Pages 从仓库快照恢复数据，不再每次只导出临时 seed 数据库。
+- 公开首页从多模块平铺改为 Today、趋势主线、两年演进三层阅读路径；角色、资源、星探和系统信息按需展开。
+- 历史节点不伪造传播热度；缺少可比观测时 `heatScore` 保持 0。
+
+### Security
+
+- 快照剔除原始 metadata、认证类 URL 参数、本机路径与敏感键，并在工作流提交前二次扫描。
+- 定时任务串行执行、无变化不提交；使用 GitHub Actions bot 身份和仓库内置 token。
+
+### Known limitations
+
+- 两年基线是 30 个高价值里程碑，不是 25 个月的完整新闻档案；季度/月度 coverage matrix 仍待建设。
+- 定时采集产生的新事件默认保持 review，不会绕过人工事实与洞察审核自动公开。
+- MySQL、回填 checkpoint、snapshot approval/rollback 和跨语言语义聚类仍未达到生产水位。
+
 ## [0.3.0] - 2026-07-11
 
 ### Added
@@ -55,6 +82,7 @@
 - Signal、Event、Track、Actor、Model Resource、View 数据模型。
 - 基础采集、聚类、评分、管理台、静态 Timeline、主题、详情抽屉与 GitHub Pages。
 
+[0.4.0]: https://github.com/barretlee/agent-pulse/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/barretlee/agent-pulse/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/barretlee/agent-pulse/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/barretlee/agent-pulse/releases/tag/v0.1.0

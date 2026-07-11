@@ -17,6 +17,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: sqlite:./var/pages.db
+      PUBLIC_SITE_URL: https://barretlee.github.io/agent-pulse/
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v6
@@ -24,9 +27,10 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: npm run export
-        env:
-          PUBLIC_SITE_URL: https://barretlee.github.io/agent-pulse/
+      - name: Restore repository snapshot
+        run: npm run db:snapshot -- restore
+      - name: Export static site from restored data
+        run: npm run export -- --skip-seed
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

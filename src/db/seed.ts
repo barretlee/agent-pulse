@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import type { Kysely } from "kysely";
+import { type CuratedEventSeed, historicalEvents } from "../catalog/history.js";
 import { sourceCatalog } from "../catalog/sources.js";
 import { Repository } from "./repository.js";
 import type { DatabaseSchema } from "./types.js";
@@ -663,7 +664,9 @@ const events = [
     tracks: ["tech-evolution", "agi-progress", "investing"],
     actors: ["worldlabs"],
   },
-] as const;
+] as const satisfies readonly CuratedEventSeed[];
+
+const allEvents = [...historicalEvents, ...events] as const;
 
 export async function seedDatabase(db: Kysely<DatabaseSchema>): Promise<void> {
   const repository = new Repository(db);
@@ -856,7 +859,7 @@ export async function seedDatabase(db: Kysely<DatabaseSchema>): Promise<void> {
       .execute();
   else await db.insertInto("views").values(viewValue).execute();
 
-  for (const event of events) await seedEvent(db, repository, event, timestamp);
+  for (const event of allEvents) await seedEvent(db, repository, event, timestamp);
   await seedScout(db, timestamp);
 }
 
@@ -927,7 +930,7 @@ async function seedScout(db: Kysely<DatabaseSchema>, timestamp: string) {
 async function seedEvent(
   db: Kysely<DatabaseSchema>,
   repository: Repository,
-  event: (typeof events)[number],
+  event: CuratedEventSeed,
   timestamp: string,
 ) {
   const existing = await db

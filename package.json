@@ -1,6 +1,6 @@
 {
   "name": "agent-pulse",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": false,
   "description": "A curated AI industry intelligence timeline — signal, not noise.",
   "type": "module",
@@ -18,6 +18,7 @@
     "test:watch": "vitest",
     "db:migrate": "tsx src/cli/migrate.ts",
     "db:seed": "tsx src/cli/seed.ts",
+    "db:snapshot": "tsx src/cli/snapshot.ts",
     "collect": "tsx src/cli/collect.ts",
     "export": "tsx src/cli/export.ts",
     "check": "npm run lint && npm run typecheck && npm test && npm run export"

@@ -8,7 +8,7 @@ const config = loadConfig();
 const db = createDatabase(config);
 try {
   await migrateToLatest(db, config);
-  await seedDatabase(db);
+  if (!process.argv.includes("--skip-seed")) await seedDatabase(db);
   console.log(JSON.stringify(await exportStaticSite(db, config), null, 2));
 } finally {
   await db.destroy();

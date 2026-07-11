@@ -1,0 +1,104 @@
+name: Refresh intelligence data
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Refresh mode
+        required: true
+        default: incremental
+        type: choice
+        options:
+          - incremental
+          - backfill
+
+permissions:
+  actions: write
+  contents: write
+
+concurrency:
+  group: agent-pulse-data-refresh-main
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      DATABASE_URL: sqlite:./var/automation.db
+      PUBLIC_SITE_URL: https://barretlee.github.io/agent-pulse/
+      REFRESH_MODE: ${{ inputs.mode || 'incremental' }}
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Restore auditable repository snapshot
+        run: npm run db:snapshot -- restore
+
+      - name: Collect and cluster signals
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$REFRESH_MODE" == "backfill" ]]; then
+            npm run collect -- --backfill
+          else
+            npm run collect
+          fi
+
+      - name: Write privacy-safe text snapshot
+        run: npm run db:snapshot -- write
+
+      - name: Validate snapshot diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f data/snapshot/v1.json
+          git diff --check -- data/snapshot/v1.json
+          if grep -E '"(token|secret|password|cookie|authorization|api[_-]?key)"[[:space:]]*:' data/snapshot/v1.json; then
+            echo "Sensitive key detected in repository snapshot" >&2
+            exit 1
+          fi
+          if grep -E -- '-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----|/Users/[^/]+/|/home/runner/' data/snapshot/v1.json; then
+            echo "Private material or local path detected in repository snapshot" >&2
+            exit 1
+          fi
+
+      - name: Commit snapshot when data changed
+        id: commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add -- data/snapshot/v1.json
+          if git diff --cached --quiet; then
+            echo "No material data changes; skipping commit."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore(data): refresh intelligence snapshot"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      # Pushes made with GITHUB_TOKEN intentionally do not trigger other push workflows.
+      - name: Dispatch Pages deployment for the new snapshot
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref main

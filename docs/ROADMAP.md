@@ -20,7 +20,7 @@ Roadmap 按系统成熟状态组织，而不是按页面数量组织。`AGENTS.m
 - M1：100+ 高价值 Source Catalog，区分 active/candidate/manual/restricted 并覆盖国内外 12+ 类来源。
 - M2：生命周期、fixture/contract、重试限流、条件请求、checkpoint、SourceRun 与 7/30 日 SLO。
 - M3：Document / SourceObservation 分离，保留同一内容的多来源传播、作者与媒体矩阵关系。
-- M4：scheduler、漂移检测、fallback、canary、回放与 adapter 安装/升级/退役。
+- M4：scheduler、漂移检测、fallback、shadow verification、回放与 adapter 安装/升级/退役。
 
 退出指标：active 来源 7 天成功率 ≥95%；contract fixture 覆盖 100%；P95 freshness 达标；异常来源 5 分钟可定位；同 URL 跨源观察不丢失。
 
@@ -34,6 +34,22 @@ Roadmap 按系统成熟状态组织，而不是按页面数量组织。`AGENTS.m
 - M4：Opportunity Scout Beta，建立证据、反证、去重、反馈和产物闭环。
 
 退出指标：公开事实 claim 证据覆盖 100%；聚类/实体 F1 ≥0.85；人工抽检事实错误为 0；Scout helpful ≥60%、重复/空泛 ≤20%。
+
+## 跨 State 工作流：2024-07 至 2026-07 两年历史基线（基础版已启动）
+
+这不是独立 State，也不能靠增加事件数量提升成熟度。它同时服务 State 1 的真实时间轴、State 2 的 archive/运行能力和 State 3 的 Narrative Timeline。
+
+v0.4.0 已交付第一批 30 个一手来源历史里程碑、5 个行业阶段、6 条高层主线、仓库 JSON 快照和定时 Pages 发布链路；以下 H1-H5 仍代表完整生产水位，而不是已完成声明。
+
+- H1：完成 25 个日历月的 source/archive coverage matrix，所有主线-季度单元标记 covered、sparse 或 evidence_gap。
+- H2：建立 realtime/backfill 双 lane、source-month checkpoint、Document/Observation 分层和历史时间语义。
+- H3：建立 claim-level evidence、跨语种去重/聚类 golden set，以及当时视角/回看验证双层内容。
+- H4：完成技术、AGI、投资、商业化、产品、To C/B/D/G、中国追赶的季度 Phase、年度 Arc 和两年 Synthesis。
+- H5：建立 approved snapshot、静态分片、preview/diff/publish/rollback，历史回填不阻塞当天情报。
+
+退出指标：历史公开 Event 事实门禁通过率 100%；聚合站 primary evidence count 为 0；文档去重 precision ≥0.99；Event pairwise F1 ≥0.90；每条主线-季度有审核总结或证据缺口；实时 freshness 在 backfill 压力下达标；SQLite、MySQL、浏览器、隐私和 Pages 回滚均有实测证据。
+
+实施与验收详见 [`docs/specs/2026-07-11-two-year-intelligence-and-continuous-publish/`](specs/2026-07-11-two-year-intelligence-and-continuous-publish/PRD.md)。
 
 ## State 4：个人战略与知识网络
 

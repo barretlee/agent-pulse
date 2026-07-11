@@ -1,4 +1,4 @@
-export const productVersion = "0.3.0";
+export const productVersion = "0.4.0";
 
 export const capabilities = [
   {
@@ -18,6 +18,34 @@ export const capabilities = [
     maturity: 56,
     release: "0.3.0",
     evidence: "aggregator observations are stored as discoveries and matched to direct publishers",
+  },
+  {
+    slug: "continuous-data-refresh",
+    name: "持续数据刷新",
+    domain: "sensing",
+    status: "experimental",
+    maturity: 58,
+    release: "0.4.0",
+    evidence:
+      "scheduled GitHub Actions collection with serialized writes and explicit Pages dispatch",
+  },
+  {
+    slug: "two-year-baseline",
+    name: "两年行业基线",
+    domain: "understanding",
+    status: "experimental",
+    maturity: 62,
+    release: "0.4.0",
+    evidence: "30 source-backed milestones from 2024-07 to 2026-05 plus current 2026 events",
+  },
+  {
+    slug: "track-synthesis",
+    name: "主线阶段收敛",
+    domain: "intelligence",
+    status: "operational",
+    maturity: 66,
+    release: "0.4.0",
+    evidence: "five eras and six executive track narratives with China-position comparisons",
   },
   {
     slug: "primary-source-gate",
@@ -255,6 +283,16 @@ export const capabilities = [
     evidence: "allowlist JSON export and GitHub Pages workflow",
   },
   {
+    slug: "repository-snapshot",
+    name: "仓库数据快照",
+    domain: "delivery",
+    status: "operational",
+    maturity: 72,
+    release: "0.4.0",
+    evidence:
+      "deterministic privacy-safe JSON snapshot with merge restore and sensitive URL stripping",
+  },
+  {
     slug: "release-evolution",
     name: "版本演进与 Changelog",
     domain: "delivery",
@@ -356,6 +394,25 @@ export const roadmap = [
 ] as const;
 
 export const releases = [
+  {
+    version: "0.4.0",
+    date: "2026-07-11",
+    name: "The Industry Arc",
+    summary: "从新闻式堆叠转向两年行业主线，并让数据采集、仓库快照与 GitHub Pages 持续联动。",
+    capabilities: [
+      "持续数据刷新",
+      "仓库数据快照",
+      "两年行业基线",
+      "主线阶段收敛",
+      "高密度公开首页",
+    ],
+    changes: [
+      "新增每 6 小时 GitHub Actions 数据刷新；数据变化后提交隐私安全 JSON 快照并显式部署 Pages",
+      "建立 2024-07 至 2026-07 行业基线，加入 30 个一手来源里程碑和 5 个发展阶段",
+      "将默认公开体验收敛为 Today、六条趋势主线和两年演进摘要，其他工具按需展开",
+      "新增中国追赶的阶段性同维度对照，不再只呈现静态公司排名",
+    ],
+  },
   {
     version: "0.3.0",
     date: "2026-07-11",

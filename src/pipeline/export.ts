@@ -1,6 +1,7 @@
 import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import type { Kysely } from "kysely";
+import { industryNarratives } from "../catalog/history.js";
 import { capabilities, productVersion, releases, roadmap } from "../catalog/product.js";
 import type { AppConfig } from "../config/env.js";
 import { parseJson, Repository } from "../db/repository.js";
@@ -58,6 +59,11 @@ export async function exportStaticSite(db: Kysely<DatabaseSchema>, config: AppCo
       schemaVersion: 1,
       generatedAt,
       insights: scout,
+    }),
+    writeJson(join(config.distDir, "data/narratives.json"), {
+      schemaVersion: 1,
+      generatedAt,
+      ...industryNarratives,
     }),
     writeJson(join(config.distDir, "data/product.json"), {
       schemaVersion: 1,

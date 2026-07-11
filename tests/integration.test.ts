@@ -2,6 +2,7 @@ import { mkdtemp, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
+import { historicalEvents } from "../src/catalog/history.js";
 import { sourceCatalog } from "../src/catalog/sources.js";
 import { loadConfig } from "../src/config/env.js";
 import { createDatabase } from "../src/db/database.js";
@@ -30,10 +31,10 @@ describe("SQLite application", () => {
     expect((await repository.publicEvents()).length).toBeGreaterThanOrEqual(6);
     const result = await exportStaticSite(db, config);
     expect(result).toMatchObject({
-      events: 6,
+      events: historicalEvents.length + 6,
       tracks: 10,
       sources: sourceCatalog.length,
-      version: "0.3.0",
+      version: "0.4.0",
     });
     const timeline = await readFile(join(config.distDir, "data/timeline.json"), "utf8");
     expect(timeline).not.toContain("ADMIN_TOKEN");
