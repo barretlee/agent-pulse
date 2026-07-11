@@ -20,6 +20,6 @@
 - [x] 补齐单元、集成和 UI 烟测
 - [x] 编写 README、架构、贡献、安全和来源文档
 - [x] 配置 CI 和 GitHub Pages workflow
-- [ ] 本地完整验证
-- [ ] 创建 `barretlee/agent-pulse` public repo、提交并推送
+- [x] 本地完整验证
+- [x] 创建 `barretlee/agent-pulse` public repo、提交并推送
 - [x] 删除 legacy Python、JSON 和根目录单页原型

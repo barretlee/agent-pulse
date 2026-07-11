@@ -26,9 +26,9 @@ describe("SQLite application", () => {
     await seedDatabase(db);
 
     const repository = new Repository(db);
-    expect((await repository.publicEvents()).length).toBeGreaterThanOrEqual(5);
+    expect((await repository.publicEvents()).length).toBeGreaterThanOrEqual(6);
     const result = await exportStaticSite(db, config);
-    expect(result).toMatchObject({ events: 5, tracks: 10 });
+    expect(result).toMatchObject({ events: 6, tracks: 10 });
     const timeline = await readFile(join(config.distDir, "data/timeline.json"), "utf8");
     expect(timeline).not.toContain("ADMIN_TOKEN");
     expect(timeline).not.toContain("/Users/");

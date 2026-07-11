@@ -115,6 +115,19 @@ const sources = [
     { url: "https://www.worldlabs.ai/blog", take: 20 },
   ],
   [
+    "robbyant",
+    "Robbyant / 蚂蚁集团",
+    "https://github.com/Robbyant",
+    "json-api",
+    1,
+    "primary",
+    "CN",
+    "en",
+    92,
+    0,
+    { url: "https://api.github.com/repos/Robbyant/lingbot-vla-v2/releases", take: 20 },
+  ],
+  [
     "anthropic",
     "Anthropic",
     "https://www.anthropic.com/news",
@@ -357,6 +370,16 @@ const actors = [
     ["foundation-model", "reasoning", "open-source"],
     98,
     "https://www.deepseek.com",
+  ],
+  [
+    "robbyant",
+    "Robbyant / 蚂蚁集团",
+    "lab",
+    "CN",
+    "scaleup",
+    ["embodied-ai", "robotics", "world-model"],
+    86,
+    "https://technology.robbyant.com",
   ],
   [
     "zhipu",
@@ -741,6 +764,30 @@ const events = [
     actors: ["openai"],
   },
   {
+    slug: "lingbot-vla-2-cross-embodiment",
+    title: "LingBot-VLA 2.0 开源：国产具身模型进入跨本体规模化阶段",
+    fact: "蚂蚁集团 Robbyant 发布 LingBot-VLA 2.0 技术报告、预训练权重与代码；官方披露训练数据覆盖 20 种机器人配置和约 6 万小时机器人/第一视角视频。",
+    summary:
+      "这次发布的关键不只是单项 benchmark，而是把单臂、双臂、半人形与人形机器人映射进统一动作空间，并开放 6B 权重和训练/部署代码。结果仍以团队自测为主，需要独立复现。",
+    technical:
+      "统一 55 维动作表示、稀疏 MoE action expert，以及深度/视频教师蒸馏，指向一个清晰方向：具身基础模型正在同时扩大数据、本体和时序预测三个规模维度。",
+    industry:
+      "国内具身智能竞争正从 demo 和单机器人策略转向可复用基础模型与开源生态；这让模型层、数据层和机器人本体厂商之间的边界重新划分。",
+    future:
+      "重点观察第三方在新机器人上的复现成功率、跨本体微调成本、真实长任务完成率，以及开源权重是否形成开发者生态。",
+    business:
+      "CEO 与投资负责人应把“能否跨本体迁移、是否开放权重、真实部署成本”作为具身项目尽调核心，不应只看团队自报的仿真成功率。",
+    category: "embodied-ai",
+    company: "Robbyant / Ant Group",
+    keywords: ["LingBot-VLA 2.0", "具身智能", "VLA", "机器人", "开源"],
+    scores: [92, 76, 91, 88],
+    date: "2026-07-08T10:00:00.000Z",
+    source: "robbyant",
+    url: "https://github.com/Robbyant/lingbot-vla-v2",
+    tracks: ["tech-evolution", "agi-progress", "china-catch-up", "investing", "to-d"],
+    actors: ["robbyant"],
+  },
+  {
     slug: "world-model-functional-taxonomy",
     title: "World Labs 建立世界模型分类学：空间智能路线开始系统化",
     fact: "World Labs 发布世界模型功能分类框架，梳理空间智能的层级与能力维度。",
@@ -1010,7 +1057,9 @@ async function seedEvent(
     metrics: {
       independentSources: 1,
       platforms: ["official"],
-      regions: [event.source === "worldlabs" ? "GLOBAL" : "US"],
+      regions: [
+        event.source === "robbyant" ? "CN" : event.source === "worldlabs" ? "GLOBAL" : "US",
+      ],
     },
     rawMeta: { seeded: true },
   });
