@@ -1,7 +1,9 @@
 import { randomUUID, timingSafeEqual } from "node:crypto";
 import type { Kysely } from "kysely";
+import { titleSimilarity } from "../domain/clustering.js";
 import {
   type CollectedSignal,
+  type OriginReference,
   type PublicEvent,
   SourceConfigSchema,
   type SourceDescriptor,
@@ -13,13 +15,45 @@ import type {
   NewEventRow,
   NewSourceRow,
   SignalRow,
+  SourceDiscoveryRow,
   SourceRow,
   SourceRunRow,
   SourceUpdate,
 } from "./types.js";
 
+export type DiscoveryStatus = "pending" | "candidate" | "matched_source" | "merged_signal";
+
+export interface SourceDiscoveryListItem {
+  id: string;
+  title: string;
+  status: DiscoveryStatus;
+  aggregator: { id: string; slug: string; name: string };
+  source: { id: string; slug: string; name: string };
+  rawDomainOrHandle: string;
+  originUrl: string | null;
+  discoveryUrl: string;
+  originKind: string;
+  handles: Array<{ handle: string; role?: string }>;
+  matchedPrimarySource: { id: string; slug: string; name: string } | null;
+  matchedSignalId: string | null;
+  metrics: Record<string, unknown>;
+  firstDiscoveredAt: string;
+  lastDiscoveredAt: string;
+}
+
 const now = () => new Date().toISOString();
 const json = (value: unknown) => JSON.stringify(value);
+const SHARED_IDENTITY_HOSTS = new Set([
+  "bilibili.com",
+  "github.com",
+  "linkedin.com",
+  "medium.com",
+  "reddit.com",
+  "twitter.com",
+  "weibo.com",
+  "x.com",
+  "youtube.com",
+]);
 const parseJson = <T>(value: string, fallback: T): T => {
   try {
     return JSON.parse(value) as T;
@@ -253,15 +287,390 @@ export class Repository {
     );
   }
 
+  async saveSourceDiscovery(
+    aggregatorSourceId: string,
+    item: CollectedSignal,
+  ): Promise<{ discovery: SourceDiscoveryRow; created: boolean }> {
+    const aggregator = await this.getSource(aggregatorSourceId);
+    if (!aggregator || !isDiscoveryOnlySource(aggregator)) {
+      throw new Error("Only aggregator sources can persist source discoveries");
+    }
+
+    const origin: OriginReference = item.origin ?? {
+      discoveryUrl: item.url,
+      kind: "unknown",
+    };
+    const discoveryUrl = canonicalizeUrl(origin.discoveryUrl);
+    const originUrl = origin.url ? canonicalizeUrl(origin.url) : null;
+    const handles = normalizeHandles(origin);
+    const match = await this.matchDirectSource(originUrl, origin.name, handles);
+    const identityHash = sha256(
+      `${aggregatorSourceId}\n${item.externalId ?? originUrl ?? discoveryUrl}`,
+    );
+    const timestamp = now();
+    const existing = await this.db
+      .selectFrom("source_discoveries")
+      .selectAll()
+      .where("identity_hash", "=", identityHash)
+      .executeTakeFirst();
+    const status: DiscoveryStatus = existing?.matched_signal_id
+      ? "merged_signal"
+      : match.sourceId
+        ? "matched_source"
+        : match.candidateSourceIds.length
+          ? "candidate"
+          : "pending";
+
+    if (existing) {
+      await this.db
+        .updateTable("source_discoveries")
+        .set({
+          external_id: item.externalId?.slice(0, 255) ?? null,
+          discovery_url: discoveryUrl,
+          discovery_url_hash: sha256(discoveryUrl),
+          origin_url: originUrl,
+          origin_url_hash: originUrl ? sha256(originUrl) : null,
+          origin_kind: origin.kind,
+          origin_name: origin.name?.slice(0, 255) ?? null,
+          handles_json: json(handles),
+          title: item.title.slice(0, 2_000),
+          summary: item.summary.slice(0, 8_000),
+          language: item.language,
+          published_at: item.publishedAt,
+          category: item.category,
+          tags_json: json(item.tags.slice(0, 20)),
+          metrics_json: json(item.metrics),
+          raw_meta_json: json(item.rawMeta),
+          matched_source_id: existing.matched_signal_id
+            ? existing.matched_source_id
+            : match.sourceId,
+          candidate_source_ids_json: json(match.candidateSourceIds),
+          status,
+          last_seen_at: timestamp,
+          updated_at: timestamp,
+        })
+        .where("id", "=", existing.id)
+        .execute();
+    } else {
+      await this.db
+        .insertInto("source_discoveries")
+        .values({
+          id: randomUUID(),
+          identity_hash: identityHash,
+          aggregator_source_id: aggregatorSourceId,
+          external_id: item.externalId?.slice(0, 255) ?? null,
+          discovery_url: discoveryUrl,
+          discovery_url_hash: sha256(discoveryUrl),
+          origin_url: originUrl,
+          origin_url_hash: originUrl ? sha256(originUrl) : null,
+          origin_kind: origin.kind,
+          origin_name: origin.name?.slice(0, 255) ?? null,
+          handles_json: json(handles),
+          title: item.title.slice(0, 2_000),
+          summary: item.summary.slice(0, 8_000),
+          language: item.language,
+          published_at: item.publishedAt,
+          category: item.category,
+          tags_json: json(item.tags.slice(0, 20)),
+          metrics_json: json(item.metrics),
+          raw_meta_json: json(item.rawMeta),
+          matched_source_id: match.sourceId,
+          candidate_source_ids_json: json(match.candidateSourceIds),
+          matched_signal_id: null,
+          status,
+          first_seen_at: timestamp,
+          last_seen_at: timestamp,
+          created_at: timestamp,
+          updated_at: timestamp,
+        })
+        .execute();
+    }
+
+    let discovery = await this.db
+      .selectFrom("source_discoveries")
+      .selectAll()
+      .where("identity_hash", "=", identityHash)
+      .executeTakeFirstOrThrow();
+    const signal = await this.findSignalForDiscovery(discovery);
+    if (signal) {
+      await this.mergeDiscoveryHeatIntoSignal(signal, [discovery]);
+      discovery = await this.db
+        .selectFrom("source_discoveries")
+        .selectAll()
+        .where("id", "=", discovery.id)
+        .executeTakeFirstOrThrow();
+    }
+    return { discovery, created: !existing };
+  }
+
+  async listSourceDiscoveries(
+    limit = 100,
+    status?: DiscoveryStatus,
+  ): Promise<SourceDiscoveryListItem[]> {
+    let query = this.db
+      .selectFrom("source_discoveries")
+      .innerJoin(
+        "sources as aggregator",
+        "aggregator.id",
+        "source_discoveries.aggregator_source_id",
+      )
+      .leftJoin("sources as matched", "matched.id", "source_discoveries.matched_source_id")
+      .select([
+        "source_discoveries.id",
+        "source_discoveries.title",
+        "source_discoveries.status",
+        "source_discoveries.origin_url as originUrl",
+        "source_discoveries.discovery_url as discoveryUrl",
+        "source_discoveries.origin_kind as originKind",
+        "source_discoveries.handles_json as handlesJson",
+        "source_discoveries.metrics_json as metricsJson",
+        "source_discoveries.matched_signal_id as matchedSignalId",
+        "source_discoveries.first_seen_at as firstSeenAt",
+        "source_discoveries.last_seen_at as lastSeenAt",
+        "aggregator.id as aggregatorId",
+        "aggregator.slug as aggregatorSlug",
+        "aggregator.name as aggregatorName",
+        "matched.id as matchedId",
+        "matched.slug as matchedSlug",
+        "matched.name as matchedName",
+      ]);
+    if (status) query = query.where("source_discoveries.status", "=", status);
+    const rows = await query
+      .orderBy("source_discoveries.last_seen_at", "desc")
+      .limit(Math.min(Math.max(limit, 1), 500))
+      .execute();
+    return rows.map((row) => {
+      const aggregator = {
+        id: row.aggregatorId,
+        slug: row.aggregatorSlug,
+        name: row.aggregatorName,
+      };
+      const handles = parseJson<Array<{ handle: string; role?: string }>>(row.handlesJson, []);
+      return {
+        id: row.id,
+        title: row.title,
+        status: row.status as DiscoveryStatus,
+        aggregator,
+        source: aggregator,
+        rawDomainOrHandle: discoveryIdentity(row.originUrl, handles, row.discoveryUrl),
+        originUrl: row.originUrl,
+        discoveryUrl: row.discoveryUrl,
+        originKind: row.originKind,
+        handles,
+        matchedPrimarySource: row.matchedId
+          ? { id: row.matchedId, slug: row.matchedSlug ?? "", name: row.matchedName ?? "" }
+          : null,
+        matchedSignalId: row.matchedSignalId,
+        metrics: parseJson(row.metricsJson, {}),
+        firstDiscoveredAt: row.firstSeenAt,
+        lastDiscoveredAt: row.lastSeenAt,
+      };
+    });
+  }
+
+  async discoveryStatusSummary(): Promise<Record<DiscoveryStatus | "total", number>> {
+    const rows = await this.db
+      .selectFrom("source_discoveries")
+      .select(["status", ({ fn }) => fn.countAll<number>().as("count")])
+      .groupBy("status")
+      .execute();
+    const summary: Record<DiscoveryStatus | "total", number> = {
+      pending: 0,
+      candidate: 0,
+      matched_source: 0,
+      merged_signal: 0,
+      total: 0,
+    };
+    for (const row of rows) {
+      const count = Number(row.count);
+      if (row.status in summary) summary[row.status as DiscoveryStatus] = count;
+      summary.total += count;
+    }
+    return summary;
+  }
+
+  private async matchDirectSource(
+    originUrl: string | null,
+    originName: string | undefined,
+    handles: Array<{ handle: string; role?: string }>,
+  ): Promise<{ sourceId: string | null; candidateSourceIds: string[] }> {
+    const sources = (await this.listSources()).filter((source) => !isDiscoveryOnlySource(source));
+    const candidates = new Set<string>();
+    if (originUrl) {
+      const origin = new URL(originUrl);
+      const originHost = normalizeHost(origin.hostname);
+      const prefixMatches = sources
+        .map((source) => ({ source, homepage: safeUrl(source.homepage_url) }))
+        .filter(({ homepage }) => {
+          if (!homepage || normalizeHost(homepage.hostname) !== originHost) return false;
+          const homepageValue = canonicalizeUrl(homepage.toString());
+          return originUrl === homepageValue || originUrl.startsWith(`${homepageValue}/`);
+        });
+      if (prefixMatches.length) {
+        const longest = Math.max(
+          ...prefixMatches.map(
+            ({ homepage }) => canonicalizeUrl(homepage?.toString() ?? "").length,
+          ),
+        );
+        const mostSpecific = prefixMatches.filter(
+          ({ homepage }) => canonicalizeUrl(homepage?.toString() ?? "").length === longest,
+        );
+        if (mostSpecific.length === 1) {
+          return { sourceId: mostSpecific[0]?.source.id ?? null, candidateSourceIds: [] };
+        }
+        for (const { source } of mostSpecific) candidates.add(source.id);
+      }
+
+      if (!SHARED_IDENTITY_HOSTS.has(originHost)) {
+        const configuredHostMatches = sources.filter((source) =>
+          configuredIdentityHosts(source).includes(originHost),
+        );
+        if (configuredHostMatches.length === 1) {
+          return { sourceId: configuredHostMatches[0]?.id ?? null, candidateSourceIds: [] };
+        }
+        for (const source of configuredHostMatches) candidates.add(source.id);
+      }
+
+      if (!SHARED_IDENTITY_HOSTS.has(originHost)) {
+        const hostMatches = sources.filter((source) => {
+          const homepage = safeUrl(source.homepage_url);
+          return homepage ? normalizeHost(homepage.hostname) === originHost : false;
+        });
+        if (hostMatches.length === 1) {
+          return { sourceId: hostMatches[0]?.id ?? null, candidateSourceIds: [] };
+        }
+        for (const source of hostMatches) candidates.add(source.id);
+      }
+    }
+
+    const normalizedHandles = new Set(
+      handles.map((item) => normalizeHandle(item.handle)).filter(Boolean),
+    );
+    if (normalizedHandles.size) {
+      const handleMatches = sources.filter((source) =>
+        sourceHandles(source).some((handle) => normalizedHandles.has(handle)),
+      );
+      if (handleMatches.length === 1) {
+        return { sourceId: handleMatches[0]?.id ?? null, candidateSourceIds: [] };
+      }
+      for (const source of handleMatches) candidates.add(source.id);
+    }
+
+    const normalizedName = normalizeIdentity(originName ?? "");
+    if (normalizedName) {
+      const nameMatches = sources.filter(
+        (source) =>
+          normalizeIdentity(source.name) === normalizedName ||
+          normalizeIdentity(source.slug) === normalizedName,
+      );
+      if (nameMatches.length === 1) {
+        return { sourceId: nameMatches[0]?.id ?? null, candidateSourceIds: [] };
+      }
+      for (const source of nameMatches) candidates.add(source.id);
+    }
+    return { sourceId: null, candidateSourceIds: [...candidates] };
+  }
+
+  private async findSignalForDiscovery(
+    discovery: SourceDiscoveryRow,
+  ): Promise<SignalRow | undefined> {
+    if (discovery.origin_url_hash) {
+      const exact = await this.db
+        .selectFrom("signals")
+        .innerJoin("sources", "sources.id", "signals.source_id")
+        .selectAll("signals")
+        .where("signals.url_hash", "=", discovery.origin_url_hash)
+        .where("sources.source_category", "!=", "aggregator")
+        .where("sources.role", "!=", "aggregator")
+        .executeTakeFirst();
+      if (exact) return exact;
+    }
+    if (!discovery.matched_source_id) return undefined;
+    const signals = await this.db
+      .selectFrom("signals")
+      .selectAll()
+      .where("source_id", "=", discovery.matched_source_id)
+      .orderBy("published_at", "desc")
+      .limit(200)
+      .execute();
+    return signals
+      .filter((signal) => discoveryMatchesSignal(discovery, signal))
+      .sort(
+        (left, right) =>
+          titleSimilarity(discovery.title, right.title) -
+          titleSimilarity(discovery.title, left.title),
+      )[0];
+  }
+
+  private async mergePendingDiscoveriesIntoSignal(signal: SignalRow): Promise<void> {
+    const discoveries = await this.db
+      .selectFrom("source_discoveries")
+      .selectAll()
+      .where("matched_signal_id", "is", null)
+      .where((expression) =>
+        expression.or([
+          expression("origin_url_hash", "=", signal.url_hash),
+          expression("matched_source_id", "=", signal.source_id),
+        ]),
+      )
+      .limit(500)
+      .execute();
+    const matches = discoveries.filter(
+      (discovery) =>
+        discovery.origin_url_hash === signal.url_hash || discoveryMatchesSignal(discovery, signal),
+    );
+    if (matches.length) await this.mergeDiscoveryHeatIntoSignal(signal, matches);
+  }
+
+  private async mergeDiscoveryHeatIntoSignal(
+    signal: SignalRow,
+    discoveries: SourceDiscoveryRow[],
+  ): Promise<void> {
+    const ids = discoveries.map((discovery) => discovery.id);
+    if (!ids.length) return;
+    await this.db
+      .updateTable("source_discoveries")
+      .set({
+        matched_source_id: signal.source_id,
+        matched_signal_id: signal.id,
+        status: "merged_signal",
+        updated_at: now(),
+      })
+      .where("id", "in", ids)
+      .execute();
+    const linked = await this.db
+      .selectFrom("source_discoveries")
+      .selectAll()
+      .where("matched_signal_id", "=", signal.id)
+      .execute();
+    const metrics = mergeDiscoveryMetrics(
+      parseJson<Record<string, unknown>>(signal.metrics_json, {}),
+      linked,
+    );
+    await this.db
+      .updateTable("signals")
+      .set({ metrics_json: json(metrics), updated_at: now() })
+      .where("id", "=", signal.id)
+      .execute();
+  }
+
   async insertSignal(sourceId: string, item: CollectedSignal): Promise<SignalRow | undefined> {
+    const source = await this.getSource(sourceId);
+    if (!source) throw new Error(`Source not found: ${sourceId}`);
+    if (isDiscoveryOnlySource(source)) {
+      throw new Error("Aggregator sources cannot create factual signals");
+    }
     const canonicalUrl = canonicalizeUrl(item.url);
     const urlHash = sha256(canonicalUrl);
     const existing = await this.db
       .selectFrom("signals")
-      .select("id")
+      .selectAll()
       .where("url_hash", "=", urlHash)
       .executeTakeFirst();
-    if (existing) return undefined;
+    if (existing) {
+      await this.mergePendingDiscoveriesIntoSignal(existing);
+      return undefined;
+    }
 
     const timestamp = now();
     const id = randomUUID();
@@ -288,15 +697,25 @@ export class Repository {
         updated_at: timestamp,
       })
       .execute();
+    const inserted = await this.db
+      .selectFrom("signals")
+      .selectAll()
+      .where("id", "=", id)
+      .executeTakeFirst();
+    if (!inserted) return undefined;
+    await this.mergePendingDiscoveriesIntoSignal(inserted);
     return this.db.selectFrom("signals").selectAll().where("id", "=", id).executeTakeFirst();
   }
 
   async listUnclusteredSignals(limit = 200): Promise<SignalRow[]> {
     return this.db
       .selectFrom("signals")
+      .innerJoin("sources", "sources.id", "signals.source_id")
       .leftJoin("event_signals", "event_signals.signal_id", "signals.id")
       .selectAll("signals")
       .where("event_signals.signal_id", "is", null)
+      .where("sources.role", "!=", "aggregator")
+      .where("sources.source_category", "!=", "aggregator")
       .orderBy("signals.published_at", "desc")
       .limit(limit)
       .execute();
@@ -616,6 +1035,140 @@ export function secureTokenEquals(expected: string, actual: string): boolean {
   const left = Buffer.from(expected);
   const right = Buffer.from(actual);
   return left.length === right.length && timingSafeEqual(left, right);
+}
+
+function isDiscoveryOnlySource(source: Pick<SourceRow, "role" | "source_category">): boolean {
+  return source.role === "aggregator" || source.source_category === "aggregator";
+}
+
+function normalizeHandles(origin: OriginReference): Array<{ handle: string; role?: string }> {
+  const values = [...(origin.handle ? [{ handle: origin.handle }] : []), ...(origin.handles ?? [])];
+  const handles = new Map<string, { handle: string; role?: string }>();
+  for (const value of values) {
+    const handle = normalizeHandle(value.handle);
+    if (!handle) continue;
+    const previous = handles.get(handle);
+    const role = value.role ?? previous?.role;
+    handles.set(handle, role ? { handle, role } : { handle });
+  }
+  return [...handles.values()];
+}
+
+function normalizeHandle(value: string): string {
+  return value
+    .trim()
+    .replace(/^@+/, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9_.-]/g, "");
+}
+
+function normalizeIdentity(value: string): string {
+  return value
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/[^a-z0-9\u4e00-\u9fff]/g, "");
+}
+
+function normalizeHost(value: string): string {
+  return value.toLowerCase().replace(/^www\./, "");
+}
+
+function safeUrl(value: string): URL | null {
+  try {
+    return new URL(value);
+  } catch {
+    return null;
+  }
+}
+
+function configuredIdentityHosts(source: SourceRow): string[] {
+  const config = parseJson<{ identityHosts?: unknown }>(source.config_json, {});
+  return Array.isArray(config.identityHosts)
+    ? config.identityHosts
+        .filter((value): value is string => typeof value === "string")
+        .map(normalizeHost)
+    : [];
+}
+
+function sourceHandles(source: SourceRow): string[] {
+  const config = parseJson<{ socialHandles?: unknown }>(source.config_json, {});
+  const configured = Array.isArray(config.socialHandles)
+    ? config.socialHandles.filter((value): value is string => typeof value === "string")
+    : [];
+  const homepage = safeUrl(source.homepage_url);
+  const socialHandle =
+    homepage && ["x.com", "twitter.com", "weibo.com"].includes(normalizeHost(homepage.hostname))
+      ? homepage.pathname.split("/").filter(Boolean)[0]
+      : undefined;
+  return [...new Set([source.slug, normalizeIdentity(source.name), socialHandle, ...configured])]
+    .filter((value): value is string => Boolean(value))
+    .map(normalizeHandle)
+    .filter(Boolean);
+}
+
+function discoveryMatchesSignal(discovery: SourceDiscoveryRow, signal: SignalRow): boolean {
+  const publishedDelta = Math.abs(
+    new Date(discovery.published_at).getTime() - new Date(signal.published_at).getTime(),
+  );
+  if (!Number.isFinite(publishedDelta) || publishedDelta > 7 * 86_400_000) return false;
+  const similarity = titleSimilarity(discovery.title, signal.title);
+  if (similarity >= 0.42) return true;
+  const left = normalizeIdentity(discovery.title);
+  const right = normalizeIdentity(signal.title);
+  return left.length >= 8 && right.length >= 8 && (left.includes(right) || right.includes(left));
+}
+
+function mergeDiscoveryMetrics(
+  base: Record<string, unknown>,
+  discoveries: SourceDiscoveryRow[],
+): Record<string, unknown> {
+  const result = { ...base };
+  const numericKeys = ["likes", "comments", "reposts", "tweets", "authors"];
+  for (const key of numericKeys) {
+    const values = discoveries
+      .map((discovery) => parseJson<Record<string, unknown>>(discovery.metrics_json, {})[key])
+      .filter((value): value is number => typeof value === "number" && Number.isFinite(value));
+    const baseValue = typeof result[key] === "number" ? result[key] : 0;
+    if (values.length) result[key] = Math.max(baseValue as number, ...values);
+  }
+  for (const key of ["platforms", "regions"] as const) {
+    const values = discoveries.flatMap((discovery) => {
+      const value = parseJson<Record<string, unknown>>(discovery.metrics_json, {})[key];
+      return Array.isArray(value)
+        ? value.filter((item): item is string => typeof item === "string")
+        : [];
+    });
+    const baseValues = Array.isArray(result[key])
+      ? result[key].filter((item): item is string => typeof item === "string")
+      : [];
+    result[key] = [...new Set([...baseValues, ...values])];
+  }
+  result.aggregatorHeat = {
+    discoveryCount: discoveries.length,
+    aggregatorSourceCount: new Set(discoveries.map((discovery) => discovery.aggregator_source_id))
+      .size,
+    latestSeenAt: discoveries.reduce(
+      (latest, discovery) => (discovery.last_seen_at > latest ? discovery.last_seen_at : latest),
+      "",
+    ),
+  };
+  return result;
+}
+
+function discoveryIdentity(
+  originUrl: string | null,
+  handles: Array<{ handle: string }>,
+  discoveryUrl: string,
+): string {
+  if (originUrl) {
+    const origin = safeUrl(originUrl);
+    if (origin && SHARED_IDENTITY_HOSTS.has(normalizeHost(origin.hostname)) && handles.length) {
+      return handles.map((item) => `@${item.handle}`).join(", ");
+    }
+    return origin?.hostname ?? originUrl;
+  }
+  if (handles.length) return handles.map((item) => `@${item.handle}`).join(", ");
+  return safeUrl(discoveryUrl)?.hostname ?? discoveryUrl;
 }
 
 export { json, now, parseJson };

@@ -1,4 +1,4 @@
-export const productVersion = "0.2.0";
+export const productVersion = "0.3.0";
 
 export const capabilities = [
   {
@@ -8,7 +8,25 @@ export const capabilities = [
     status: "operational",
     maturity: 68,
     release: "0.2.0",
-    evidence: "100+ sources classified by region, role, acquisition and maintenance state",
+    evidence: "195 sources classified by region, role, acquisition and maintenance state",
+  },
+  {
+    slug: "upstream-discovery",
+    name: "聚合上游发现",
+    domain: "sensing",
+    status: "experimental",
+    maturity: 56,
+    release: "0.3.0",
+    evidence: "aggregator observations are stored as discoveries and matched to direct publishers",
+  },
+  {
+    slug: "primary-source-gate",
+    name: "一手事实门禁",
+    domain: "governance",
+    status: "operational",
+    maturity: 65,
+    release: "0.3.0",
+    evidence: "aggregator-role collectors cannot write factual signals or enter event clustering",
   },
   {
     slug: "source-lifecycle",
@@ -338,6 +356,27 @@ export const roadmap = [
 ] as const;
 
 export const releases = [
+  {
+    version: "0.3.0",
+    date: "2026-07-11",
+    name: "Primary Source Protocol",
+    summary: "把聚合站降为发现雷达，让事实、热度和原始发布者各自回到正确的数据层。",
+    capabilities: [
+      "聚合上游发现",
+      "一手事实门禁",
+      "来源身份匹配",
+      "聚合热度回填",
+      "官方价格基线目录",
+      "来源候选雷达",
+    ],
+    changes: [
+      "AI HOT、HuggingNews 等聚合器只写 Source Discovery，不再直接生成事实 Signal",
+      "按原始 URL、唯一域名和社交账号匹配直接来源，无法匹配的内容进入人工候选队列",
+      "补入 AI HOT 背后的官方、研究、专家与专业媒体来源，并扩充至 195 个来源",
+      "PriceAI 保留为比较入口，价格改由厂商官网、App Store 与独立汇率源采集",
+      "Evaluation 新增一手来源归属维度，持续暴露历史聚合器证据债务",
+    ],
+  },
   {
     version: "0.2.0",
     date: "2026-07-11",

@@ -30,6 +30,11 @@ const SourceAction = z.object({
   action: z.enum(["verify", "activate", "degrade", "quarantine", "restore", "retire"]),
 });
 
+const SourceDiscoveryQuery = z.object({
+  status: z.enum(["pending", "candidate", "matched_source", "merged_signal"]).optional(),
+  limit: z.coerce.number().int().min(1).max(500).default(100),
+});
+
 const ScoutPatch = z.object({
   status: z.enum(["inbox", "considering", "accepted", "dismissed", "archived", "published"]),
 });
@@ -135,6 +140,15 @@ export async function buildApp(db: Kysely<DatabaseSchema>, config: AppConfig) {
   app.get("/api/admin/source-runs", async (request) => {
     const query = z.object({ sourceId: z.string().uuid().optional() }).parse(request.query);
     return repository.listSourceRuns(query.sourceId);
+  });
+  app.get("/api/admin/source-discoveries", async (request, reply) => {
+    const query = SourceDiscoveryQuery.parse(request.query);
+    const [items, summary] = await Promise.all([
+      repository.listSourceDiscoveries(query.limit, query.status),
+      repository.discoveryStatusSummary(),
+    ]);
+    reply.header("Cache-Control", "no-store");
+    return { items, summary, filter: { status: query.status ?? "all", limit: query.limit } };
   });
   app.get("/api/admin/events", async () => repository.listEvents());
   app.get("/api/admin/jobs", async () => repository.listJobs());

@@ -14,7 +14,7 @@ const EnvSchema = z.object({
   COLLECTOR_USER_AGENT: z
     .string()
     .min(8)
-    .default("agent-pulse/0.1 (+https://github.com/barretlee/agent-pulse)"),
+    .default("agent-pulse/0.3 (+https://github.com/barretlee/agent-pulse)"),
   COLLECTOR_TIMEOUT_MS: z.coerce.number().int().min(1_000).max(120_000).default(30_000),
   COLLECTOR_CONCURRENCY: z.coerce.number().int().min(1).max(16).default(4),
   PUBLIC_SITE_URL: z.string().url().default("https://barretlee.github.io/agent-pulse/"),

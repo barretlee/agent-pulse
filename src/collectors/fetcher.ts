@@ -62,7 +62,7 @@ export function createSafeFetcher(config: AppConfig, dependencies: FetcherDepend
       try {
         const result = await fetchWithRedirects(
           urlValue,
-          headers,
+          { "user-agent": config.COLLECTOR_USER_AGENT, ...headers },
           timeoutMs,
           fetchImpl,
           validateUrl,

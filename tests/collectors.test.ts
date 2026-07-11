@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { aiHotAdapter } from "../src/collectors/aihot.js";
 import { huggingNewsAdapter } from "../src/collectors/huggingnews.js";
 import { rssAdapter } from "../src/collectors/rss.js";
 import type { CollectContext } from "../src/collectors/types.js";
@@ -48,9 +49,87 @@ describe("RSS adapter", () => {
 describe("HuggingNews adapter", () => {
   it("extracts public story heat metadata without copying article bodies", async () => {
     const html =
-      '<details class="story-details is-top" data-fresh="recent"><summary><a class="story-row-link" href="/ai/model-launch-abcd"><div class="story-title">Model &amp; Agent Launch</div><div class="story-meta"><span class="meta-cat">AI</span><span class="meta-time">2h ago</span><span class="meta-signal">120/45</span></div></a></summary></details>';
+      '<details class="story-details is-top" data-fresh="recent"><summary><a class="story-row-link" href="/ai/model-launch-abcd"><div class="story-title">Model &amp; Agent Launch</div><div class="story-meta"><span class="meta-cat">AI</span><span class="meta-time">2h ago</span><span class="meta-signal">120/45</span></div></a></summary><div class="source-role">Source</div><span>@openai</span><div class="source-role">Support</div><span>@researcher</span></details>';
     const items = await huggingNewsAdapter.collect(source("huggingnews"), context(html));
     expect(items[0]?.metrics).toMatchObject({ tweets: 120, authors: 45 });
     expect(items[0]?.summary).toBe("Model & Agent Launch");
+    expect(items[0]?.origin).toMatchObject({
+      kind: "aggregator_story",
+      handles: [
+        { handle: "openai", role: "Source" },
+        { handle: "researcher", role: "Support" },
+      ],
+    });
+  });
+
+  it("hydrates public selected-tweet provenance from a story page", async () => {
+    const homepage =
+      '<details class="story-details is-top" data-fresh="recent"><summary><a class="story-row-link" href="/ai/model-launch-abcd"><div class="story-title">Model Launch</div><div class="story-meta"><span class="meta-cat">AI</span><span class="meta-time">2h ago</span><span class="meta-signal">120/45</span></div></a></summary></details>';
+    const detail =
+      '<script>focusedStoryDetail:{data:{selectedTweets:[{authorHandle:"openai",bestBit:"Launch",label:"Source",text:"Launch",tweetId:"1",tweetedAt:1,url:"https://x.com/OpenAI/status/1"},{authorHandle:"researcher",bestBit:"Test",label:"Support",text:"Test",tweetId:"2",tweetedAt:2,url:"https://x.com/researcher/status/2"}]}}</script>';
+    let request = 0;
+    const items = await huggingNewsAdapter.collect(
+      {
+        ...source("huggingnews"),
+        config: { url: "https://huggingnews.com", take: 1, detailTake: 1 },
+      },
+      {
+        ...context(homepage),
+        fetchText: async () => {
+          const body = request++ === 0 ? homepage : detail;
+          return {
+            body,
+            status: 200,
+            headers: new Headers(),
+            attemptCount: 1,
+            responseBytes: Buffer.byteLength(body),
+            finalUrl: "https://huggingnews.com",
+          };
+        },
+      },
+    );
+    expect(items[0]?.origin).toEqual({
+      url: "https://x.com/OpenAI/status/1",
+      discoveryUrl: "https://example.com/ai/model-launch-abcd",
+      name: "@openai",
+      kind: "social",
+      handle: "openai",
+      handles: [
+        { handle: "openai", role: "Source" },
+        { handle: "researcher", role: "Support" },
+      ],
+    });
+  });
+});
+
+describe("AI HOT adapter", () => {
+  it("preserves the upstream publisher as origin and the aggregator only as discovery evidence", async () => {
+    const payload = JSON.stringify({
+      items: [
+        {
+          id: "item-1",
+          title: "A primary model release",
+          url: "https://openai.com/index/model-release/",
+          permalink: "https://aihot.virxact.com/items/item-1",
+          source: "OpenAI official RSS",
+          publishedAt: "2026-07-11T08:00:00.000Z",
+          summary: "Primary release summary",
+          category: "model",
+          score: 91,
+          selected: true,
+        },
+      ],
+    });
+    const items = await aiHotAdapter.collect(
+      { ...source("aihot"), role: "aggregator" },
+      context(payload),
+    );
+    expect(items[0]?.origin).toEqual({
+      url: "https://openai.com/index/model-release/",
+      discoveryUrl: "https://aihot.virxact.com/items/item-1",
+      name: "OpenAI official RSS",
+      kind: "official",
+    });
+    expect(items[0]?.rawMeta).toMatchObject({ aggregator: "AI HOT", aggregatorScore: 91 });
   });
 });

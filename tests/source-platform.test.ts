@@ -31,6 +31,9 @@ describe("resilient fetcher", () => {
     expect(result).toMatchObject({ body: "ok", attemptCount: 2, responseBytes: 2 });
     expect(fetchImpl).toHaveBeenCalledTimes(2);
     expect(sleep).toHaveBeenCalledTimes(1);
+    expect(new Headers(fetchImpl.mock.calls[0]?.[1]?.headers).get("user-agent")).toBe(
+      config.COLLECTOR_USER_AGENT,
+    );
   });
 
   it("does not retry permanent HTTP errors", async () => {

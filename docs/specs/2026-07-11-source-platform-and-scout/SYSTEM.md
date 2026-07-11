@@ -1,117 +1,341 @@
-# 系统设计
+# 数据源平台与星探精灵系统设计
 
-## 水位判断
+- 状态：Stage 2 foundation 已实现，完整 Source Platform 仍在演进
+- 说明：带有“建议/目标”的部分不代表当前仓库已经实现
 
-```text
-Stage 1  可信时间轴
-         Signal -> Event -> 主线/角色 -> 审核 -> 静态发布
-         当前：主体完成，但少量规格与实现存在落差
-
-Stage 2  可运营情报流水线                       <- 本轮进入
-         Source OS + 运行可观测性 + 质量门禁 + Scout v1
-
-Stage 3  行业认知图谱
-         Entity / Claim / Evidence / Contradiction / Theme
-         多语言语义聚类、观点谱系、技术与资本传导关系
-
-Stage 4  个性化决策副驾
-         关注组合、情景推演、领先指标、预测与事后校准
-         面向 CEO / 投资 / 技术 / 个人目标的不同决策界面
-
-Stage 5  受治理的自治情报机构
-         自主发现候选来源、生成适配器提案、组织 agent 调研和实验
-         以权限、预算、审计、人工发布门槛和反馈声誉约束自治
-```
-
-当前约为 Stage 1.2：产品已有可演示骨架，但公开样例主要来自 seed，来源可靠性仍停留在适配器级，尚不具备生产化 Source OS；改造前星探不存在。本轮完成后应称为“Stage 2 foundation”，只有来源 SLA、真实热点质量、发布闭环和星探命中率经过持续运行验证后才算 Stage 2 完成。
-
-## Source Platform 架构
+## 1. 总体架构
 
 ```text
-Source Registry
-  -> lifecycle gate
-  -> bounded scheduler / manual trigger
-  -> policy-aware fetcher
-       SSRF + size + timeout
-       conditional request
-       retry classification + Retry-After + backoff/jitter
-  -> SourceAdapter contract validation
-  -> normalized Signal + dedupe
-  -> SourceRun metrics
-  -> health reducer
-       active -> degraded -> quarantined
-  -> admin control plane
+                         Source discovery
+                  coverage gaps / backlinks / curator
+                                   |
+                                   v
+ Source control plane       Candidate registry
+ manifest / policy / owner -> draft -> shadow -> active
+                                   |          |
+                                   |          +-> scheduler / budgets
+                                   v
+                         Adapter runtime sandbox
+                   fetch -> validate -> normalize -> persist
+                         |              |
+                         |              +-> cursor/cache state
+                         v
+ Evidence plane       signals -> provenance -> entities
+                         |             |
+                         +-> dedupe / cross-language cluster
+                                       |
+                                       v
+ Intelligence plane       facts / conflicts / scores / tracks
+                                       |
+                         +-------------+-------------+
+                         |                           |
+                         v                           v
+ Curator control room  reviewed events          Scout engine
+                         |                     opportunity cards
+                         v                           |
+                  versioned snapshot          private feedback loop
+                         |
+                         v
+                   static public site
 ```
 
-### 错误分类
+控制面、证据面、认知面和公开面必须隔离。原始 payload、密钥、内部错误和星探私有偏好不得进入静态输出。
 
-- `network`：DNS、连接、连接重置；可重试。
-- `timeout`：请求超时；可重试。
-- `rate_limit`：429；尊重 Retry-After 后重试。
-- `upstream`：408、425、5xx；可重试。
-- `permanent_http`：其他 4xx；不可盲目重试。
-- `security`：SSRF、非法协议、凭据 URL、响应过大；不可重试，优先隔离。
-- `contract`：字段/格式不满足适配器契约；不可网络重试，进入 degraded。
-- `configuration`：缺少 URL 或适配器；不可重试。
-- `internal`：写库等内部错误；记录并人工处理。
+## 2. 模块边界
 
-### 运行与健康
-
-每个来源拉取创建独立 `source_runs`，全局 `jobs` 只做批次汇总。健康分采用可解释 reducer：成功 `+8`，304 `+3`，瞬时失败 `-15`，契约/永久失败 `-25`，范围 0-100。连续失败达到 2 时 degraded，达到 5 时 quarantined。管理员手工状态优先，退役不允许自动恢复。
-
-“卸载”定义为软退役：adapter 可以从注册表移除，但只要存在 signal/event provenance，就不得级联删除 source。未来 adapter package 可独立安装，本轮先建立 lifecycle 与 contract 边界。
-
-### 并发与增量
-
-- 批次使用 `COLLECTOR_CONCURRENCY` 有界 worker pool，不无限并发。
-- 单来源内部请求默认串行，尊重来源限速。
-- 状态保存 ETag、Last-Modified 与 adapter cursor；304 视为成功但无新增数据。
-- 重试次数、timeout 和 backoff 可由 source policy 覆盖，但受系统最大值约束。
-- 所有适配器返回统一 `CollectedSignal[]`；pipeline 的 fetch wrapper 负责捕获 ETag、Last-Modified、304 和运行遥测。cursor/pagination 需要的 `CollectionResult + statePatch` 是下一步契约升级。
-
-## 数据模型
-
-### `sources` 新增
-
-`lifecycle_status`、`health_score`、`consecutive_failures`、`success_count`、`failure_count`、`priority`、`timeout_ms`、`max_retries`、`base_backoff_ms`、`rate_limit_per_minute`、`next_run_at`、`retired_at`。
-
-### `source_runs`
-
-保存 source/job、status、attempts、duration、collected/created/skipped、HTTP 状态、error type/code/summary、response bytes、started/finished。它是来源运维和 SLO 的事实表。
-
-### `scout_insights` / `scout_evidence`
-
-`scout_insights` 保存卡片正文、类型、状态、目标受众、时间跨度、各维评分、综合分、冷却键和生命周期；`scout_evidence` 连接已发布 Event，保存证据角色和权重。
-
-## 星探引擎 v1
+建议在现有目录上渐进扩展：
 
 ```text
-published Events + Tracks + Actors
-    -> opportunity detectors
-       1. 高影响 + 低商业成熟度
-       2. 中国追赶 + 成本/开源变化
-       3. 技术能力跨入新受众
-       4. 多事件形成内容/数据资产
-    -> evidence requirement
-    -> score(confidence, evidence, novelty, leverage)
-    -> cooldown/dedupe
-    -> private inbox
-    -> human feedback
-    -> optional public export
+src/
+  sources/
+    catalog/          source registry and coverage map
+    discovery/        candidate discovery and prioritization
+    lifecycle/        promotion, degradation and uninstall
+    runtime/          scheduler, budgets, circuit breaker
+  collectors/
+    contracts/        adapter interfaces and schemas
+    adapters/         source-specific implementations
+    fixtures/         redacted golden responses
+  evidence/
+    provenance/       source, author, media-group lineage
+    entities/         actor/entity aliases and resolution
+  pipeline/
+    collect/          fetch, normalize, idempotent persistence
+    cluster/          cross-source/cross-language event grouping
+    curate/           fact, conflict, insight and review workflow
+    publish/          versioned privacy-safe snapshots
+  scout/
+    generate/         evidence-grounded candidates
+    rank/             novelty/actionability/fit/timing
+    feedback/         owner preferences and outcome learning
+  server/
+    admin/            control-plane API
+    public/           reviewed read-only API
 ```
 
-v1 的目标是“可解释、可反馈”，不是最大生成量。规则生成器必须引用至少一个 published Event；相同 `cooldown_key` 在 72 小时内不得重复。未来 LLM enhancer 读取结构化候选并按 schema 输出，但不能绕过证据和发布门禁。
+编排依赖端口和领域服务，不依赖具体来源。source-specific 规则只能存在于 adapter/source package 内。
 
-## 第三到第五阶段的成长方式
+## 3. Source Package 契约
 
-- Stage 3：来源平台积累的 provenance 升级为 Claim/Evidence 图谱；同一实体的发布、融资、招聘、论文、开源和产品信号形成时空轨迹；中英文同义事件与互相矛盾的观点可被识别。
-- Stage 4：用户建立关注组合和决策问题，系统给出情景、领先指标和反证；预测必须保存时间戳、概率和事后结果，防止“事后诸葛亮”。星探从通用机会卡升级为个人战略副驾。
-- Stage 5：系统可发现来源缺口、提出并测试 adapter、委派调研、评估信源价值和淘汰低价值来源；任何外部写入、公开发布、权限扩大和预算消耗仍需政策引擎与人工批准。
+### 3.1 Manifest
 
-成长不是不断堆 agent，而是每一阶段都积累可验证资产：来源运行记录、证据图谱、预测校准和用户反馈。
+```ts
+interface SourceManifest {
+  id: string;
+  version: string;
+  adapterKind: string;
+  capabilities: Array<"etag" | "last-modified" | "cursor" | "fingerprint" | "backfill">;
+  acquisition: "api" | "rss" | "atom" | "release" | "html-metadata";
+  defaultSchedule: string;
+  rateLimit: { requests: number; windowMs: number; minIntervalMs?: number };
+  policy: {
+    robotsReviewedAt: string;
+    licenseUrl?: string;
+    attributionRequired: boolean;
+    storesFullText: false;
+  };
+}
+```
 
-## 能力核算与评测架构
+manifest 不保存 token。敏感配置只通过环境变量或独立 secret provider 注入。
 
-`src/catalog/product.ts` 是当前 Capability / Roadmap / Release 的代码侧事实源；`CHANGELOG.md` 是人类可读 release 记录；`evaluation_runs` 保存每次评测的维度、样本、能力快照和版本。后台评测中心读取真实运行数据，公开 Evolution 只输出隐私安全摘要。
+### 3.2 Adapter
 
-综合分只聚合 `measured` 维度，`insufficient_data` 只展示缺口。这样避免 seed 样例或少量 SourceRun 产生虚假的高质量分。初始维度：source coverage、source quality、source reliability、confidence、value、realtime、timeliness、effectiveness、governance。
+```ts
+interface SourceAdapter<TConfig, TState> {
+  manifest: SourceManifest;
+  configSchema: Schema<TConfig>;
+  stateSchema: Schema<TState>;
+  probe(ctx: ProbeContext<TConfig>): Promise<ProbeResult>;
+  collect(ctx: CollectContext<TConfig, TState>): Promise<CollectResult<TState>>;
+}
+
+interface CollectResult<TState> {
+  signals: CollectedSignal[];
+  nextState: TState;
+  diagnostics: CollectDiagnostics;
+}
+```
+
+`nextState` 只在 signals 与运行记录成功提交后原子更新，避免失败时丢失 cursor。
+
+### 3.3 规范化信号
+
+除现有标题、URL、摘要、作者、语言、时间、标签和 metrics 外，至少增加：
+
+- `sourceUrl`：本次获取端点；
+- `originalUrl`：事实/帖子/论文的原始地址；
+- `aggregatorUrl`：若由聚合站发现，保留聚合页；
+- `authorIdentity` / `mediaGroupIdentity`；
+- `contentRole`：fact、verification、interpretation、heat；
+- `observedAt` 与原始发布时间可信等级；
+- `schemaVersion` 与 `adapterVersion`；
+- `provenanceChain`：发现源到原始源的链路。
+
+## 4. 生命周期状态机
+
+```text
+discovered --review--> draft --contract+policy--> shadow --SLO--> active
+     |                    |                         |              |
+     v                    v                         v              v
+ rejected              retired                  rejected      degraded
+                                                                 |
+                                                    risk/drift -> quarantined
+                                                                 |
+                                                    operator  -> retired
+```
+
+所有转换写入 append-only audit log：from、to、reason、evidence、actor、timestamp。
+
+### 晋级建议阈值
+
+阈值应可配置，初始建议：
+
+- shadow 至少跨 7 天或 20 次计划运行；
+- 请求成功率 >= 98%；
+- 解析成功率 >= 97%；
+- 异常空结果率 <= 5%；
+- 原始 URL 可回源率：事实型来源 100%，聚合型来源 >= 90%；
+- 重复率和发布时间异常在预期范围；
+- 人工抽检至少 30 条，无严重 tier/role 错判。
+
+达到阈值只是晋级建议，仍需人审。
+
+## 5. 调度、重试与降级
+
+### 5.1 调度
+
+- scheduler 根据 source schedule、priority、quota、cost 和 nextRunAt 生成 source run；
+- global、domain 和 source 三层并发/速率预算；
+- 同一 source 同一窗口只允许一个 active lease；
+- backfill 与 realtime 队列隔离，避免历史任务阻塞热点采集。
+
+### 5.2 请求策略
+
+- 连接和总请求 timeout 分开配置；
+- 仅对网络错误、408、429 和可恢复 5xx 做有限重试；
+- 指数 backoff + full jitter，并遵守 `Retry-After`；
+- 非幂等请求默认不重试；当前公开来源原则上只使用 GET；
+- 流式读取响应，超过 body limit 立即中止；
+- 每次 redirect 重新解析 URL、DNS 并执行 SSRF policy；
+- response content-type、编码和 schema 必须校验。
+
+### 5.3 熔断与恢复
+
+- transient failure、auth、rate-limit、schema-drift、policy、安全风险分别分类；
+- 连续失败或失败率超阈值进入 `degraded`，指数拉长 schedule；
+- schema 漂移、许可变化或安全风险进入 `quarantined`，停止进入事实链；
+- half-open 只执行 probe/shadow verification；成功达到恢复门槛后才能 active；
+- 可配置 fallback source，但必须保留来源层级，不能把聚合源自动提升为事实源。
+
+## 6. Provenance 与聚合站回源
+
+```text
+Aggregator item --discovered--> Original post/blog/paper/release
+       |                                  |
+       | heat/cluster hint                | fact evidence
+       +----------------------------------+
+```
+
+- aggregator signal 的 `contentRole` 固定为 discovery/heat，不能自动变为 primary fact；
+- 回源任务解析 aggregator 提供的原始 URL，并对重定向、canonical 和域名归属做验证；
+- 事实确认优先使用公司公告、论文、监管文件、官方 release；
+- aggregator 无法回源时，事件只能停留在 candidate/review；
+- 聚合站自身的作者数/帖子数可以作为热度指标，但不能增加事实独立来源数；
+- 独立来源按 source identity、author identity、media group 和引用链去重。
+
+## 7. 数据模型增量
+
+建议新增或扩展以下表。字段以目标语义为准，具体 migration 需单独评审 SQLite/MySQL 共有能力。
+
+### sources 扩展
+
+- lifecycle、owner、adapter_version、manifest_json；
+- acquisition、schedule、priority、quota_json、policy_json；
+- failure_streak、circuit_state、next_run_at、health_score；
+- promoted_at、degraded_at、quarantined_at。
+
+### source_discoveries（已有基础表，后续扩展）
+
+- 当前保存 aggregator source、discovery URL、origin URL、原始身份线索、匹配 source/signal 和处理状态；
+- 后续增加 discovered_by、actor_id、coverage_dimensions_json、candidate_scores_json；
+- 后续补 review_reason、promotion evidence 和独立 audit relation。
+
+### source_runs
+
+- source_id、adapter_version、lease_id；
+- scheduled_at、started_at、finished_at、status；
+- request/retry/item/new/duplicate/error counts；
+- cursor_before/after、etag_before/after、diagnostics_json。
+
+### source_audits
+
+- source_id、transition、actor、reason、evidence_json、created_at。
+
+### identities / source_identities
+
+- author、organization、media group、aliases 和关系，用于独立性计算。
+
+### scout_insights / scout_evidence（已有基础表，后续扩展）
+
+- 当前保存机会卡正文、类型、状态、受众、时间跨度、评分、cooldown key 和 Event evidence；
+- 后续增加 track_ids、non_consensus、risk/invalidators、first_experiment 结构化字段；
+- 后续增加 score_factors_json、model_run_id、owner_feedback 和 snoozed_until。
+
+### model_runs
+
+- purpose、provider、model、prompt_version、input_refs、output_hash、review_status；
+- 不存储 secret，不把私有 prompt/input 导出到公开站。
+
+## 8. 来源质量与覆盖评分
+
+来源分数不与事件热度混用：
+
+```text
+sourceQuality = accuracy + originality + freshness + stability
+              + incrementalCoverage + identityConfidence
+              - policyRisk - duplication - driftPenalty
+```
+
+coverage cube 至少包含：
+
+- 地区：中国、美国、欧洲、其他；
+- 角色：厂商、实验室、论文、监管、投资、媒体、专家、社区；
+- 主线：技术、AGI、资本、商业化、To C/B/D/G；
+- 传播域：官网、论文、GitHub、X、微信、微博、知乎、社区；
+- 语言：中文、英文及后续重点语言。
+
+管理台应显示“名单覆盖”和“近 30 天有效信号覆盖”两套指标。
+
+## 9. 星探流水线
+
+```text
+reviewed events + track deltas + owner profile + prior opportunities
+                             |
+                             v
+                      candidate generation
+                             |
+             evidence check / safety / dedupe
+                             |
+                             v
+ ranking: novelty / actionability / fit / timing / evidence
+                             |
+                             v
+                  private opportunity inbox
+                             |
+              accept / save / snooze / reject / outcome
+                             |
+                             v
+                     preference calibration
+```
+
+### 生成约束
+
+- 输入只能引用 reviewed/published 事件；
+- 每条 claim 必须标记来自 evidence 还是 inference；
+- 单一聚合信号不得生成高 evidence strength 机会；
+- 同一 event/track/time window 做语义去重和数量上限；
+- 生成失败不得影响主采集/发布流水线。
+
+### 排名
+
+- novelty：与既有机会和常识模板的差异；
+- actionability：是否能转成清晰的小实验；
+- owner fit：与主人能力、兴趣和资源的匹配；
+- timing：窗口是否正在形成且有验证节点；
+- evidence strength：触发事实与反证的质量。
+
+分数必须保存因子，不只保存总分。
+
+## 10. 发布与回滚
+
+- 管理台发布生成不可变 snapshot，而不是直接覆盖当前公开数据；
+- snapshot 保存 schema version、content hash、event/source versions、generatedAt 和审核人；
+- 预览读取 candidate snapshot；正式 Pages 只读取 approved snapshot；
+- GitHub Actions 获取经过批准的 privacy-safe snapshot 或仓库内公开快照，不重新生成手工 seed 代替运营数据；
+- 回滚只切换 snapshot pointer，不修改历史证据；
+- Scout 默认 private，除非单卡经过独立审核并转换成公开 insight。
+
+## 11. 可观测性与 SLO
+
+至少提供：
+
+- source success、latency、freshness、empty、duplicate、drift、backlog；
+- 每层覆盖率和近 30 天活跃来源数；
+- 回源成功率、聚类人工纠正率、事实审核退回率；
+- snapshot 发布成功率和回滚耗时；
+- Scout 接受/收藏/暂缓/驳回率、实验转化率和重复率。
+
+初期不承诺绝对 SLO，先观测 2–4 周建立 baseline，再冻结告警阈值。
+
+## 12. 演进边界
+
+```text
+Stage 1  可演示骨架（当前）
+Stage 2  可信数据底座：source lifecycle + provenance + publish loop
+Stage 3  行业认知引擎：跨语种聚类 + 事实/判断 + Scout v1
+Stage 4  自适应机会系统：coverage discovery + feedback calibration
+Stage 5  受治理的战略认知 OS：观察 -> 判断 -> 行动 -> 复盘
+```
+
+自我生长只能通过 proposal/spec、测试、shadow verification、人审和 rollout 完成。系统不得自主绕过合规边界，或静默改变事实、排名和发布规则。

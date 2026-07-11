@@ -30,11 +30,11 @@ A cross-circle hot event needs confidence, independent authors/sources, platform
 - Generic array JSON API
 - HuggingNews public homepage metadata (disabled by default until a formal API/RSS exists)
 
-## Source Catalog v0.2
+## Source Catalog v0.3
 
-The registry now contains 171 classified sources across 13 domains: frontier labs, China labs, research/evaluation, open source, agent/dev tools, robotics, chips/cloud/infra, capital/business, experts, media, policy, community heat and aggregators. 31 are China sources and 140 are global/overseas sources.
+The registry now contains 195 classified sources across 14 domains, adding model economics to frontier labs, China labs, research/evaluation, open source, agent/dev tools, robotics, chips/cloud/infra, capital/business, experts, media, policy, community heat and aggregators. 54 are China sources and 141 are global/overseas sources.
 
-This is a discovery and maintenance catalog, not a claim that 171 collectors are production-ready:
+This is a discovery and maintenance catalog, not a claim that 195 collectors are production-ready:
 
 - `ready` + `active`: contract is known and scheduled collection is allowed;
 - `candidate` + `shadow`: stable-looking API/RSS/GitHub source awaiting fixtures and verification;
@@ -51,14 +51,27 @@ The canonical catalog is `src/catalog/sources.ts`; database rows add lifecycle, 
 - Store metadata and provenance, not complete third-party articles.
 - Respect correction/removal requests and disable unstable sources by default.
 
+## Aggregator upstream protocol
+
+AI HOT, HuggingNews, TLDR AI and similar products are discovery/heat sensors, never factual publishers. Their collector output is written to `source_discoveries`, not `signals`:
+
+1. preserve the aggregator page as discovery evidence;
+2. extract original URL, publisher name and public source handles;
+3. match only an exact/prefix publisher URL, a unique identity host or an explicit social handle;
+4. store unresolved identities as `candidate` or `heat_only`;
+5. let the direct source collector create the factual signal;
+6. merge aggregator metrics only when the canonical original URL matches.
+
+An unresolved aggregator story cannot enter Event clustering. Aggregator authors/counts may affect heat, but never `independentSources` or factual confidence. Shared hosts such as `github.com` are never matched by hostname alone.
+
 ## Source lifecycle and operations
 
 Sources move through `draft -> shadow -> active -> degraded -> quarantined -> retired`. Retire is a soft uninstall: historical provenance remains intact. Every execution creates a `source_runs` row with attempts, latency, counts, HTTP/error classification and response bytes.
 
 The fetch layer supports bounded retries for network errors, 408/425/429 and 5xx, exponential backoff with jitter, `Retry-After`, ETag/Last-Modified, per-source timeout policy, manual redirect validation and streamed size limits. Scheduled batches use bounded concurrency and isolate failures by source.
 
-Current limits are explicit: source-level rate policy is enforced inside one adapter run, but a global per-host token bucket and scheduler are not yet complete; adapter fixture coverage is still thin; AI HOT fingerprint polling is not yet implemented; HuggingNews remains an experimental HTML metadata adapter; repeated observations of one canonical URL across aggregators are not yet modeled separately.
+Current limits are explicit: source-level rate policy is enforced inside one adapter run, but a global per-host token bucket and scheduler are not yet complete; adapter fixture coverage is still thin; AI HOT fingerprint polling is not yet implemented; HuggingNews remains an experimental HTML metadata adapter and its story page may expose handles without original post URLs.
 
 ## PriceAI boundary
 
-[PriceAI](https://github.com/dimthink/PriceAI) is a valuable external model-purchase reference. Its data policy does not grant bulk reuse of production prices, channel lists, stock or snapshots. Agent Pulse links to the project with attribution and independently collects official vendor price baselines; it does not mirror PriceAI production data.
+[PriceAI](https://github.com/dimthink/PriceAI) is a valuable external model-purchase reference. Its data policy does not grant bulk reuse of production prices, channel lists, stock or snapshots. Agent Pulse links to the project with attribution and independently collects official vendor pages, Apple App Store regional subscription evidence and independent FX baselines; it does not mirror PriceAI production data.

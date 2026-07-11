@@ -118,10 +118,17 @@ async function collectOneSource(
       },
     });
     result.collected = items.length;
+    const discoveryOnly = isDiscoveryOnlySource(row);
     for (const item of items) {
-      const inserted = await repository.insertSignal(source.id, item);
-      if (inserted) result.created += 1;
-      else result.skipped += 1;
+      if (discoveryOnly) {
+        const discovery = await repository.saveSourceDiscovery(source.id, item);
+        if (discovery.created) result.created += 1;
+        else result.skipped += 1;
+      } else {
+        const inserted = await repository.insertSignal(source.id, item);
+        if (inserted) result.created += 1;
+        else result.skipped += 1;
+      }
     }
     const health = applySourceSuccess(healthState(row), notModified);
     const timestamp = new Date().toISOString();
@@ -190,6 +197,12 @@ function healthState(row: SourceRow) {
     successCount: row.success_count,
     failureCount: row.failure_count,
   };
+}
+
+export function isDiscoveryOnlySource(
+  source: Pick<SourceRow, "role" | "source_category">,
+): boolean {
+  return source.role === "aggregator" || source.source_category === "aggregator";
 }
 
 export async function concurrentMap<T, R>(

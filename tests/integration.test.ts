@@ -2,6 +2,7 @@ import { mkdtemp, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
+import { sourceCatalog } from "../src/catalog/sources.js";
 import { loadConfig } from "../src/config/env.js";
 import { createDatabase } from "../src/db/database.js";
 import { migrateToLatest } from "../src/db/migrate.js";
@@ -28,7 +29,12 @@ describe("SQLite application", () => {
     const repository = new Repository(db);
     expect((await repository.publicEvents()).length).toBeGreaterThanOrEqual(6);
     const result = await exportStaticSite(db, config);
-    expect(result).toMatchObject({ events: 6, tracks: 10, sources: 171, version: "0.2.0" });
+    expect(result).toMatchObject({
+      events: 6,
+      tracks: 10,
+      sources: sourceCatalog.length,
+      version: "0.3.0",
+    });
     const timeline = await readFile(join(config.distDir, "data/timeline.json"), "utf8");
     expect(timeline).not.toContain("ADMIN_TOKEN");
     expect(timeline).not.toContain("/Users/");
@@ -40,7 +46,7 @@ describe("SQLite application", () => {
     const product = JSON.parse(await readFile(join(config.distDir, "data/product.json"), "utf8"));
     expect(product.roadmap).toHaveLength(5);
     expect(product.sourceCoverage.total).toBeGreaterThanOrEqual(100);
-    expect(product.evaluation.dimensions).toHaveLength(9);
+    expect(product.evaluation.dimensions).toHaveLength(10);
     expect(product.evaluation.status).toBe("partial");
     expect(product.evaluation.overallScore).toBeLessThan(50);
   });
@@ -71,7 +77,7 @@ describe("SQLite application", () => {
       headers: { authorization: "Bearer a-secure-token-for-tests" },
     });
     expect(evaluation.statusCode).toBe(200);
-    expect(evaluation.json().dimensions).toHaveLength(9);
+    expect(evaluation.json().dimensions).toHaveLength(10);
     await app.close();
   });
 });

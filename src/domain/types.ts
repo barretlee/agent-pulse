@@ -6,6 +6,9 @@ export const SourceConfigSchema = z.object({
   take: z.number().int().min(1).max(100).optional(),
   mode: z.enum(["selected", "all"]).optional(),
   homepageOnly: z.boolean().optional(),
+  detailTake: z.number().int().min(0).max(10).optional(),
+  identityHosts: z.array(z.string().min(1)).optional(),
+  socialHandles: z.array(z.string().min(1)).optional(),
 });
 
 export type SourceConfig = z.infer<typeof SourceConfigSchema>;
@@ -21,6 +24,27 @@ export interface SignalMetrics {
   regions?: string[];
 }
 
+export type OriginKind =
+  | "official"
+  | "paper"
+  | "github"
+  | "expert"
+  | "media"
+  | "social"
+  | "aggregator_story"
+  | "unknown";
+
+export interface OriginReference {
+  /** Original publisher URL when the aggregator exposes one. */
+  url?: string;
+  /** Aggregator page used only as discovery and heat evidence. */
+  discoveryUrl: string;
+  name?: string;
+  kind: OriginKind;
+  handle?: string;
+  handles?: Array<{ handle: string; role?: string }>;
+}
+
 export interface CollectedSignal {
   externalId?: string;
   url: string;
@@ -32,6 +56,7 @@ export interface CollectedSignal {
   category: string;
   tags: string[];
   metrics: SignalMetrics;
+  origin?: OriginReference;
   rawMeta: Record<string, unknown>;
 }
 

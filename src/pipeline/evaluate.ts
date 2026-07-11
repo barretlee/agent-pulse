@@ -17,7 +17,7 @@ export interface EvaluationDimension {
 
 export async function evaluateSystem(db: Kysely<DatabaseSchema>) {
   const startedAt = new Date().toISOString();
-  const [allSources, runs, events, evidenceRows, scout] = await Promise.all([
+  const [allSources, runs, events, evidenceRows, scout, signalProvenance] = await Promise.all([
     db.selectFrom("sources").selectAll().execute(),
     db.selectFrom("source_runs").selectAll().orderBy("started_at", "desc").limit(500).execute(),
     db.selectFrom("events").selectAll().execute(),
@@ -28,6 +28,11 @@ export async function evaluateSystem(db: Kysely<DatabaseSchema>) {
       .groupBy("event_id")
       .execute(),
     db.selectFrom("scout_insights").selectAll().execute(),
+    db
+      .selectFrom("signals")
+      .innerJoin("sources", "sources.id", "signals.source_id")
+      .select(["signals.id", "sources.role"])
+      .execute(),
   ]);
   const sources = allSources.filter((source) => source.lifecycle_status !== "retired");
   const published = events.filter((event) => event.status === "published");
@@ -42,7 +47,7 @@ export async function evaluateSystem(db: Kysely<DatabaseSchema>) {
   const verified = sources.filter((source) => source.last_verified_at).length;
   const sourceCoverageScore = clamp(
     (sources.length / 100) * 55 +
-      (categories.size / 13) * 30 +
+      (categories.size / 14) * 30 +
       balance(cnSources, sources.length) * 15,
   );
   const dimensions: EvaluationDimension[] = [
@@ -50,7 +55,7 @@ export async function evaluateSystem(db: Kysely<DatabaseSchema>) {
       slug: "source-coverage",
       name: "来源覆盖",
       score: sourceCoverageScore,
-      weight: 12,
+      weight: 10,
       status: sources.length >= 100 && categories.size >= 10 ? "measured" : "insufficient_data",
       sampleSize: sources.length,
       summary: `${sources.length} 个来源，覆盖 ${categories.size} 类，其中中国来源 ${cnSources} 个。`,
@@ -69,7 +74,7 @@ export async function evaluateSystem(db: Kysely<DatabaseSchema>) {
         average(sources.map((source) => source.quality_score)) * 0.72 +
           (verified / Math.max(1, sources.length)) * 28,
       ),
-      weight: 12,
+      weight: 10,
       status: verified >= 30 ? "measured" : "insufficient_data",
       sampleSize: verified,
       summary: `目录平均质量分 ${Math.round(average(sources.map((source) => source.quality_score)))}，已完成运行验证 ${verified} 个。`,
@@ -81,6 +86,35 @@ export async function evaluateSystem(db: Kysely<DatabaseSchema>) {
       nextAction: "为所有 active/candidate 来源建立合同样例、原创回链率和人工抽检记录。",
     },
     {
+      slug: "primary-source-provenance",
+      name: "一手来源归属",
+      score: signalProvenance.length
+        ? clamp(
+            (signalProvenance.filter((row) => row.role !== "aggregator").length /
+              signalProvenance.length) *
+              60 +
+              (signalProvenance.filter((row) =>
+                ["primary", "research", "policy"].includes(row.role),
+              ).length /
+                signalProvenance.length) *
+                40,
+          )
+        : 0,
+      weight: 10,
+      status: signalProvenance.length >= 20 ? "measured" : "insufficient_data",
+      sampleSize: signalProvenance.length,
+      summary: `${signalProvenance.length} 条事实信号中，${signalProvenance.filter((row) => row.role === "aggregator").length} 条仍归属于聚合器；聚合器只应产生发现记录。`,
+      evidence: {
+        signals: signalProvenance.length,
+        direct: signalProvenance.filter((row) => row.role !== "aggregator").length,
+        primary: signalProvenance.filter((row) =>
+          ["primary", "research", "policy"].includes(row.role),
+        ).length,
+        aggregatorDebt: signalProvenance.filter((row) => row.role === "aggregator").length,
+      },
+      nextAction: "将聚合发现匹配到原始发布者；无法回源的候选不得进入事实 Timeline。",
+    },
+    {
       slug: "source-reliability",
       name: "采集稳定性",
       score: runs.length
@@ -89,7 +123,7 @@ export async function evaluateSystem(db: Kysely<DatabaseSchema>) {
               average(activeSources.map((source) => source.health_score)) * 0.3,
           )
         : 0,
-      weight: 14,
+      weight: 12,
       status: runs.length >= 20 ? "measured" : "insufficient_data",
       sampleSize: runs.length,
       summary: runs.length
@@ -109,7 +143,7 @@ export async function evaluateSystem(db: Kysely<DatabaseSchema>) {
         average(published.map((event) => event.confidence_score)) * 0.65 +
           Math.min(35, averageEvidence * 17.5),
       ),
-      weight: 14,
+      weight: 12,
       status: published.length >= 20 && averageEvidence >= 1.8 ? "measured" : "insufficient_data",
       sampleSize: published.length,
       summary: `${published.length} 个公开事件，平均每事件 ${averageEvidence.toFixed(1)} 条证据；当前样例不足以完成真实校准。`,
@@ -127,7 +161,7 @@ export async function evaluateSystem(db: Kysely<DatabaseSchema>) {
         average(published.map((event) => event.value_score)) * 0.55 +
           filledInsightRatio(published) * 45,
       ),
-      weight: 14,
+      weight: 12,
       status:
         published.length >= 30 && published.some((event) => event.manual_override === 0)
           ? "measured"

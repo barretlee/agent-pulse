@@ -1,61 +1,90 @@
 # AGENTS.md
 
-# Agent Pulse
+## 项目使命
 
-> Understand AI. Build Better Decisions.
+Agent Pulse 不是新闻聚合器，而是一个中国优先、全球覆盖的 AI 行业认知与行动系统。它面向 CEO、投资负责人、创业者、业务负责人和技术负责人，把发布、论文、资本动作、政策与跨平台传播信号收敛为可验证、可复述、可行动的行业主线。
 
-## Mission
+每个公开事件都应回答：发生了什么、证据是什么、为什么重要、影响谁、下一步观察什么、可以采取什么动作。
 
-Agent Pulse 是一套面向 CEO、投资人、技术负责人和创业者的 AI 行业认知系统。它持续追踪全球 AI 技术、产品、组织、资本、政策与商业化进展，将分散事实收敛为可信事件，将孤立事件组织为长期趋势，将长期趋势沉淀为行业认知。产品最终提供的是判断，而不是新闻；帮助用户理解变化，而不是消费信息；辅助决策，而不是制造焦虑。
+## 协作约定
 
-## North Star
+- 产品文案、PRD、规格、运营说明默认使用中文；代码、标识符、注释和提交信息默认使用英文。
+- 修改架构、schema、采集、排名、发布、来源生命周期或星探能力前，先阅读 `docs/specs/` 中对应规格；跨层变更必须 docs-first。
+- 搜索现有实现后再编辑，优先扩展既有模块，保持 diff 小、可回滚。
+- SQLite 是零配置默认数据库；只有通过 MySQL 集成验证后，才能宣称某项能力兼容 MySQL。
+- 使用 `npm`；提交前执行 `npm run check`，并补充与风险相称的契约、集成和浏览器测试。
+- 不得把 seed/demo、预留字段、设计文档或未被前台消费的配置描述成已实现能力。
 
-用户离开 Agent Pulse 时，应该拥有比进入之前更完整的行业判断。每一篇内容至少创造一种价值：发现新的事实、理解变化原因、建立新的认知、发现新的机会、完成更好的决策。信息会快速贬值，判断会持续增值。
+## 情报模型与主线
 
-## Product Philosophy
+- `Event` 是唯一事实节点；`Track`、`Actor`、`Audience`、`Region`、`Technology`、`Resource` 和 `Opportunity` 只附着解释，不复制事实。
+- 必须同时维护技术演进、AGI、投资、商业化、中国追赶以及 To C / To B / To D / To G 主线。
+- 支线至少能按技术、地域、公司、人物、政策、场景和时间阶段组织，并与主线共享证据。
+- 主线不是普通筛选标签：应逐步支持阶段、里程碑、转折、因果、对比和阶段性总结。
+- “角色已收录”与“角色已被有效观测”必须分开表达；跟随、并跑、领先、受限或出海判断必须绑定证据节点。
 
-真正重要的内容每天都只有少数几件。产品不追求最快、最全、最多，只追求最值得阅读、最值得保存、最值得分享、最值得付费。竞争力来自认知密度，而不是信息数量；来自解释世界，而不是记录世界；来自长期价值，而不是短期流量。
+## 事实、判断与热点
 
-## Product Experience
+- 明确区分事实、推断、观点、预测和机会假设；不确定内容必须标注证据状态与置信度。
+- 聚合站只能用于候选发现、聚类提示或传播热度，不能作为重大事实的唯一证据。
+- 公开事实原则上至少需要一个 Tier 1 原始证据，或两个相互独立的 Tier 2 证据；例外必须明确标记为“待证实”。
+- 每个公开事件必须回链可点击的原始证据；禁止发布第三方完整正文。
+- 热点必须来自真实传播证据，不得把手工分数包装成已测量热度。
+- 来源独立性按 source、author 和 media group 判断，不能用来源角色或权威分代替身份去重。
+- 热度至少考虑独立作者、独立来源、平台宽度、地区/语言宽度、扩散速度、持续性、转载矩阵和时间衰减。
+- 人工覆盖评分必须保留原值、原因、时间和审计记录。
 
-整个产品围绕四个空间组织：**Today** 聚焦今天真正重要的变化；**Timeline** 展示技术、产品、资本与产业如何持续演进；**Radar** 展示全球 AI 玩家、竞争格局与行业重心变化；**Inbox** 沉淀值得持续跟进的新机会。每一次阅读都能够回答三个问题：发生了什么、为什么重要、接下来应该关注什么。
+## 数据源是一等资产
 
-## Thinking Model
+- 所有 collector 必须位于统一 `SourceAdapter` 契约之后；编排层不得出现来源特例。
+- Source 至少记录 owner、tier、role、region、language、acquisition、license/robots、frequency、quota、authority、freshness SLO、adapter version、health 和 lifecycle state。
+- 生命周期统一按 `draft -> shadow -> active -> degraded -> quarantined -> retired` 演进；`shadow` 是隔离验证阶段，`retired` 是保留历史 provenance 的软卸载。
+- 新来源默认 `draft` 或 `shadow`；只有通过契约测试、合规检查和真实运行窗口后才能晋级 `active`。
+- adapter 应具备 capability manifest、配置 schema、规范化 schema、cursor/cache state、fixture、contract test、health probe 和版本迁移/卸载策略。
+- 来源管理应支持发现、试拉取、启用、停用、降级、隔离、恢复和软卸载；退役不得破坏历史 provenance。
+- 高价值来源地图必须区分已接入、待接入、受限、替代来源和覆盖缺口，并显示国内/海外、官方/专家/社交覆盖率。
+- 博主、学者、CXO、记者和投资机构必须维护身份、机构关系和媒体矩阵归属，避免制造虚假独立来源数。
 
-所有 Event 都围绕统一认知模型展开。**Fact** 记录可验证、可追溯、可引用的事实；**Reason** 解释技术、商业、组织、资本与政策背后的驱动力；**Impact** 分析真正受到影响的人、企业与产业；**Signal** 判断这是新闻还是趋势，是局部变化还是行业拐点；**Future** 提炼未来值得持续观察的问题；**Decision** 回答资源如何配置、产品如何演进、技术如何选择、企业如何应对。行业认知最终都会回到决策本身。
+## 采集稳定性与安全
 
-## Event
+- 优先使用官方 API、RSS、Atom、GitHub Releases 和稳定公开数据；遵守 robots、许可和速率限制，不绕过登录、WAF、CAPTCHA 或付费墙。
+- 请求必须具备 timeout、有限 retry、指数 backoff + jitter、`Retry-After`、并发/速率预算和流式响应体上限。
+- 每个 HTTP redirect 都必须重新执行 SSRF 检查；禁止 loopback、link-local、私网、凭据 URL 和 DNS rebinding 风险。
+- ETag、Last-Modified、cursor 和 fingerprint 必须原子持久化；失败不得推进 cursor。
+- 单来源失败不得中断整批任务；连续失败应触发 circuit breaker 和降级，恢复需经过 probe/shadow verification。
+- 每次运行记录 source、adapter version、耗时、状态、item counts、cursor、错误分类和重试次数；parser 漂移、异常空结果、数量突变和时间异常应可见。
+- 新增或修改来源时，必须同时提供 fixture、成功路径、失败/降级路径和 schema 漂移测试。
 
-每一个 Event 都是一块完整的行业知识，而不是一篇新闻。内容保持统一结构：一句话事实、事件背景、核心变化、行业判断、长期影响、未来观察、业务价值、证据来源。事件解释变化，不复述新闻；连接趋势，不堆积信息；帮助理解，不制造阅读负担。
+## 收敛、管理与发布
 
-## Insight
+- 原始 payload 只存在于受控证据层，公开输出只使用 allowlist DTO。
+- 自动收敛必须经过 schema 校验、去重、聚类、事实提取、证据绑定、冲突检测和审核。
+- LLM 生成的洞察必须可追溯到 evidence；未完成收敛的事件保持 `review`，不得用占位洞察发布。
+- 管理台应覆盖 source、signal、event、track、actor、resource、view 和 job 的完整工作流。
+- “可视化编排”必须被静态前台真实消费，并支持预览、diff、发布和回滚，不能只保存 JSON。
+- 管理台写入、静态 snapshot 和 GitHub Pages 发布之间必须有可验证闭环。
+- 公开站保持完全静态、隐私安全、可回滚；管理台、token、数据库、原始 payload、本机路径和私有备注永不进入 Pages。
 
-Insight 是产品最重要的资产。它解释事件之间的关系，而不是解释事件本身；解释趋势如何形成，而不是事情如何发生；建立新的理解框架，而不是重复已有观点。一篇 Insight 只表达一个核心认知，一个段落只表达一个观点，一句话只传递一个信息。能够删除而不影响理解的内容，都应该删除。
+## 星探精灵
 
-## Timeline
+- Scout 是机会与认知助手，不是事实发布器。
+- 输出类型包括创业机会、自媒体选题、工作/产品机会、认知升级、可沉淀产物和影响力动作。
+- 每条想法必须绑定触发事件与证据，并说明目标用户、为什么是现在、非共识点、建议产物、首个小实验、风险和失效条件。
+- Scout 结果必须可去重、收藏、暂缓、驳回和反馈，并从反馈中调整个人偏好。
+- Scout 建议不得自动变成公开事实、投资结论或外部动作；发布和执行必须经过人审。
+- 优先 novelty、actionability、owner fit、timing 和 evidence strength，避免围绕同一热点批量生成空泛想法。
 
-Timeline 记录行业演进，而不是新闻历史。每条 Timeline 都持续积累同一主题的发展过程，包括 Foundation Model、Agent、Coding、Browser、Robotics、Chip、Cloud、AI Native、China AI、Open Source、Policy、Investment 等方向。同一事件可以进入多个 Timeline，事实始终保持唯一。
+## 自我演进与完成标准
 
-## Opportunity
+- 系统维护 capability registry、coverage map、quality scorecard 和 maturity stage。
+- 自我生长遵循“发现缺口 -> proposal/spec -> fixture/test -> shadow verification -> 人审 -> rollout -> 复盘”，不得在运行时静默修改 schema、排名或发布规则。
+- 来源许可边界、schema、排名和发布规则变化必须 docs-first，并具备迁移、回滚和审计方案。
+- TASKS 只能在代码、测试和验收证据齐备后勾选；experimental 能力必须明确标注。
+- 完成定义至少包括 lint、typecheck、单元/集成测试、静态导出隐私扫描和关键浏览器 smoke；来源变更还必须通过 contract、失败隔离和降级恢复测试。
 
-真正重要的机会来自多个事件之间的连接，而不是单一新闻。每一个 Opportunity 都围绕 Opportunity、Evidence、Hypothesis、Why Now、Target、Risk、Confidence、First Action、Long-term Asset 展开，能够持续验证、持续修正，并不断沉淀为长期资产。
+## 安全与隐私
 
-## Heat
-
-热度代表行业影响，而不是传播规模。真正的重要事件会在官方机构、研究机构、企业、开发者社区、投资圈、媒体以及多个国家形成共识。单个平台、单个媒体或单个 KOL 的传播都不足以定义热点。
-
-## Source
-
-事实来自官方，技术来自研究，产业来自企业，观点来自专家，信号来自社区，热度来自社交平台。任何重要事件都建立在多个独立来源交叉验证之上，所有判断都能够追溯到原始证据，所有证据都保留完整 provenance。
-
-## Engineering
-
-所有来源遵循统一生命周期：注册、验证、运行、监控、降级、恢复、退役。所有数据通过统一 SourceAdapter、统一 Contract、统一 Pipeline、统一质量标准进入系统，不允许站点特例，不允许绕过验证，不允许无法追溯的内容进入公开产品。
-
-## Writing
-
-表达保持自然、克制、准确。语言像经验丰富的行业研究者，而不是媒体报道、咨询报告或 AI 输出。事实优先于修辞，解释优先于结论，长期优先于短期，洞察优先于观点。避免模板化表达、营销语言、标题党、口号式总结和 AI 味。读者感受到的是内容本身，而不是写作技巧。每篇内容都能够长期阅读、长期引用、长期沉淀。
-
-## Long-term Vision
-
-Agent Pulse 将持续完成七个阶段：可信时间轴、行业事件理解、证据驱动洞察、Opportunity Scout、AI 行业知识网络、趋势预测能力、AI 决策副驾。最终沉淀的不只是内容，而是全球 AI 行业持续演进的认知体系，成为 AI 时代值得长期信赖的认知基础设施。
+- 永不提交 `.env`、数据库、token、cookie、私有 feed、原始 collector payload、本机路径或个人数据。
+- 非开发/测试环境的管理写操作必须使用 `ADMIN_TOKEN`，并保留审计边界。
+- 外部文字必须按文本渲染；禁止执行来源 HTML。
+- 发现来源许可、隐私或安全边界不清时，默认停在 `draft` 或 `quarantined`，先记录风险再接入。

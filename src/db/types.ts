@@ -60,6 +60,36 @@ export interface SourceRunTable {
   finished_at: string | null;
 }
 
+export interface SourceDiscoveryTable {
+  id: string;
+  identity_hash: string;
+  aggregator_source_id: string;
+  external_id: string | null;
+  discovery_url: string;
+  discovery_url_hash: string;
+  origin_url: string | null;
+  origin_url_hash: string | null;
+  origin_kind: string;
+  origin_name: string | null;
+  handles_json: string;
+  title: string;
+  summary: string;
+  language: string;
+  published_at: string;
+  category: string;
+  tags_json: string;
+  metrics_json: string;
+  raw_meta_json: string;
+  matched_source_id: string | null;
+  candidate_source_ids_json: string;
+  matched_signal_id: string | null;
+  status: string;
+  first_seen_at: string;
+  last_seen_at: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface ScoutInsightTable {
   id: string;
   slug: string;
@@ -273,6 +303,7 @@ export interface ViewTable {
 export interface DatabaseSchema {
   sources: SourceTable;
   source_runs: SourceRunTable;
+  source_discoveries: SourceDiscoveryTable;
   signals: SignalTable;
   events: EventTable;
   event_signals: EventSignalTable;
@@ -293,6 +324,7 @@ export type SourceRow = Selectable<SourceTable>;
 export type NewSourceRow = Insertable<SourceTable>;
 export type SourceUpdate = Updateable<SourceTable>;
 export type SourceRunRow = Selectable<SourceRunTable>;
+export type SourceDiscoveryRow = Selectable<SourceDiscoveryTable>;
 export type ScoutInsightRow = Selectable<ScoutInsightTable>;
 export type SignalRow = Selectable<SignalTable>;
 export type NewSignalRow = Insertable<SignalTable>;

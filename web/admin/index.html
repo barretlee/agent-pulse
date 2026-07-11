@@ -12,6 +12,7 @@
       <nav id="adminNav">
         <button type="button" class="active" data-tab="dashboard">◫ <span>指挥中心</span></button>
         <button type="button" data-tab="sources">⌁ <span>信源矩阵</span></button>
+        <button type="button" data-tab="discoveries">⌖ <span>来源雷达</span></button>
         <button type="button" data-tab="scout">✦ <span>星探驾驶舱</span></button>
         <button type="button" data-tab="evaluation">◎ <span>评测中心</span></button>
         <button type="button" data-tab="events">◉ <span>事件与发布</span></button>
@@ -32,6 +33,26 @@
         </div>
       </section>
       <section class="tab-page" data-page="sources"><div class="page-toolbar"><input class="table-search" data-search="sources" placeholder="搜索信源…" /><span>控制启停、层级、权威分和采集配置</span></div><div class="data-table" id="sourcesTable"></div></section>
+      <section class="tab-page" data-page="discoveries">
+        <div class="discovery-hero">
+          <div><span>SOURCE DISCOVERY RADAR</span><h2>来源雷达</h2><p>从聚合器和扩散信号中发现原始域名、作者与待接入来源，再回链和匹配一手源。</p></div>
+          <aside><strong>边界</strong><p>聚合内容只是发现线索，不是事实证据；只有回链并校验一手源后，才能进入事件证据链。</p></aside>
+        </div>
+        <div class="discovery-metrics" id="discoveryMetrics"></div>
+        <div class="page-toolbar discovery-toolbar">
+          <input class="table-search" data-search="discoveries" placeholder="搜索聚合器、域名、handle 或匹配源…" />
+          <fieldset class="status-filter" id="discoveryStatusFilter" aria-label="按匹配状态筛选">
+            <button type="button" class="status-filter-button active" data-status="all">全部</button>
+            <button type="button" class="status-filter-button" data-status="pending">待判定</button>
+            <button type="button" class="status-filter-button" data-status="candidate">候选待复核</button>
+            <button type="button" class="status-filter-button" data-status="matched_source">已匹配一手源</button>
+            <button type="button" class="status-filter-button" data-status="merged_signal">已并入信号</button>
+          </fieldset>
+        </div>
+        <div class="discovery-table-head"><span>发现器</span><span>原始域名 / HANDLE</span><span>匹配的一手源</span><span>状态</span><span>最近发现</span></div>
+        <div class="data-table discovery-table" id="discoveriesTable"></div>
+        <div class="discovery-empty" id="discoveryEmpty" hidden>当前筛选下没有候选来源。</div>
+      </section>
       <section class="tab-page" data-page="scout"><div class="page-toolbar"><input class="table-search" data-search="scout" placeholder="搜索想法…" /><span>证据型机会只在人工接受后才能公开</span></div><div class="data-table" id="scoutTable"></div></section>
       <section class="tab-page" data-page="evaluation"><div class="evaluation-head"><div><span>SYSTEM SCORECARD</span><h2>系统能力评测</h2><p>每个分数都附样本量与证据水位；样本不足时不把漂亮分数伪装成结论。</p></div><div class="evaluation-score"><strong id="evaluationScore">—</strong><span id="evaluationStatus">尚未评测</span></div></div><div class="evaluation-grid" id="evaluationGrid"></div><div class="capability-map" id="capabilityMap"></div></section>
       <section class="tab-page" data-page="events"><div class="page-toolbar"><input class="table-search" data-search="events" placeholder="搜索事件…" /><span>审核、编辑、置顶、发布或隐藏</span></div><div class="data-table" id="eventsTable"></div></section>

@@ -8,6 +8,9 @@ const state = {
   view: null,
   scout: [],
   sourceRuns: [],
+  discoveries: [],
+  discoverySummary: {},
+  discoveryStatus: "all",
   evaluation: null,
 };
 const $ = (selector) => document.querySelector(selector);
@@ -20,6 +23,7 @@ const node = (tag, className, text) => {
 const titles = {
   dashboard: "指挥中心",
   sources: "信源矩阵",
+  discoveries: "来源雷达",
   scout: "星探驾驶舱",
   evaluation: "评测中心",
   events: "事件与发布",
@@ -44,6 +48,7 @@ async function loadAll() {
       dashboard,
       sources,
       sourceRuns,
+      discoveryPayload,
       scout,
       evaluation,
       events,
@@ -56,6 +61,7 @@ async function loadAll() {
       api("/api/admin/dashboard"),
       api("/api/admin/sources"),
       api("/api/admin/source-runs"),
+      api("/api/admin/source-discoveries?limit=300"),
       api("/api/admin/scout"),
       api("/api/admin/evaluation"),
       api("/api/admin/events"),
@@ -68,6 +74,8 @@ async function loadAll() {
     Object.assign(state, {
       sources,
       sourceRuns,
+      discoveries: discoveryPayload.items || [],
+      discoverySummary: discoveryPayload.summary || {},
       scout,
       evaluation,
       events,
@@ -79,6 +87,7 @@ async function loadAll() {
     renderMetrics(dashboard);
     renderJobs(jobs);
     renderSources();
+    renderDiscoveries();
     renderScout();
     renderEvaluation();
     renderEvents();
@@ -224,6 +233,182 @@ function renderSources(filter = "") {
       row.append(actions);
       root.append(row);
     });
+}
+
+function renderDiscoveries(filter = "") {
+  const root = $("#discoveriesTable");
+  const empty = $("#discoveryEmpty");
+  root.replaceChildren();
+  renderDiscoveryMetrics();
+  const items = state.discoveries.filter(
+    (item) =>
+      (state.discoveryStatus === "all" || item.status === state.discoveryStatus) &&
+      includes(item, filter),
+  );
+  items.forEach((item) => {
+    const row = node("article", "discovery-row");
+    const aggregator = node("div", "discovery-source");
+    aggregator.append(
+      node("span", "discovery-orbit", "DISCOVERY"),
+      node(
+        "strong",
+        "",
+        item.aggregator?.name || item.aggregator_name || item.aggregatorName || "未知聚合器",
+      ),
+      node(
+        "small",
+        "",
+        item.aggregator?.slug || item.aggregator_slug || item.aggregatorSlug || "aggregator",
+      ),
+    );
+
+    const origin = node("div", "discovery-origin");
+    const originUrl = item.origin_url || item.originUrl || item.discovery_url || item.discoveryUrl;
+    const handles = displayHandles(
+      item.handles || parseList(item.handles_json || item.handlesJson),
+    );
+    const identity =
+      item.rawDomainOrHandle ||
+      item.origin_name ||
+      item.originName ||
+      handles[0] ||
+      safeHostname(originUrl) ||
+      "待解析来源";
+    origin.append(
+      node("strong", "", identity),
+      node(
+        "small",
+        "",
+        [item.origin_kind || item.originKind, safeHostname(originUrl), ...handles]
+          .filter(Boolean)
+          .join(" · "),
+      ),
+    );
+    const clueLink = externalLink(originUrl, "查看发现线索 ↗");
+    if (clueLink) origin.append(clueLink);
+
+    const matched = node("div", "discovery-match");
+    if (item.matchedPrimarySource || item.matched_source_name || item.matchedSourceName) {
+      matched.append(
+        node(
+          "strong",
+          "",
+          item.matchedPrimarySource?.name || item.matched_source_name || item.matchedSourceName,
+        ),
+        node(
+          "small",
+          "",
+          item.matchedPrimarySource?.slug ||
+            item.matched_source_slug ||
+            item.matchedSourceSlug ||
+            "已对齐注册源",
+        ),
+      );
+    } else {
+      matched.append(node("strong", "", "—"), node("small", "", "尚未匹配一手源"));
+    }
+
+    const status = item.status || "pending";
+    row.append(
+      aggregator,
+      origin,
+      matched,
+      node("span", `discovery-status ${status}`, discoveryStatusLabel(status)),
+      node(
+        "time",
+        "discovery-time",
+        formatDateTime(item.lastDiscoveredAt || item.last_seen_at || item.lastSeenAt),
+      ),
+    );
+    root.append(row);
+  });
+  empty.hidden = items.length > 0;
+}
+
+function renderDiscoveryMetrics() {
+  const root = $("#discoveryMetrics");
+  root.replaceChildren();
+  const summary = normalizeDiscoverySummary(state.discoverySummary, state.discoveries);
+  [
+    ["total", "发现候选"],
+    ["pending", "待判定"],
+    ["candidate", "候选待复核"],
+    ["matched_source", "已匹配一手源"],
+    ["merged_signal", "已并入信号"],
+  ].forEach(([key, label]) => {
+    const card = node("div", `discovery-metric ${key}`);
+    card.append(node("strong", "", String(summary[key] || 0)), node("span", "", label));
+    root.append(card);
+  });
+}
+
+function normalizeDiscoverySummary(summary, items) {
+  const byStatus = summary.byStatus || summary.by_status || summary;
+  const count = (status) => items.filter((item) => item.status === status).length;
+  return {
+    total: Number(summary.total ?? items.length),
+    pending: Number(byStatus.pending ?? count("pending")),
+    candidate: Number(byStatus.candidate ?? count("candidate")),
+    matched_source: Number(byStatus.matched_source ?? count("matched_source")),
+    merged_signal: Number(byStatus.merged_signal ?? count("merged_signal")),
+  };
+}
+
+function discoveryStatusLabel(status) {
+  return (
+    {
+      pending: "待判定",
+      candidate: "候选待复核",
+      matched_source: "已匹配一手源",
+      merged_signal: "已并入信号",
+    }[status] || status
+  );
+}
+
+function parseList(value) {
+  if (Array.isArray(value)) return value.filter(Boolean);
+  if (value && typeof value === "object") return Object.values(value).flat().filter(Boolean);
+  try {
+    const parsed = JSON.parse(value || "[]");
+    if (Array.isArray(parsed)) return parsed.filter(Boolean);
+    if (parsed && typeof parsed === "object") return Object.values(parsed).flat().filter(Boolean);
+    return [];
+  } catch {
+    return [];
+  }
+}
+
+function displayHandles(handles) {
+  return handles.map((item) => (typeof item === "string" ? item : item?.handle)).filter(Boolean);
+}
+
+function safeHostname(value) {
+  try {
+    return new URL(value).hostname.replace(/^www\./, "");
+  } catch {
+    return "";
+  }
+}
+
+function externalLink(value, label) {
+  let url;
+  try {
+    url = new URL(value);
+    if (url.protocol !== "http:" && url.protocol !== "https:") return null;
+  } catch {
+    return null;
+  }
+  const link = node("a", "discovery-link", label);
+  link.href = url.toString();
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  return link;
+}
+
+function formatDateTime(value) {
+  if (!value) return "尚无记录";
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? value : date.toLocaleString("zh-CN");
 }
 
 function sourceActions(source) {
@@ -580,10 +765,20 @@ $("#adminNav").addEventListener("click", (event) => {
   });
   $("#pageTitle").textContent = titles[button.dataset.tab];
 });
+$("#discoveryStatusFilter").addEventListener("click", (event) => {
+  const button = event.target.closest("button[data-status]");
+  if (!button) return;
+  state.discoveryStatus = button.dataset.status;
+  document.querySelectorAll("#discoveryStatusFilter button").forEach((item) => {
+    item.classList.toggle("active", item === button);
+  });
+  renderDiscoveries(document.querySelector('[data-search="discoveries"]').value);
+});
 document.querySelectorAll("[data-search]").forEach((field) => {
   field.addEventListener("input", () =>
     ({
       sources: renderSources,
+      discoveries: renderDiscoveries,
       events: renderEvents,
       tracks: renderTracks,
       actors: renderActors,
