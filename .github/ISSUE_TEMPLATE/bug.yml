@@ -1,0 +1,23 @@
+name: Bug report
+description: Report a reproducible defect
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Include commands and the smallest safe example. Remove secrets and private data.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Node.js and commit version
+

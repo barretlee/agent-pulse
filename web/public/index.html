@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="midnight">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Agent Pulse：面向 CEO、投资负责人和 AI 从业者的行业认知时间轴。" />
+    <meta name="theme-color" content="#080b12" />
+    <title>Agent Pulse · AI 行业认知主线</title>
+    <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./assets/app.css" />
+  </head>
+  <body>
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="Agent Pulse 首页">
+        <span class="brand-mark"><i></i><i></i><i></i></span>
+        <span><strong>AGENT PULSE</strong><small>AI INDUSTRY INTELLIGENCE</small></span>
+      </a>
+      <nav class="topnav" aria-label="页面导航">
+        <a href="#timeline">主线</a><a href="#china">中国雷达</a><a href="#resources">模型获取</a>
+      </nav>
+      <div class="top-actions">
+        <button class="icon-button" id="themeButton" type="button" aria-label="切换主题">◐</button>
+        <a class="github-link" href="https://github.com/barretlee/agent-pulse" target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero shell">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="live-dot"></span> SIGNAL DESK · EXECUTIVE VIEW</div>
+          <h1>看见 AI 的<br /><em>主线与转折</em></h1>
+          <p>不是新闻堆积。把技术、AGI、投资与商业化信号收敛成可验证的行业判断。</p>
+          <div class="hero-actions">
+            <a class="primary-button" href="#timeline">进入行业主线 <span>↓</span></a>
+            <span id="generatedAt" class="generated-at">正在载入最新情报…</span>
+          </div>
+        </div>
+        <fieldset class="signal-board" aria-label="行业情报指标">
+          <div class="board-head"><span>MARKET SIGNAL</span><span class="mono">LIVE / 24H</span></div>
+          <div class="signal-orbit"><div class="orbit-core"><strong id="heroScore">—</strong><small>最高价值</small></div></div>
+          <div class="board-stats">
+            <div><strong id="eventCount">—</strong><span>收敛事件</span></div>
+            <div><strong id="trackCount">—</strong><span>认知主线</span></div>
+            <div><strong id="actorCount">—</strong><span>关键角色</span></div>
+          </div>
+        </fieldset>
+      </section>
+
+      <section class="executive-strip">
+        <div class="shell strip-inner">
+          <span>CEO / INVESTMENT BRIEF</span>
+          <p id="executiveBrief">正在从重要事件中提炼本期判断…</p>
+        </div>
+      </section>
+
+      <section class="timeline-section shell" id="timeline">
+        <div class="section-heading">
+          <div><span class="section-index">01</span><p class="kicker">NARRATIVE TIMELINES</p><h2>行业认知主线</h2></div>
+          <p>选择一条主线，沿着关键节点理解能力、资本与商业模式如何相互推动。</p>
+        </div>
+        <div class="track-switcher" id="trackSwitcher" role="tablist" aria-label="认知主线"></div>
+        <div class="control-deck">
+          <label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="搜索公司、技术、关键词…" /></label>
+          <select id="categorySelect" aria-label="事件分类"><option value="">全部分类</option></select>
+          <fieldset class="view-toggle" aria-label="视图密度">
+            <button type="button" data-density="comfortable" class="active">舒展</button>
+            <button type="button" data-density="compact">紧凑</button>
+          </fieldset>
+        </div>
+        <div class="timeline-layout">
+          <aside class="timeline-rail"><span>NOW</span><div></div><small>PAST</small></aside>
+          <div class="timeline-list" id="timelineList" aria-live="polite"></div>
+          <aside class="timeline-context">
+            <div class="context-card sticky">
+              <span class="context-label">当前主线</span>
+              <strong id="activeTrackName">全部信号</strong>
+              <p id="activeTrackDescription">跨主线查看已经收敛的关键行业变化。</p>
+              <div class="context-metric"><span>节点</span><strong id="visibleCount">0</strong></div>
+              <div class="context-metric"><span>平均影响</span><strong id="averageImpact">0</strong></div>
+            </div>
+          </aside>
+        </div>
+        <div class="empty-state" id="emptyState" hidden>没有匹配的主线节点，请调整筛选条件。</div>
+      </section>
+
+      <section class="radar-section" id="china">
+        <div class="shell">
+          <div class="section-heading inverse">
+            <div><span class="section-index">02</span><p class="kicker">CHINA CATCH-UP RADAR</p><h2>中国牌桌角色</h2></div>
+            <p>不按声量排位，按能力、生态、商业和基础设施证据持续校准。</p>
+          </div>
+          <div class="radar-grid">
+            <div class="radar-map"><div class="radar-ring ring-one"></div><div class="radar-ring ring-two"></div><div class="radar-ring ring-three"></div><div class="radar-center">CN<br />AI</div><div id="radarDots"></div></div>
+            <div class="actor-list" id="actorList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="resources-section shell" id="resources">
+        <div class="section-heading">
+          <div><span class="section-index">03</span><p class="kicker">MODEL ACCESS & ECONOMICS</p><h2>模型获取资源</h2></div>
+          <p>优先展示官方入口与价格证据；第三方比价只作购买前参考，不混淆风险等级。</p>
+        </div>
+        <div class="resource-filters" id="resourceFilters"></div>
+        <div class="resource-grid" id="resourceGrid"></div>
+        <div class="priceai-note"><strong>进一步比价</strong><span>PriceAI 覆盖官方订阅、卡网、官方 API 与中转 API。Agent Pulse 不镜像其受限数据，仅提供明确归属的购买前入口。</span><a href="https://priceai.cc" target="_blank" rel="noopener">访问 PriceAI ↗</a></div>
+      </section>
+    </main>
+
+    <footer><div class="shell footer-inner"><div><strong>AGENT PULSE</strong><p>Signal, not noise.</p></div><p>事实与推断分离 · 一手来源优先 · 热度可解释</p><span id="footerTime">—</span></div></footer>
+
+    <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
+    <aside class="detail-drawer" id="detailDrawer" aria-hidden="true" aria-label="事件详情">
+      <button class="drawer-close" id="drawerClose" type="button" aria-label="关闭详情">×</button>
+      <div class="drawer-scroll">
+        <div class="drawer-meta"><span id="drawerCategory"></span><span id="drawerDate"></span></div>
+        <h2 id="drawerTitle">事件详情</h2>
+        <p class="drawer-lead" id="drawerFact"></p>
+        <div class="score-row" id="drawerScores"></div>
+        <div class="drawer-keywords" id="drawerKeywords"></div>
+        <div class="insight-stack">
+          <section><span>01 / 核心摘要</span><p id="drawerSummary"></p></section>
+          <section><span>02 / 技术洞察</span><p id="drawerTechnical"></p></section>
+          <section><span>03 / 行业判断</span><p id="drawerIndustry"></p></section>
+          <section><span>04 / 业务价值</span><p id="drawerBusiness"></p></section>
+          <section><span>05 / 未来观察</span><p id="drawerFuture"></p></section>
+        </div>
+        <div class="drawer-section"><h3>所属主线</h3><div id="drawerTracks" class="drawer-tracks"></div></div>
+        <div class="drawer-section"><h3>证据链</h3><div id="drawerEvidence" class="evidence-list"></div></div>
+      </div>
+    </aside>
+    <script type="module" src="./assets/app.js"></script>
+  </body>
+</html>

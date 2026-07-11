@@ -1,0 +1,25 @@
+# 实施清单
+
+- [x] 审计现有 Python/JSON/HTML 原型
+- [x] 调研 AI HOT 与 HuggingNews 的上游、热度信号和接入边界
+- [x] 冻结产品、架构、测试和来源分层规格
+- [x] 初始化 Git、AGENTS.md、Node.js/TypeScript 工程和基础工具链
+- [x] 实现 Kysely SQLite/MySQL 数据层与 migration
+- [x] 实现 source registry、seed 和初始精选事件
+- [x] 实现统一 adapter、URL 规范化、超时/SSRF 防护和任务日志
+- [x] 实现 RSS、JSON API、AI HOT 和 HuggingNews metadata 适配器
+- [x] 实现聚类、可信度/热度/影响/价值评分
+- [x] 实现主线/支线、角色、受众和时空视角模型
+- [x] 实现国内角色目录与追赶阶段雷达
+- [x] 实现官方模型资源目录与 PriceAI 合规外链
+- [x] 实现 Fastify public/admin API 与 token 鉴权
+- [x] 实现管理台
+- [x] 实现可视化视图编排、主线编排和角色雷达管理
+- [x] 实现多主题静态 Timeline 与详情抽屉
+- [x] 实现隐私安全静态导出
+- [x] 补齐单元、集成和 UI 烟测
+- [x] 编写 README、架构、贡献、安全和来源文档
+- [x] 配置 CI 和 GitHub Pages workflow
+- [ ] 本地完整验证
+- [ ] 创建 `barretlee/agent-pulse` public repo、提交并推送
+- [x] 删除 legacy Python、JSON 和根目录单页原型

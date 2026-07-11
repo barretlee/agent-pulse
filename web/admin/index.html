@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Agent Pulse Control Room</title>
+    <link rel="stylesheet" href="./admin.css" />
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div class="admin-brand"><span class="admin-logo">AP</span><div><strong>CONTROL ROOM</strong><small>Agent Pulse OS</small></div></div>
+      <nav id="adminNav">
+        <button type="button" class="active" data-tab="dashboard">◫ <span>指挥中心</span></button>
+        <button type="button" data-tab="sources">⌁ <span>信源矩阵</span></button>
+        <button type="button" data-tab="events">◉ <span>事件与发布</span></button>
+        <button type="button" data-tab="tracks">≋ <span>主线编排</span></button>
+        <button type="button" data-tab="actors">⌬ <span>角色雷达</span></button>
+        <button type="button" data-tab="resources">◇ <span>模型资源</span></button>
+        <button type="button" data-tab="view">✣ <span>视觉与视图</span></button>
+      </nav>
+      <div class="sidebar-foot"><span class="status-dot"></span><span>LOCAL ADMIN</span></div>
+    </aside>
+    <main class="admin-main">
+      <header class="admin-header"><div><p>AGENT PULSE / ADMIN</p><h1 id="pageTitle">指挥中心</h1></div><div class="token-box"><input id="tokenInput" type="password" placeholder="ADMIN_TOKEN（开发环境可留空）" /><button type="button" class="token-submit" id="saveToken">连接</button></div></header>
+      <section class="tab-page active" data-page="dashboard">
+        <div class="metric-grid" id="metricGrid"></div>
+        <div class="panel-grid">
+          <article class="panel"><div class="panel-head"><div><span>PIPELINE</span><h2>数据流水线</h2></div><span id="pipelineStatus" class="pill">READY</span></div><div class="pipeline-actions"><button type="button" class="pipeline-button" data-action="collect">01<br /><strong>采集</strong><small>Collect sources</small></button><button type="button" class="pipeline-button" data-action="cluster">02<br /><strong>聚类</strong><small>Cluster & score</small></button><button type="button" class="pipeline-button" data-action="export">03<br /><strong>静态化</strong><small>Export site</small></button></div><pre id="pipelineOutput">等待指令…</pre></article>
+          <article class="panel"><div class="panel-head"><div><span>RECENT JOBS</span><h2>任务记录</h2></div></div><div id="jobList" class="job-list"></div></article>
+        </div>
+      </section>
+      <section class="tab-page" data-page="sources"><div class="page-toolbar"><input class="table-search" data-search="sources" placeholder="搜索信源…" /><span>控制启停、层级、权威分和采集配置</span></div><div class="data-table" id="sourcesTable"></div></section>
+      <section class="tab-page" data-page="events"><div class="page-toolbar"><input class="table-search" data-search="events" placeholder="搜索事件…" /><span>审核、编辑、置顶、发布或隐藏</span></div><div class="data-table" id="eventsTable"></div></section>
+      <section class="tab-page" data-page="tracks"><div class="page-toolbar"><input class="table-search" data-search="tracks" placeholder="搜索主线…" /><span>控制颜色、顺序和叙事定义</span></div><div class="data-table" id="tracksTable"></div></section>
+      <section class="tab-page" data-page="actors"><div class="page-toolbar"><input class="table-search" data-search="actors" placeholder="搜索角色…" /><span>校准国内外角色的上牌桌评分</span></div><div class="data-table" id="actorsTable"></div></section>
+      <section class="tab-page" data-page="resources"><div class="page-toolbar"><input class="table-search" data-search="resources" placeholder="搜索模型资源…" /><span>官方入口优先，第三方参考明确风险</span></div><div class="data-table" id="resourcesTable"></div></section>
+      <section class="tab-page" data-page="view"><div class="view-editor"><aside><span>VISUAL COMPOSER</span><h2>发布视图编排</h2><p>这里决定公开站点的区块顺序、默认主线、密度、主题和筛选阈值。保存后执行“静态化”发布预览。</p><label>视图名称<input id="viewName" /></label><label>描述<textarea id="viewDescription" rows="4"></textarea></label><button type="button" id="saveView" class="primary">保存视图</button></aside><div class="json-deck"><label>Filters JSON<textarea id="viewFilters"></textarea></label><label>Layout JSON<textarea id="viewLayout"></textarea></label><label>Theme JSON<textarea id="viewTheme"></textarea></label></div></div></section>
+    </main>
+
+    <div class="modal" id="eventModal" hidden><div class="modal-card"><button class="modal-close" type="button">×</button><span>EVENT CURATION</span><h2>事件收敛与发布</h2><form id="eventForm"><input type="hidden" name="id" /><label>标题<input name="title" required /></label><label>一句话事实<textarea name="factSummary" rows="2"></textarea></label><label>核心摘要<textarea name="summary" rows="3"></textarea></label><div class="form-grid"><label>技术洞察<textarea name="technicalInsight" rows="5"></textarea></label><label>行业判断<textarea name="industryInsight" rows="5"></textarea></label><label>业务价值<textarea name="businessValue" rows="5"></textarea></label><label>未来观察<textarea name="futureOutlook" rows="5"></textarea></label></div><div class="score-edit"><label>可信<input name="confidenceScore" type="number" min="0" max="100" /></label><label>热度<input name="heatScore" type="number" min="0" max="100" /></label><label>影响<input name="impactScore" type="number" min="0" max="100" /></label><label>状态<select name="status"><option>draft</option><option>review</option><option>published</option><option>hidden</option></select></label><label class="check"><input name="featured" type="checkbox" /> 首页置顶</label></div><button class="primary" type="submit">保存并应用</button></form></div></div>
+    <div class="toast" id="toast" hidden></div>
+    <script type="module" src="./admin.js"></script>
+  </body>
+</html>

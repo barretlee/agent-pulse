@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="620" viewBox="0 0 1440 620" role="img" aria-labelledby="title desc">
+  <title id="title">Agent Pulse</title>
+  <desc id="desc">AI industry intelligence timelines with signal scores and narrative tracks</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#080b12"/><stop offset="1" stop-color="#111827"/></linearGradient>
+    <radialGradient id="glow"><stop stop-color="#8b5cf6" stop-opacity=".65"/><stop offset="1" stop-color="#8b5cf6" stop-opacity="0"/></radialGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="40"/></filter>
+  </defs>
+  <rect width="1440" height="620" rx="30" fill="url(#bg)"/>
+  <circle cx="1160" cy="160" r="260" fill="url(#glow)" filter="url(#blur)" opacity=".7"/>
+  <g stroke="#1f2937" opacity=".75"><path d="M0 100h1440M0 200h1440M0 300h1440M0 400h1440M0 500h1440"/><path d="M120 0v620M240 0v620M360 0v620M480 0v620M600 0v620M720 0v620M840 0v620M960 0v620M1080 0v620M1200 0v620M1320 0v620"/></g>
+  <g transform="translate(90 85)">
+    <g fill="none" stroke="#8b5cf6"><circle cx="24" cy="24" r="23"/><path stroke-width="4" stroke-linecap="round" d="M16 29v-9M24 34V14M32 27v-6"/></g>
+    <text x="62" y="21" fill="#f4f2ec" font-family="Arial,sans-serif" font-size="18" font-weight="700" letter-spacing="3">AGENT PULSE</text>
+    <text x="62" y="42" fill="#8e98a8" font-family="monospace" font-size="10" letter-spacing="2">AI INDUSTRY INTELLIGENCE</text>
+    <text x="0" y="155" fill="#f4f2ec" font-family="Arial,sans-serif" font-size="70" font-weight="700" letter-spacing="-4">See the main lines.</text>
+    <text x="0" y="230" fill="#a78bfa" font-family="Arial,sans-serif" font-size="70" font-weight="700" letter-spacing="-4">Find the inflections.</text>
+    <text x="2" y="285" fill="#94a3b8" font-family="Arial,sans-serif" font-size="20">Technology · AGI · Investment · Commercialization · China catch-up</text>
+    <g transform="translate(2 342)"><rect width="210" height="48" rx="24" fill="#f4f2ec"/><text x="24" y="30" fill="#080b12" font-family="Arial,sans-serif" font-size="13" font-weight="700">SIGNAL, NOT NOISE →</text></g>
+  </g>
+  <g transform="translate(1000 120)">
+    <circle cx="160" cy="160" r="146" fill="none" stroke="#8b5cf6" stroke-opacity=".4"/>
+    <circle cx="160" cy="160" r="108" fill="none" stroke="#35d0ba" stroke-opacity=".45" stroke-dasharray="8 9"/>
+    <circle cx="160" cy="160" r="70" fill="#8b5cf6" fill-opacity=".16" stroke="#a78bfa"/>
+    <text x="160" y="152" fill="#f4f2ec" text-anchor="middle" font-family="monospace" font-size="40" font-weight="700">96</text>
+    <text x="160" y="178" fill="#94a3b8" text-anchor="middle" font-family="monospace" font-size="10">VALUE SCORE</text>
+    <g fill="#35d0ba"><circle cx="49" cy="82" r="6"/><circle cx="278" cy="119" r="6"/><circle cx="245" cy="272" r="6"/><circle cx="66" cy="249" r="6"/></g>
+    <text x="160" y="360" fill="#94a3b8" text-anchor="middle" font-family="monospace" font-size="11" letter-spacing="2">CONFIDENCE × HEAT × IMPACT</text>
+  </g>
+</svg>
