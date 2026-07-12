@@ -1,4 +1,4 @@
-export const productVersion = "0.5.0";
+export const productVersion = "0.5.1";
 
 export const capabilities = [
   {
@@ -458,6 +458,25 @@ export const roadmap = [
 ] as const;
 
 export const releases = [
+  {
+    version: "0.5.1",
+    date: "2026-07-12",
+    name: "Snapshot Parity",
+    summary:
+      "让本地、定时刷新与 GitHub Pages 从同一份来源健康和星探证据恢复，消除发布路径数据漂移。",
+    capabilities: [
+      "来源检查快照",
+      "运行证据快照",
+      "星探公开产物快照",
+      "跨环境评测一致性",
+      "隐私安全恢复",
+    ],
+    changes: [
+      "快照新增 990 条来源检查、137 个逐源最新运行、4 条公开星探与 4 条证据关联",
+      "来源成功/失败计数、最近成功和验证时间随快照恢复，CI 不再丢失健康上下文",
+      "fresh database 恢复后评测保持 30 分、raw 42、证据覆盖 20%，星探保持 4 条",
+    ],
+  },
   {
     version: "0.5.0",
     date: "2026-07-12",
