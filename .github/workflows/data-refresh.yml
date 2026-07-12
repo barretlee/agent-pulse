@@ -19,7 +19,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: agent-pulse-data-refresh-main
+  group: agent-pulse-repository-data-main
   cancel-in-progress: false
 
 jobs:

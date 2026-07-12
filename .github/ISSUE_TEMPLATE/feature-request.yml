@@ -1,0 +1,65 @@
+name: Feature request
+description: Propose a focused product, analysis, workflow, or engineering improvement
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Explain the decision or intelligence problem before proposing a solution. For a new data source, use the source proposal form from the Issue chooser instead.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Public intelligence experience
+        - Strategic narratives and analysis
+        - Evidence and content quality
+        - Source operations
+        - Control Room
+        - Scout opportunities
+        - Evaluation and governance
+        - Developer experience
+        - Documentation or community
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: Who has this problem, what decision is blocked, and how is it handled today?
+    validations:
+      required: true
+
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: Describe observable user value and a reasonable acceptance signal, not only an implementation.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Suggested approach
+      description: Optional. Include alternatives or trade-offs if you have considered them.
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Examples or evidence
+      description: Add screenshots, links, comparable products, or affected Agent Pulse records. Remove secrets and private data.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched existing Issues and did not find the same request.
+          required: true
+        - label: This request does not require bypassing access controls, platform policy, or source licensing.
+          required: true

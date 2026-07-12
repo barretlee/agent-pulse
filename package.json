@@ -1,8 +1,17 @@
 {
   "name": "agent-pulse",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "private": false,
   "description": "A curated AI industry intelligence timeline — signal, not noise.",
+  "author": "Barret Lee <barret.china@gmail.com>",
+  "homepage": "https://barretlee.github.io/agent-pulse/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/barretlee/agent-pulse.git"
+  },
+  "bugs": {
+    "url": "https://github.com/barretlee/agent-pulse/issues"
+  },
   "type": "module",
   "engines": {
     "node": ">=22"
@@ -21,6 +30,9 @@
     "db:snapshot": "tsx src/cli/snapshot.ts",
     "collect": "tsx src/cli/collect.ts",
     "sources:audit": "tsx src/cli/audit-sources.ts",
+    "sources:proposal:validate": "tsx src/cli/validate-source-proposal.ts",
+    "sources:proposal:import": "tsx src/cli/import-source-proposal.ts",
+    "sources:health:issue": "tsx src/cli/render-source-health-issue.ts",
     "repair:provenance": "tsx src/cli/repair-provenance.ts",
     "repair:activations": "tsx src/cli/repair-activations.ts",
     "repair:review-noise": "tsx src/cli/repair-review-noise.ts",

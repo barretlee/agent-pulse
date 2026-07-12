@@ -1,4 +1,4 @@
-export const productVersion = "0.5.1";
+export const productVersion = "0.6.0";
 
 export const capabilities = [
   {
@@ -284,9 +284,10 @@ export const capabilities = [
     name: "Timeline 主线",
     domain: "experience",
     status: "operational",
-    maturity: 55,
-    release: "0.1.0",
-    evidence: "multi-track static timeline and event drawer",
+    maturity: 66,
+    release: "0.6.0",
+    evidence:
+      "independent evidence workbench with track/search filters, persistent preview and 44 addressable event pages",
   },
   {
     slug: "radar",
@@ -331,9 +332,40 @@ export const capabilities = [
     name: "隐私安全静态发布",
     domain: "delivery",
     status: "operational",
+    maturity: 76,
+    release: "0.6.0",
+    evidence:
+      "allowlist JSON export, 60-route static multipage renderer, repository metadata and GitHub Pages workflow",
+  },
+  {
+    slug: "multipage-intelligence",
+    name: "多页决策情报体验",
+    domain: "experience",
+    status: "operational",
     maturity: 70,
-    release: "0.1.0",
-    evidence: "allowlist JSON export and GitHub Pages workflow",
+    release: "0.6.0",
+    evidence:
+      "Today above the fold, six detailed strategic lines, event permalinks, four decision tools and a productized changelog",
+  },
+  {
+    slug: "issue-source-governance",
+    name: "Issue 驱动的来源治理",
+    domain: "governance",
+    status: "experimental",
+    maturity: 52,
+    release: "0.6.0",
+    evidence:
+      "structured source proposals, offline validation, trusted maintainer gate and disabled draft PR import",
+  },
+  {
+    slug: "content-rights-boundary",
+    name: "内容版权与引用边界",
+    domain: "governance",
+    status: "operational",
+    maturity: 64,
+    release: "0.6.0",
+    evidence:
+      "320-character snapshot excerpts, canonical attribution, takedown route and explicit code/content license separation",
   },
   {
     slug: "repository-snapshot",
@@ -458,6 +490,31 @@ export const roadmap = [
 ] as const;
 
 export const releases = [
+  {
+    version: "0.6.0",
+    date: "2026-07-12",
+    name: "The Intelligence Atlas",
+    summary:
+      "把拥挤的单页拆成可寻址的决策情报地图，并将来源提案、健康维护、版权边界与 GitHub 自更新纳入同一产品链路。",
+    capabilities: [
+      "多页决策情报",
+      "六条主线详情",
+      "独立证据工作台",
+      "44 个事件永久链接",
+      "Issue 来源治理",
+      "持续健康维护",
+      "动态 GitHub 元数据",
+      "版权与纠错边界",
+    ],
+    changes: [
+      "首页将 Today 判断提升到首屏，把产品宣言移动到末尾，并复用主线、证据、工具与版本数据",
+      "生成 60 个可独立访问的静态内容页，六条主线、证据时间轴、事件和四个决策工具不再挤在单页",
+      "来源 Proposal Issue 先离线校验，再经可信维护者标签进入 disabled draft PR，不能直接激活或写入生产",
+      "来源审计与数据刷新共享串行写锁、恢复并回写同一快照；健康摘要由单一 Issue 幂等维护",
+      "Pages 构建时注入 Stars、Forks 与 Issues 元数据；默认 README 国际化为英文并提供完整中文入口",
+      "仓库快照只保留最多 320 字符的内容摘录，并新增来源归属、版权、纠错下架与第三方图标许可说明",
+    ],
+  },
   {
     version: "0.5.1",
     date: "2026-07-12",
