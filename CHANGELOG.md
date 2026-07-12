@@ -4,6 +4,14 @@
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-07-12
+
+### Fixed
+
+- 仓库快照新增来源检查、逐源最新运行、公开星探及证据关联，恢复来源成功/失败计数和最近成功/验证时间。
+- 修复 GitHub Pages 从快照恢复后评测由 30 漂移到 15、公开星探由 4 条退化到 1 条的问题；fresh database 验证现在保持 score 30、raw 42、证据覆盖 20% 和 4 条星探。
+- 所有新增快照字段使用公开 allowlist；不保存 source check sample、原始 payload、job 细节、凭证或代理地址。
+
 ## [0.5.0] - 2026-07-12
 
 ### 数据源恢复与观测
@@ -142,6 +150,7 @@
 
 [0.4.0]: https://github.com/barretlee/agent-pulse/compare/v0.3.0...v0.4.0
 [0.5.0]: https://github.com/barretlee/agent-pulse/compare/v0.4.0...v0.5.0
+[0.5.1]: https://github.com/barretlee/agent-pulse/compare/v0.5.0...v0.5.1
 [0.3.0]: https://github.com/barretlee/agent-pulse/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/barretlee/agent-pulse/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/barretlee/agent-pulse/releases/tag/v0.1.0

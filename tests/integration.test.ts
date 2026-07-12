@@ -39,7 +39,7 @@ describe("SQLite application", () => {
       events: historicalEvents.length + 6,
       tracks: 10,
       sources: sourceCatalog.length,
-      version: "0.5.0",
+      version: "0.5.1",
     });
     const timeline = await readFile(join(config.distDir, "data/timeline.json"), "utf8");
     expect(timeline).not.toContain("ADMIN_TOKEN");

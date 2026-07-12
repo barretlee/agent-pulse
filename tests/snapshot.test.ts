@@ -25,6 +25,54 @@ describe("repository data snapshot", () => {
     const repository = new Repository(sourceDb);
     const openai = (await repository.listSources()).find((source) => source.slug === "openai");
     expect(openai).toBeDefined();
+    const jobId = await repository.startJob("collect", openai?.id ?? null);
+    const runId = await repository.startSourceRun(openai?.id ?? "", jobId);
+    await repository.finishSourceRun(runId, {
+      status: "succeeded",
+      attemptCount: 1,
+      durationMs: 100,
+      collected: 10,
+      created: 8,
+      skipped: 2,
+      httpStatus: 200,
+      responseBytes: 1_024,
+    });
+    await repository.finishJob(jobId, { collected: 10, created: 8, skipped: 2, errors: [] });
+    await repository.insertSourceCheck({
+      id: "snapshot-source-check",
+      source_id: openai?.id ?? "",
+      job_id: null,
+      status: "healthy",
+      adapter: "rss",
+      adapter_version: "1",
+      access_status: "reachable",
+      fetch_status: "succeeded",
+      parse_status: "succeeded",
+      schema_status: "valid",
+      policy_status: "allowed_metadata",
+      http_status: 200,
+      final_url: "https://openai.com/feed.xml?api_key=must-not-leak",
+      content_type: "application/atom+xml",
+      response_bytes: 1_024,
+      item_count: 10,
+      duplicate_count: 1,
+      duplicate_ratio_bps: 1_000,
+      quality_score: 80,
+      latest_item_at: "2026-07-11T08:00:00.000Z",
+      freshness_hours: 12,
+      error_type: null,
+      error_code: null,
+      error_summary: null,
+      repair_action: "none",
+      proxy_hint: "not_required",
+      proxy_used: 0,
+      retention_decision: "keep",
+      recommended_lifecycle: "active",
+      sample_json: JSON.stringify({ secret: "must-not-leak" }),
+      started_at: "2026-07-11T08:00:00.000Z",
+      finished_at: "2026-07-11T08:00:01.000Z",
+      duration_ms: 1_000,
+    });
     const snapshotSignal = await repository.insertSignal(openai?.id ?? "", {
       externalId: "snapshot-sensitive-url",
       url: "https://openai.com/index/snapshot-test?api_key=must-not-leak&utm_source=test",
@@ -57,6 +105,9 @@ describe("repository data snapshot", () => {
     );
     expect(persisted.summary.length).toBeLessThanOrEqual(2_000);
     expect(first.counts.signalTriage).toBe(1);
+    expect(first.counts.sourceChecks).toBe(1);
+    expect(first.counts.sourceRuns).toBe(1);
+    expect(first.counts.scoutInsights).toBe(1);
 
     const targetDb = createDatabase(config);
     databases.push(targetDb);
@@ -109,5 +160,24 @@ describe("repository data snapshot", () => {
         .where("signal_id", "=", catalogSignal?.id ?? "")
         .executeTakeFirst(),
     ).toBeDefined();
+    expect(
+      await targetDb
+        .selectFrom("source_checks")
+        .select(["status", "final_url", "sample_json"])
+        .where("id", "=", "snapshot-source-check")
+        .executeTakeFirst(),
+    ).toEqual({
+      status: "healthy",
+      final_url: "https://openai.com/feed.xml",
+      sample_json: "{}",
+    });
+    expect(
+      await targetDb
+        .selectFrom("source_runs")
+        .select(["status", "collected_count", "created_count"])
+        .where("id", "=", runId)
+        .executeTakeFirst(),
+    ).toEqual({ status: "succeeded", collected_count: 10, created_count: 8 });
+    expect(await targetRepository.publicScoutInsights()).toHaveLength(1);
   });
 });

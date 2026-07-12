@@ -11,11 +11,15 @@ export const DEFAULT_SNAPSHOT_PATH = join("data", "snapshot", "v1.json");
 interface RepositorySnapshot {
   schemaVersion: number;
   sources: Array<Record<string, unknown>>;
+  sourceChecks?: Array<Record<string, unknown>>;
+  sourceRuns?: Array<Record<string, unknown>>;
   signals: Array<Record<string, unknown>>;
   signalTriage?: Array<Record<string, unknown>>;
   discoveries: Array<Record<string, unknown>>;
   events: Array<Record<string, unknown>>;
   eventSignals: Array<Record<string, unknown>>;
+  scoutInsights?: Array<Record<string, unknown>>;
+  scoutEvidence?: Array<Record<string, unknown>>;
 }
 
 export async function writeRepositorySnapshot(
@@ -57,31 +61,68 @@ export async function restoreRepositorySnapshot(
 }
 
 async function buildRepositorySnapshot(db: Kysely<DatabaseSchema>): Promise<RepositorySnapshot> {
-  const [sourceRows, signalRows, triageRows, discoveryRows, eventRows, eventSignalRows] =
-    await Promise.all([
-      db.selectFrom("sources").selectAll().execute(),
-      db
-        .selectFrom("signals")
-        .innerJoin("sources", "sources.id", "signals.source_id")
-        .selectAll("signals")
-        .select("sources.slug as sourceSlug")
-        .execute(),
-      db.selectFrom("signal_triage").selectAll().execute(),
-      db
-        .selectFrom("source_discoveries")
-        .innerJoin(
-          "sources as aggregator",
-          "aggregator.id",
-          "source_discoveries.aggregator_source_id",
-        )
-        .leftJoin("sources as matched", "matched.id", "source_discoveries.matched_source_id")
-        .selectAll("source_discoveries")
-        .select(["aggregator.slug as aggregatorSlug", "matched.slug as matchedSourceSlug"])
-        .execute(),
-      db.selectFrom("events").selectAll().execute(),
-      db.selectFrom("event_signals").selectAll().execute(),
-    ]);
+  const [
+    sourceRows,
+    sourceCheckRows,
+    signalRows,
+    triageRows,
+    discoveryRows,
+    eventRows,
+    eventSignalRows,
+  ] = await Promise.all([
+    db.selectFrom("sources").selectAll().execute(),
+    db
+      .selectFrom("source_checks")
+      .innerJoin("sources", "sources.id", "source_checks.source_id")
+      .selectAll("source_checks")
+      .select("sources.slug as sourceSlug")
+      .execute(),
+    db
+      .selectFrom("signals")
+      .innerJoin("sources", "sources.id", "signals.source_id")
+      .selectAll("signals")
+      .select("sources.slug as sourceSlug")
+      .execute(),
+    db.selectFrom("signal_triage").selectAll().execute(),
+    db
+      .selectFrom("source_discoveries")
+      .innerJoin(
+        "sources as aggregator",
+        "aggregator.id",
+        "source_discoveries.aggregator_source_id",
+      )
+      .leftJoin("sources as matched", "matched.id", "source_discoveries.matched_source_id")
+      .selectAll("source_discoveries")
+      .select(["aggregator.slug as aggregatorSlug", "matched.slug as matchedSourceSlug"])
+      .execute(),
+    db.selectFrom("events").selectAll().execute(),
+    db.selectFrom("event_signals").selectAll().execute(),
+  ]);
   const sourceSlugById = new Map(sourceRows.map((source) => [source.id, source.slug]));
+  const [sourceRunRows, scoutRows, scoutEvidenceRows] = await Promise.all([
+    db
+      .selectFrom("source_runs")
+      .innerJoin("sources", "sources.id", "source_runs.source_id")
+      .selectAll("source_runs")
+      .select("sources.slug as sourceSlug")
+      .orderBy("source_runs.started_at", "desc")
+      .execute(),
+    db.selectFrom("scout_insights").selectAll().where("status", "=", "published").execute(),
+    db
+      .selectFrom("scout_evidence")
+      .innerJoin("scout_insights", "scout_insights.id", "scout_evidence.insight_id")
+      .innerJoin("events", "events.id", "scout_evidence.event_id")
+      .select([
+        "scout_insights.slug as insightSlug",
+        "events.slug as eventSlug",
+        "scout_evidence.evidence_role as evidenceRole",
+        "scout_evidence.weight as weight",
+        "scout_evidence.created_at as createdAt",
+      ])
+      .where("scout_insights.status", "=", "published")
+      .execute(),
+  ]);
+  const latestSourceRuns = [...new Map(sourceRunRows.map((run) => [run.source_id, run])).values()];
 
   const snapshot: RepositorySnapshot = {
     schemaVersion: SNAPSHOT_SCHEMA_VERSION,
@@ -93,9 +134,73 @@ async function buildRepositorySnapshot(db: Kysely<DatabaseSchema>): Promise<Repo
         lifecycleStatus: source.lifecycle_status,
         healthScore: source.health_score,
         consecutiveFailures: source.consecutive_failures,
+        successCount: source.success_count,
+        failureCount: source.failure_count,
+        lastCollectedAt: source.last_collected_at,
+        lastSuccessAt: source.last_success_at,
+        lastError: source.last_error,
+        lastVerifiedAt: source.last_verified_at,
         state: safeSourceState(parseJson(source.state_json, {})),
       }))
       .sort(byString("slug")),
+    sourceChecks: sourceCheckRows
+      .map((check) => ({
+        id: check.id,
+        sourceSlug: check.sourceSlug,
+        status: check.status,
+        adapter: check.adapter,
+        adapterVersion: check.adapter_version,
+        accessStatus: check.access_status,
+        fetchStatus: check.fetch_status,
+        parseStatus: check.parse_status,
+        schemaStatus: check.schema_status,
+        policyStatus: check.policy_status,
+        httpStatus: check.http_status,
+        finalUrl: check.final_url ? snapshotUrl(check.final_url) : null,
+        contentType: check.content_type,
+        responseBytes: check.response_bytes,
+        itemCount: check.item_count,
+        duplicateCount: check.duplicate_count,
+        duplicateRatioBps: check.duplicate_ratio_bps,
+        qualityScore: check.quality_score,
+        latestItemAt: check.latest_item_at,
+        freshnessHours: check.freshness_hours,
+        errorType: check.error_type,
+        errorCode: check.error_code,
+        errorSummary: check.error_summary,
+        repairAction: check.repair_action,
+        proxyHint: check.proxy_hint,
+        proxyUsed: check.proxy_used,
+        retentionDecision: check.retention_decision,
+        recommendedLifecycle: check.recommended_lifecycle,
+        startedAt: check.started_at,
+        finishedAt: check.finished_at,
+        durationMs: check.duration_ms,
+      }))
+      .sort((left, right) =>
+        `${left.sourceSlug}:${left.finishedAt}:${left.id}`.localeCompare(
+          `${right.sourceSlug}:${right.finishedAt}:${right.id}`,
+        ),
+      ),
+    sourceRuns: latestSourceRuns
+      .map((run) => ({
+        id: run.id,
+        sourceSlug: run.sourceSlug,
+        status: run.status,
+        attemptCount: run.attempt_count,
+        durationMs: run.duration_ms,
+        collectedCount: run.collected_count,
+        createdCount: run.created_count,
+        skippedCount: run.skipped_count,
+        httpStatus: run.http_status,
+        responseBytes: run.response_bytes,
+        errorType: run.error_type,
+        errorCode: run.error_code,
+        errorSummary: run.error_summary,
+        startedAt: run.started_at,
+        finishedAt: run.finished_at,
+      }))
+      .sort(byString("sourceSlug")),
     signals: signalRows
       .map((signal) => {
         const canonicalUrl = snapshotUrl(signal.canonical_url);
@@ -202,6 +307,37 @@ async function buildRepositorySnapshot(db: Kysely<DatabaseSchema>): Promise<Repo
       .sort((left, right) =>
         `${left.eventId}:${left.signalId}`.localeCompare(`${right.eventId}:${right.signalId}`),
       ),
+    scoutInsights: scoutRows.map((insight) => ({
+      id: insight.id,
+      slug: insight.slug,
+      kind: insight.kind,
+      status: insight.status,
+      title: insight.title,
+      observation: insight.observation,
+      hypothesis: insight.hypothesis,
+      whyNow: insight.why_now,
+      targetAudience: insight.target_audience,
+      suggestedAction: insight.suggested_action,
+      artifactIdea: insight.artifact_idea,
+      counterSignals: insight.counter_signals,
+      horizon: insight.horizon,
+      confidenceScore: insight.confidence_score,
+      evidenceScore: insight.evidence_score,
+      noveltyScore: insight.novelty_score,
+      leverageScore: insight.leverage_score,
+      totalScore: insight.total_score,
+      generatedAt: insight.generated_at,
+      expiresAt: insight.expires_at,
+      publishedAt: insight.published_at,
+      createdAt: insight.created_at,
+    })),
+    scoutEvidence: scoutEvidenceRows.map((link) => ({
+      insightSlug: link.insightSlug,
+      eventSlug: link.eventSlug,
+      evidenceRole: link.evidenceRole,
+      weight: link.weight,
+      createdAt: link.createdAt,
+    })),
   };
   return sanitizeSnapshotValue(snapshot) as RepositorySnapshot;
 }
@@ -225,10 +361,129 @@ async function restoreSnapshot(
         lifecycle_status: requiredString(value, "lifecycleStatus"),
         health_score: requiredNumber(value, "healthScore"),
         consecutive_failures: requiredNumber(value, "consecutiveFailures"),
+        success_count: optionalNumber(value.successCount) ?? 0,
+        failure_count: optionalNumber(value.failureCount) ?? 0,
+        last_collected_at: optionalString(value.lastCollectedAt),
+        last_success_at: optionalString(value.lastSuccessAt),
+        last_error: optionalString(value.lastError),
+        last_verified_at: optionalString(value.lastVerifiedAt),
         state_json: JSON.stringify(value.state ?? {}),
       })
       .where("id", "=", sourceId)
       .execute();
+  }
+
+  for (const value of snapshot.sourceChecks ?? []) {
+    const sourceId = sourceIdBySlug.get(requiredString(value, "sourceSlug"));
+    if (!sourceId) continue;
+    const id = requiredString(value, "id");
+    const existing = await db
+      .selectFrom("source_checks")
+      .select("id")
+      .where("id", "=", id)
+      .executeTakeFirst();
+    const row = {
+      source_id: sourceId,
+      job_id: null,
+      status: requiredString(value, "status"),
+      adapter: requiredString(value, "adapter"),
+      adapter_version: requiredString(value, "adapterVersion"),
+      access_status: requiredString(value, "accessStatus"),
+      fetch_status: requiredString(value, "fetchStatus"),
+      parse_status: requiredString(value, "parseStatus"),
+      schema_status: requiredString(value, "schemaStatus"),
+      policy_status: requiredString(value, "policyStatus"),
+      http_status: optionalNumber(value.httpStatus),
+      final_url: optionalString(value.finalUrl),
+      content_type: optionalString(value.contentType),
+      response_bytes: requiredNumber(value, "responseBytes"),
+      item_count: requiredNumber(value, "itemCount"),
+      duplicate_count: requiredNumber(value, "duplicateCount"),
+      duplicate_ratio_bps: requiredNumber(value, "duplicateRatioBps"),
+      quality_score: requiredNumber(value, "qualityScore"),
+      latest_item_at: optionalString(value.latestItemAt),
+      freshness_hours: optionalNumber(value.freshnessHours),
+      error_type: optionalString(value.errorType),
+      error_code: optionalString(value.errorCode),
+      error_summary: optionalString(value.errorSummary),
+      repair_action: requiredString(value, "repairAction"),
+      proxy_hint: requiredString(value, "proxyHint"),
+      proxy_used: requiredNumber(value, "proxyUsed"),
+      retention_decision: requiredString(value, "retentionDecision"),
+      recommended_lifecycle: requiredString(value, "recommendedLifecycle"),
+      sample_json: "{}",
+      started_at: requiredString(value, "startedAt"),
+      finished_at: requiredString(value, "finishedAt"),
+      duration_ms: requiredNumber(value, "durationMs"),
+    };
+    if (existing) await db.updateTable("source_checks").set(row).where("id", "=", id).execute();
+    else
+      await db
+        .insertInto("source_checks")
+        .values({ id, ...row })
+        .execute();
+  }
+
+  if ((snapshot.sourceRuns?.length ?? 0) > 0) {
+    const jobId = "snapshot-source-runs";
+    const existingJob = await db
+      .selectFrom("jobs")
+      .select("id")
+      .where("id", "=", jobId)
+      .executeTakeFirst();
+    if (!existingJob) {
+      const startedAt = requiredString(snapshot.sourceRuns?.[0] ?? {}, "startedAt");
+      await db
+        .insertInto("jobs")
+        .values({
+          id: jobId,
+          type: "snapshot_restore",
+          status: "succeeded",
+          source_id: null,
+          started_at: startedAt,
+          finished_at: startedAt,
+          collected_count: 0,
+          created_count: 0,
+          skipped_count: 0,
+          error_count: 0,
+          error_summary: null,
+          details_json: "{}",
+        })
+        .execute();
+    }
+    for (const value of snapshot.sourceRuns ?? []) {
+      const sourceId = sourceIdBySlug.get(requiredString(value, "sourceSlug"));
+      if (!sourceId) continue;
+      const id = requiredString(value, "id");
+      const existing = await db
+        .selectFrom("source_runs")
+        .select("id")
+        .where("id", "=", id)
+        .executeTakeFirst();
+      const row = {
+        source_id: sourceId,
+        job_id: jobId,
+        status: requiredString(value, "status"),
+        attempt_count: requiredNumber(value, "attemptCount"),
+        duration_ms: requiredNumber(value, "durationMs"),
+        collected_count: requiredNumber(value, "collectedCount"),
+        created_count: requiredNumber(value, "createdCount"),
+        skipped_count: requiredNumber(value, "skippedCount"),
+        http_status: optionalNumber(value.httpStatus),
+        response_bytes: requiredNumber(value, "responseBytes"),
+        error_type: optionalString(value.errorType),
+        error_code: optionalString(value.errorCode),
+        error_summary: optionalString(value.errorSummary),
+        started_at: requiredString(value, "startedAt"),
+        finished_at: optionalString(value.finishedAt),
+      };
+      if (existing) await db.updateTable("source_runs").set(row).where("id", "=", id).execute();
+      else
+        await db
+          .insertInto("source_runs")
+          .values({ id, ...row })
+          .execute();
+    }
   }
 
   const signalIdMap = new Map<string, string>();
@@ -314,6 +569,7 @@ async function restoreSnapshot(
         .values({ id, ...row })
         .execute();
     eventIdMap.set(snapshotId, id);
+    eventIdMap.set(slug, id);
   }
 
   for (const value of snapshot.signalTriage ?? []) {
@@ -427,6 +683,65 @@ async function restoreSnapshot(
         .execute();
     }
   }
+
+  const scoutIdBySlug = new Map<string, string>();
+  for (const value of snapshot.scoutInsights ?? []) {
+    const slug = requiredString(value, "slug");
+    const existing = await db
+      .selectFrom("scout_insights")
+      .select("id")
+      .where("slug", "=", slug)
+      .executeTakeFirst();
+    const id = existing?.id ?? requiredString(value, "id");
+    const row = {
+      slug,
+      kind: requiredString(value, "kind"),
+      status: "published",
+      title: requiredString(value, "title"),
+      observation: requiredString(value, "observation"),
+      hypothesis: requiredString(value, "hypothesis"),
+      why_now: requiredString(value, "whyNow"),
+      target_audience: requiredString(value, "targetAudience"),
+      suggested_action: requiredString(value, "suggestedAction"),
+      artifact_idea: requiredString(value, "artifactIdea"),
+      counter_signals: requiredString(value, "counterSignals"),
+      horizon: requiredString(value, "horizon"),
+      confidence_score: requiredNumber(value, "confidenceScore"),
+      evidence_score: requiredNumber(value, "evidenceScore"),
+      novelty_score: requiredNumber(value, "noveltyScore"),
+      leverage_score: requiredNumber(value, "leverageScore"),
+      total_score: requiredNumber(value, "totalScore"),
+      cooldown_key: `snapshot:${slug}`,
+      generated_at: requiredString(value, "generatedAt"),
+      expires_at: optionalString(value.expiresAt),
+      published_at: optionalString(value.publishedAt),
+      created_at: requiredString(value, "createdAt"),
+      updated_at: requiredString(value, "createdAt"),
+    };
+    if (existing) await db.updateTable("scout_insights").set(row).where("id", "=", id).execute();
+    else
+      await db
+        .insertInto("scout_insights")
+        .values({ id, ...row })
+        .execute();
+    scoutIdBySlug.set(slug, id);
+  }
+  for (const value of snapshot.scoutEvidence ?? []) {
+    const insightId = scoutIdBySlug.get(requiredString(value, "insightSlug"));
+    const eventId = eventIdMap.get(requiredString(value, "eventSlug"));
+    if (!insightId || !eventId) continue;
+    await db
+      .insertInto("scout_evidence")
+      .values({
+        insight_id: insightId,
+        event_id: eventId,
+        evidence_role: requiredString(value, "evidenceRole"),
+        weight: requiredNumber(value, "weight"),
+        created_at: requiredString(value, "createdAt"),
+      })
+      .onConflict((conflict) => conflict.columns(["insight_id", "event_id"]).doNothing())
+      .execute();
+  }
 }
 
 function safeSourceState(value: unknown): Record<string, string> {
@@ -527,6 +842,10 @@ function optionalString(value: unknown): string | null {
   return typeof value === "string" ? value : null;
 }
 
+function optionalNumber(value: unknown): number | null {
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
 function byString(key: string) {
   return (left: Record<string, unknown>, right: Record<string, unknown>) =>
     String(left[key] ?? "").localeCompare(String(right[key] ?? ""));
@@ -535,21 +854,29 @@ function byString(key: string) {
 function snapshotCounts(snapshot: RepositorySnapshot) {
   return {
     sources: snapshot.sources.length,
+    sourceChecks: snapshot.sourceChecks?.length ?? 0,
+    sourceRuns: snapshot.sourceRuns?.length ?? 0,
     signals: snapshot.signals.length,
     signalTriage: snapshot.signalTriage?.length ?? 0,
     discoveries: snapshot.discoveries.length,
     events: snapshot.events.length,
     eventSignals: snapshot.eventSignals.length,
+    scoutInsights: snapshot.scoutInsights?.length ?? 0,
+    scoutEvidence: snapshot.scoutEvidence?.length ?? 0,
   };
 }
 
 function emptyCounts() {
   return {
     sources: 0,
+    sourceChecks: 0,
+    sourceRuns: 0,
     signals: 0,
     signalTriage: 0,
     discoveries: 0,
     events: 0,
     eventSignals: 0,
+    scoutInsights: 0,
+    scoutEvidence: 0,
   };
 }
