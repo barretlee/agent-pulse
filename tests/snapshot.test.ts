@@ -103,7 +103,7 @@ describe("repository data snapshot", () => {
     const persisted = snapshot.signals.find(
       (signal: { title: string }) => signal.title === "Snapshot persistence test signal",
     );
-    expect(persisted.summary.length).toBeLessThanOrEqual(2_000);
+    expect(persisted.summary.length).toBeLessThanOrEqual(320);
     expect(first.counts.signalTriage).toBe(1);
     expect(first.counts.sourceChecks).toBe(1);
     expect(first.counts.sourceRuns).toBe(1);

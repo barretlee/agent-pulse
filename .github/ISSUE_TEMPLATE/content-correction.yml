@@ -1,0 +1,87 @@
+name: Content correction or removal
+description: Report a factual error, attribution issue, copyright concern, privacy issue, or removal request
+title: "[Content]: "
+labels:
+  - documentation
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping keep Agent Pulse accurate and responsible. This is a public Issue. Do not include private personal data, credentials, confidential documents, or security-sensitive details. Use the private process in SECURITY.md when necessary.
+
+  - type: dropdown
+    id: request_type
+    attributes:
+      label: Request type
+      options:
+        - Factual correction
+        - Source or author attribution
+        - Copyright or excerpt concern
+        - Privacy concern
+        - Removal request
+        - Broken or changed source link
+        - Other content issue
+    validations:
+      required: true
+
+  - type: input
+    id: agent_pulse_url
+    attributes:
+      label: Agent Pulse URL or record identifier
+      description: Link to the affected page, event, source, or record.
+      placeholder: https://barretlee.github.io/agent-pulse/...
+    validations:
+      required: true
+
+  - type: input
+    id: original_source_url
+    attributes:
+      label: Original source URL
+      description: Provide the canonical evidence URL when applicable.
+      placeholder: https://example.com/original-source
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is incorrect or concerning?
+      description: Quote only the smallest necessary fragment and explain the issue clearly.
+    validations:
+      required: true
+
+  - type: textarea
+    id: requested_change
+    attributes:
+      label: Requested correction or resolution
+      description: Describe the accurate wording, attribution, shorter excerpt, or removal you are requesting.
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Supporting evidence
+      description: Link to primary or authoritative sources. Do not paste complete third-party works.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: relationship
+    attributes:
+      label: Your relationship to the material
+      options:
+        - Rights holder or authorized representative
+        - Author, publisher, or subject
+        - Reader or independent reporter
+        - Prefer not to say
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: acknowledgement
+    attributes:
+      label: Public disclosure acknowledgement
+      options:
+        - label: I have removed private, confidential, credential, and security-sensitive information from this public Issue.
+          required: true
+        - label: The links and evidence above are provided in good faith and are sufficient for the maintainers to review the request.
+          required: true

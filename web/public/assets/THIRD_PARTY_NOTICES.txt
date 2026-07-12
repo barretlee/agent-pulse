@@ -1,0 +1,9 @@
+Third-party notices
+===================
+
+Lucide Icons
+Copyright (c) 2022 Lucide Contributors
+Licensed under the ISC License.
+Source: https://github.com/lucide-icons/lucide
+
+This site vendors and adapts a small SVG subset for local, runtime-network-free use.

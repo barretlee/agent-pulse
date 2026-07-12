@@ -29,6 +29,17 @@ jobs:
       - run: npm ci
       - name: Restore repository snapshot
         run: npm run db:snapshot -- restore
+      - name: Fetch public repository metadata for the static export
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          metadata="$(gh api "repos/$GITHUB_REPOSITORY")"
+          echo "GITHUB_STARS=$(jq -r '.stargazers_count' <<<"$metadata")" >> "$GITHUB_ENV"
+          echo "GITHUB_FORKS=$(jq -r '.forks_count' <<<"$metadata")" >> "$GITHUB_ENV"
+          echo "GITHUB_OPEN_ISSUES=$(jq -r '.open_issues_count' <<<"$metadata")" >> "$GITHUB_ENV"
+          echo "GITHUB_METADATA_FETCHED_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_ENV"
       - name: Export static site from restored data
         run: npm run export -- --skip-seed
       - uses: actions/configure-pages@v5

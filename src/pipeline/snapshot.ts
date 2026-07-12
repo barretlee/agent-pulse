@@ -211,7 +211,7 @@ async function buildRepositorySnapshot(db: Kysely<DatabaseSchema>): Promise<Repo
           canonicalUrl,
           urlHash: sha256(canonicalUrl),
           title: signal.title,
-          summary: signal.summary,
+          summary: snapshotExcerpt(signal.summary),
           author: signal.author,
           language: signal.language,
           publishedAt: signal.published_at,
@@ -254,7 +254,7 @@ async function buildRepositorySnapshot(db: Kysely<DatabaseSchema>): Promise<Repo
           originName: discovery.origin_name,
           handles: parseJson(discovery.handles_json, []),
           title: discovery.title,
-          summary: discovery.summary,
+          summary: snapshotExcerpt(discovery.summary),
           language: discovery.language,
           publishedAt: discovery.published_at,
           category: discovery.category,
@@ -766,6 +766,12 @@ function snapshotMetrics(value: unknown): Record<string, unknown> {
     delete heat.latestSeenAt;
   }
   return result;
+}
+
+function snapshotExcerpt(value: string): string {
+  const compact = value.normalize("NFKC").replace(/\s+/g, " ").trim();
+  if (compact.length <= 320) return compact;
+  return `${compact.slice(0, 319).trimEnd()}…`;
 }
 
 function sanitizeSnapshotValue(value: unknown): unknown {

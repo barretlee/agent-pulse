@@ -6,10 +6,12 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: write
   contents: write
+  issues: write
 
 concurrency:
-  group: agent-pulse-source-audit-main
+  group: agent-pulse-repository-data-main
   cancel-in-progress: false
 
 jobs:
@@ -35,27 +37,61 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
+      - name: Restore auditable repository snapshot
+        run: npm run db:snapshot -- restore
+
       - name: Audit every configured source
         run: npm run sources:audit -- --concurrency=4 --report=data/reports/source-health.json
+
+      - name: Reconcile eligible shadow observation
+        run: npm run observe:sources -- --confirm
+
+      - name: Write privacy-safe snapshot with accumulated checks
+        run: npm run db:snapshot -- write
 
       - name: Validate report privacy and shape
         shell: bash
         run: |
           set -euo pipefail
           test -s data/reports/source-health.json
-          git diff --check -- data/reports/source-health.json
-          if grep -E 'gh[opsu]_[A-Za-z0-9_]{20,}|-----BEGIN .*PRIVATE KEY-----|/Users/[^/]+/|/home/runner/|"(token|secret|password|cookie|authorization|api[_-]?key)"[[:space:]]*:' data/reports/source-health.json; then
-            echo "Private material detected in source health report" >&2
+          test -s data/snapshot/v1.json
+          git diff --check -- data/reports/source-health.json data/snapshot/v1.json
+          if grep -E 'gh[opsu]_[A-Za-z0-9_]{20,}|-----BEGIN .*PRIVATE KEY-----|/Users/[^/]+/|/home/runner/|"(token|secret|password|cookie|authorization|api[_-]?key)"[[:space:]]*:' data/reports/source-health.json data/snapshot/v1.json; then
+            echo "Private material detected in source health output" >&2
             exit 1
           fi
 
-      - name: Commit report when changed
+      - name: Render compact source health summary
+        run: npm run --silent sources:health:issue -- --report data/reports/source-health.json > "$RUNNER_TEMP/source-health-summary.md"
+
+      - name: Update the single automated source health issue
+        env:
+          GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
-          git add -- data/reports/source-health.json
+          gh label create "source:health" --color fbca04 --description "Source health and maintenance" --force
+          existing="$(gh issue list --state all --label "source:health" --limit 100 --json number,body,state \
+            --jq '.[] | select(.body | contains("agent-pulse-source-health-summary:v1")) | [.number, .state] | @tsv' | head -n 1)"
+          if [[ -n "$existing" ]]; then
+            issue_number="${existing%%$'\t'*}"
+            issue_state="${existing##*$'\t'}"
+            gh issue edit "$issue_number" --body-file "$RUNNER_TEMP/source-health-summary.md"
+            if [[ "$issue_state" == "CLOSED" ]]; then gh issue reopen "$issue_number"; fi
+          else
+            gh issue create --title "[Source health] Automated source health summary" \
+              --label "source:health" --body-file "$RUNNER_TEMP/source-health-summary.md"
+          fi
+
+      - name: Commit report when changed
+        id: commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add -- data/reports/source-health.json data/snapshot/v1.json
           if git diff --cached --quiet; then
             echo "No report changes."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git config user.name "github-actions[bot]"
@@ -64,3 +100,10 @@ jobs:
           git fetch origin main
           git rebase origin/main
           git push origin HEAD:main
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Dispatch Pages deployment for refreshed source state
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref main

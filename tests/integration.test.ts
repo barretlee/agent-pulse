@@ -39,7 +39,7 @@ describe("SQLite application", () => {
       events: historicalEvents.length + 6,
       tracks: 10,
       sources: sourceCatalog.length,
-      version: "0.5.1",
+      version: "0.6.0",
     });
     const timeline = await readFile(join(config.distDir, "data/timeline.json"), "utf8");
     expect(timeline).not.toContain("ADMIN_TOKEN");
@@ -73,6 +73,45 @@ describe("SQLite application", () => {
             item.score <= 45 && item.score <= item.scoreCap,
         ),
     ).toBe(true);
+    const staticPages = [
+      ["index.html", "Agent Pulse · 今日 AI 行业判断"],
+      ["lines/index.html", "AI 行业六条主线 · Agent Pulse"],
+      ["lines/tech-evolution/index.html", "技术演进主线 · Agent Pulse"],
+      ["timeline/index.html", "AI 行业证据时间轴 · Agent Pulse"],
+      ["scout/index.html", "星探机会 · Agent Pulse"],
+      ["actors/index.html", "中国 AI 角色雷达 · Agent Pulse"],
+      ["resources/index.html", "模型与 API 获取 · Agent Pulse"],
+      ["product/index.html", "能力、评测与路线图 · Agent Pulse"],
+      ["changelog/index.html", "Changelog · Agent Pulse"],
+      ["sources/index.html", "AI 信息来源地图 · Agent Pulse"],
+      ["legal/index.html", "版权与来源政策 · Agent Pulse"],
+      ["404.html", "页面未找到 · Agent Pulse"],
+    ] as const;
+    for (const [path, title] of staticPages) {
+      const html = await readFile(join(config.distDir, path), "utf8");
+      expect(html, path).toContain(`<title>${title}</title>`);
+      expect(html, path).toContain('rel="canonical"');
+      expect(html, path).not.toContain("__PREFIX__");
+      expect(html, path).not.toContain("/Users/");
+    }
+    const home = await readFile(join(config.distDir, "index.html"), "utf8");
+    expect(home).toContain("GPT-5.6");
+    expect(home.indexOf("今天，先判断这件事")).toBeLessThan(
+      home.indexOf("别追每条新闻。<em>看清变化的方向。</em>"),
+    );
+    const eventSlug = JSON.parse(timeline).events[0].slug as string;
+    const eventPage = await readFile(
+      join(config.distDir, "events", eventSlug, "index.html"),
+      "utf8",
+    );
+    expect(eventPage).toContain("事实陈述");
+    expect(eventPage).toContain("原始证据");
+    const github = JSON.parse(await readFile(join(config.distDir, "data/github.json"), "utf8"));
+    expect(github).toMatchObject({
+      repositoryUrl: "https://github.com/barretlee/agent-pulse",
+      stars: null,
+      latestRelease: "v0.6.0",
+    });
   });
 
   it("protects production admin APIs", async () => {

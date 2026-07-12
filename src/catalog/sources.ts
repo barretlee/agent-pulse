@@ -1,3 +1,9 @@
+import {
+  type SourceProposalCatalogEntry,
+  SourceProposalCatalogSchema,
+} from "../domain/source-proposal.js";
+import sourceProposalRows from "./source-proposals.json" with { type: "json" };
+
 export type SourceCategory =
   | "frontier-lab"
   | "china-lab"
@@ -15,6 +21,32 @@ export type SourceCategory =
   | "aggregator";
 
 export type Acquisition = "rss" | "api" | "github" | "arxiv" | "html" | "social" | "manual";
+
+export interface CatalogSource {
+  slug: string;
+  name: string;
+  homepageUrl: string;
+  endpoint: string;
+  adapter: string;
+  tier: 1 | 2 | 3 | 4;
+  role: "primary" | "research" | "expert" | "media" | "heat" | "aggregator" | "policy";
+  region: string;
+  language: string;
+  authorityScore: number;
+  qualityScore: number;
+  enabled: boolean;
+  lifecycleStatus: "draft" | "shadow" | "active";
+  category: SourceCategory;
+  acquisition: Acquisition;
+  topics: string[];
+  maintenanceStatus: "ready" | "candidate" | "restricted" | "manual" | "proposal";
+  cadence: string;
+  licenseNote: string;
+  identityHosts?: string[];
+  socialHandles?: string[];
+  proposalIssueNumber?: number;
+  proposalEvidenceUrls?: string[];
+}
 
 type SourceSeed = readonly [
   slug: string,
@@ -3182,7 +3214,7 @@ const identities: Record<string, { identityHosts?: string[]; socialHandles?: str
   marktechpost: { identityHosts: ["marktechpost.com"] },
 };
 
-export const sourceCatalog = rows.map(
+const builtInSources: CatalogSource[] = rows.map(
   ([slug, name, homepageUrl, region, category, tier, role, acquisition, endpoint, topics]) => ({
     slug,
     name,
@@ -3231,3 +3263,44 @@ export const sourceCatalog = rows.map(
     ...identities[slug],
   }),
 );
+
+export function proposalToCatalogSource(proposal: SourceProposalCatalogEntry): CatalogSource {
+  return {
+    slug: proposal.slug,
+    name: proposal.name,
+    homepageUrl: proposal.homepageUrl,
+    endpoint: proposal.endpoint,
+    adapter:
+      proposal.acquisition === "rss" || proposal.acquisition === "arxiv"
+        ? "rss"
+        : proposal.acquisition === "api"
+          ? "generic-api"
+          : proposal.acquisition === "github"
+            ? "github-releases"
+            : proposal.acquisition === "html"
+              ? "web-scraper"
+              : "manual",
+    tier: 3 as const,
+    role: proposal.role,
+    region: proposal.region,
+    language: proposal.language,
+    authorityScore: authorityByTier[3],
+    qualityScore: 35,
+    enabled: false,
+    lifecycleStatus: "draft" as const,
+    category: proposal.category,
+    acquisition: proposal.acquisition,
+    topics: proposal.topics,
+    maintenanceStatus: "proposal" as const,
+    cadence: proposal.cadence,
+    licenseNote: proposal.licenseNote,
+    identityHosts: [new URL(proposal.homepageUrl).hostname],
+    proposalIssueNumber: proposal.issueNumber,
+    proposalEvidenceUrls: proposal.evidenceUrls,
+  };
+}
+
+const proposalSources: CatalogSource[] =
+  SourceProposalCatalogSchema.parse(sourceProposalRows).map(proposalToCatalogSource);
+
+export const sourceCatalog: CatalogSource[] = [...builtInSources, ...proposalSources];

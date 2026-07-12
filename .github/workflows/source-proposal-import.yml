@@ -1,0 +1,114 @@
+name: Import approved source proposal
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  actions: write
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: source-proposal-import-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  import-draft:
+    if: github.event.label.name == 'source:import-ready' && contains(github.event.issue.body, '<!-- agent-pulse-source-proposal:v1 -->')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      ISSUE_NUMBER: ${{ github.event.issue.number }}
+    steps:
+      - name: Require a trusted label actor
+        shell: bash
+        run: |
+          set -euo pipefail
+          permission="$(gh api "repos/$GITHUB_REPOSITORY/collaborators/$GITHUB_ACTOR/permission" --jq '.permission')"
+          case "$permission" in
+            admin|maintain|write) ;;
+            *) echo "source:import-ready requires write, maintain, or admin permission" >&2; exit 1 ;;
+          esac
+
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Reuse the issue-specific automation branch
+        id: branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch="automation/source-proposal-$ISSUE_NUMBER"
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+            git fetch origin "$branch"
+            git switch -C "$branch" FETCH_HEAD
+            git rebase origin/main
+          else
+            git switch -c "$branch"
+          fi
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+
+      - name: Fetch the issue as JSON
+        run: gh api "repos/$GITHUB_REPOSITORY/issues/$ISSUE_NUMBER" > "$RUNNER_TEMP/source-proposal-issue.json"
+
+      - name: Import only a disabled draft catalog entry
+        run: npm run sources:proposal:import -- --issue-json "$RUNNER_TEMP/source-proposal-issue.json" --confirm
+
+      - name: Verify catalog, tests, and static export
+        run: npm run check
+
+      - name: Push an idempotent automation branch
+        id: commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch="${{ steps.branch.outputs.branch }}"
+          git add -- src/catalog/source-proposals.json
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "branch=$branch" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore(sources): import proposal #$ISSUE_NUMBER as draft"
+          git push --force-with-lease origin "HEAD:refs/heads/$branch"
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+
+      - name: Open or reuse the draft proposal PR
+        if: steps.commit.outputs.changed == 'true'
+        id: pr
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch="${{ steps.branch.outputs.branch }}"
+          pr_url="$(gh pr list --state open --head "$branch" --json url --jq '.[0].url // empty')"
+          if [[ -z "$pr_url" ]]; then
+            pr_url="$(gh pr create --base main --head "$branch" \
+              --title "chore(sources): review proposal #$ISSUE_NUMBER" \
+              --body "Imports #$ISSUE_NUMBER as a disabled draft. Merge does not enable collection, observation, activation, or publication.")"
+          fi
+          echo "url=$pr_url" >> "$GITHUB_OUTPUT"
+          gh workflow run ci.yml --ref "$branch"
+
+      - name: Link the review PR from the issue
+        if: steps.pr.outputs.url != ''
+        env:
+          PR_URL: ${{ steps.pr.outputs.url }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf '%s\n\nDisabled draft review: %s\n\nThis proposal remains inactive until contract, policy, shadow, E3, and human E4 gates pass.\n' \
+            '<!-- agent-pulse-source-proposal-pr:v1 -->' "$PR_URL" > "$RUNNER_TEMP/source-proposal-pr.md"
+          gh issue comment "$ISSUE_NUMBER" --body-file "$RUNNER_TEMP/source-proposal-pr.md"
+          gh issue edit "$ISSUE_NUMBER" --add-label "source:draft-pr"

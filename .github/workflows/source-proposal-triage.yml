@@ -1,0 +1,77 @@
+name: Validate source proposal
+
+on:
+  issues:
+    types: [opened, edited, reopened]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: source-proposal-triage-${{ github.event.issue.number }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    if: contains(github.event.issue.body, '<!-- agent-pulse-source-proposal:v1 -->')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+
+      - name: Validate untrusted issue text without network access
+        id: validation
+        shell: bash
+        run: |
+          set +e
+          npm run --silent sources:proposal:validate -- \
+            --issue-json "$GITHUB_EVENT_PATH" \
+            --format markdown > "$RUNNER_TEMP/source-proposal-validation.md"
+          status=$?
+          set -e
+          if [[ "$status" -eq 0 ]]; then
+            echo "valid=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "valid=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Ensure governance labels exist
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create "source:proposal" --color 1d76db --description "Proposed knowledge source" --force
+          gh label create "source:validated" --color 0e8a16 --description "Static source proposal validation passed" --force
+          gh label create "source:needs-info" --color d93f0b --description "Source proposal needs correction or evidence" --force
+          gh label create "source:import-ready" --color 5319e7 --description "Maintainer-approved source draft import" --force
+          gh label create "source:draft-pr" --color c5def5 --description "Disabled source draft PR created" --force
+          gh label create "source:health" --color fbca04 --description "Source health and maintenance" --force
+
+      - name: Update validation comment and labels
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VALID: ${{ steps.validation.outputs.valid }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          comment_id="$(gh api "repos/$GITHUB_REPOSITORY/issues/$ISSUE_NUMBER/comments" --paginate \
+            --jq '.[] | select(.user.login == "github-actions[bot]" and (.body | contains("agent-pulse-source-proposal-validation:v1"))) | .id' | head -n 1)"
+          if [[ -n "$comment_id" ]]; then
+            gh api --method PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$comment_id" \
+              -F "body=@$RUNNER_TEMP/source-proposal-validation.md" >/dev/null
+          else
+            gh issue comment "$ISSUE_NUMBER" --body-file "$RUNNER_TEMP/source-proposal-validation.md"
+          fi
+          if [[ "$VALID" == "true" ]]; then
+            gh issue edit "$ISSUE_NUMBER" --add-label "source:proposal,source:validated"
+            gh issue edit "$ISSUE_NUMBER" --remove-label "source:needs-info" 2>/dev/null || true
+          else
+            gh issue edit "$ISSUE_NUMBER" --add-label "source:proposal,source:needs-info"
+            gh issue edit "$ISSUE_NUMBER" --remove-label "source:validated" 2>/dev/null || true
+          fi

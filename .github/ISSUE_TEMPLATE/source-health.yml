@@ -1,0 +1,49 @@
+name: Source health report
+description: Report a public source that is stale, broken, duplicated, or parsing incorrectly
+title: "[Source health]: "
+labels: ["source:health"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Report observable source failures without including credentials, cookies, private endpoints, or full third-party content.
+  - type: input
+    id: source
+    attributes:
+      label: Source slug or name
+      placeholder: openai
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: Public source URL
+      placeholder: https://example.com/feed.xml
+    validations:
+      required: true
+  - type: dropdown
+    id: failure
+    attributes:
+      label: Failure type
+      options:
+        - unreachable
+        - stale-content
+        - parser-or-schema-drift
+        - duplicate-content
+        - incorrect-attribution
+        - policy-or-license-risk
+        - other
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Safe evidence
+      description: Include timestamps, status codes, or a minimal public example. Remove secrets and private data.
+    validations:
+      required: true
+  - type: input
+    id: observed
+    attributes:
+      label: First observed at
+      placeholder: 2026-07-12T08:00:00Z

@@ -4,6 +4,29 @@
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-07-12
+
+### 决策情报体验
+
+- 将 Today 判断提升到首页首屏，把“别追每条新闻。看清变化的方向。”移到页面末尾；首页只承担判断入口与独立页导流。
+- 六条战略主线改为总览与六个详情页，分别呈现阶段、证据累积、角色视角、中国与全球位置及证据缺口。
+- Timeline 成为独立证据工作台，支持主线、一手证据和关键词筛选；44 个公开事件均有可分享、可索引的永久详情页。
+- 星探、角色雷达、模型获取、系统水位成为四个独立决策工具页；Changelog 以版本能力和用户可感知变化呈现。
+- 静态导出覆盖 60 个内容路由并提供独立 404；三套主题、移动底部导航、本地图标和交互预览继续保持纯静态交付。
+
+### 来源治理与持续更新
+
+- 新增结构化 Source Proposal Issue Form、无网络静态校验、维护者权限门禁和 disabled draft PR 导入；Issue 内容不能设置 adapter、评分、生命周期或启用状态。
+- Source Audit 与 Data Refresh 恢复并回写同一仓库快照，使用共享并发锁串行写入，避免检查历史和数据提交互相覆盖。
+- Source Audit 每轮幂等维护单一健康摘要 Issue，只暴露聚合指标和有限异常 slug；完整报告继续留在版本化数据文件。
+- Pages 构建时读取公开 GitHub 元数据并静态写入 Stars、Forks 和 Open Issues；无元数据时使用诚实降级文案。
+
+### 国际化、版权与可信边界
+
+- GitHub 默认首页改为完整英文 README，并提供对等的 `README-zh-cn.md`；补齐贡献来源、行为准则、引用和仓库元数据。
+- 快照中的 Signal 与 Discovery 正文改为最多 320 字符的摘录，继续保留 canonical URL、发布者和证据追溯关系。
+- 新增代码许可与第三方内容分离说明、纠错/下架入口、Lucide 图标许可及第三方通知；站点不声称拥有来源内容版权。
+
 ## [0.5.1] - 2026-07-12
 
 ### Fixed
@@ -151,6 +174,7 @@
 [0.4.0]: https://github.com/barretlee/agent-pulse/compare/v0.3.0...v0.4.0
 [0.5.0]: https://github.com/barretlee/agent-pulse/compare/v0.4.0...v0.5.0
 [0.5.1]: https://github.com/barretlee/agent-pulse/compare/v0.5.0...v0.5.1
+[0.6.0]: https://github.com/barretlee/agent-pulse/compare/v0.5.1...v0.6.0
 [0.3.0]: https://github.com/barretlee/agent-pulse/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/barretlee/agent-pulse/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/barretlee/agent-pulse/releases/tag/v0.1.0

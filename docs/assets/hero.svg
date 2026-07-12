@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1440" height="620" viewBox="0 0 1440 620" role="img" aria-labelledby="title desc">
   <title id="title">Agent Pulse</title>
-  <desc id="desc">AI industry intelligence timelines with signal scores and narrative tracks</desc>
+  <desc id="desc">Evidence-backed AI industry intelligence with strategic narratives and verifiable sources</desc>
   <defs>
     <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#080b12"/><stop offset="1" stop-color="#111827"/></linearGradient>
     <radialGradient id="glow"><stop stop-color="#8b5cf6" stop-opacity=".65"/><stop offset="1" stop-color="#8b5cf6" stop-opacity="0"/></radialGradient>
@@ -22,9 +22,9 @@
     <circle cx="160" cy="160" r="146" fill="none" stroke="#8b5cf6" stroke-opacity=".4"/>
     <circle cx="160" cy="160" r="108" fill="none" stroke="#35d0ba" stroke-opacity=".45" stroke-dasharray="8 9"/>
     <circle cx="160" cy="160" r="70" fill="#8b5cf6" fill-opacity=".16" stroke="#a78bfa"/>
-    <text x="160" y="152" fill="#f4f2ec" text-anchor="middle" font-family="monospace" font-size="40" font-weight="700">96</text>
-    <text x="160" y="178" fill="#94a3b8" text-anchor="middle" font-family="monospace" font-size="10">VALUE SCORE</text>
+    <text x="160" y="154" fill="#f4f2ec" text-anchor="middle" font-family="monospace" font-size="18" font-weight="700" letter-spacing="2">EVIDENCE</text>
+    <text x="160" y="179" fill="#94a3b8" text-anchor="middle" font-family="monospace" font-size="10" letter-spacing="2">PRIMARY FIRST</text>
     <g fill="#35d0ba"><circle cx="49" cy="82" r="6"/><circle cx="278" cy="119" r="6"/><circle cx="245" cy="272" r="6"/><circle cx="66" cy="249" r="6"/></g>
-    <text x="160" y="360" fill="#94a3b8" text-anchor="middle" font-family="monospace" font-size="11" letter-spacing="2">CONFIDENCE × HEAT × IMPACT</text>
+    <text x="160" y="360" fill="#94a3b8" text-anchor="middle" font-family="monospace" font-size="11" letter-spacing="2">FACTS × CONTEXT × DECISIONS</text>
   </g>
 </svg>

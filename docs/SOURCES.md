@@ -30,11 +30,11 @@ A cross-circle hot event needs confidence, independent authors/sources, platform
 - Generic array JSON API
 - HuggingNews public homepage metadata (disabled by default until a formal API/RSS exists)
 
-## Source Catalog v0.3
+## Source Catalog v0.5
 
-The registry now contains 195 classified sources across 14 domains, adding model economics to frontier labs, China labs, research/evaluation, open source, agent/dev tools, robotics, chips/cloud/infra, capital/business, experts, media, policy, community heat and aggregators. 54 are China sources and 141 are global/overseas sources.
+The registry now contains 258 classified sources across 14 domains, including 73 China sources and 185 global/overseas sources. The catalog covers frontier labs, China labs, research/evaluation, open source, agent/dev tools, robotics, chips/cloud/infra, capital/business, experts, media, policy, community heat, aggregators and model economics.
 
-This is a discovery and maintenance catalog, not a claim that 195 collectors are production-ready:
+This is a discovery and maintenance catalog, not a claim that 258 collectors are production-ready:
 
 - `ready` + `active`: contract is known and scheduled collection is allowed;
 - `candidate` + `shadow`: stable-looking API/RSS/GitHub source awaiting fixtures and verification;
@@ -48,7 +48,7 @@ The canonical catalog is `src/catalog/sources.ts`; database rows add lifecycle, 
 - Identify the collector with a non-browser User-Agent.
 - Follow API rate limits, fingerprint/ETag and caching contracts.
 - Do not bypass login, WAF, CAPTCHA, paywalls or platform restrictions.
-- Store metadata and provenance, not complete third-party articles.
+- Store metadata and provenance, not complete third-party articles. Repository snapshots cap Signal and Discovery excerpts at 320 characters; longer source text remains at the canonical publisher and is never mirrored into Pages.
 - Respect correction/removal requests and disable unstable sources by default.
 
 ## Aggregator upstream protocol

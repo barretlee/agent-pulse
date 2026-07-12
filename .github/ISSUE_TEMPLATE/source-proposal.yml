@@ -1,0 +1,134 @@
+name: Source proposal
+description: Propose a public, high-value source for the Agent Pulse observation catalog
+title: "[Source]: "
+labels: ["source:proposal"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        <!-- agent-pulse-source-proposal:v1 -->
+        Thanks for helping improve the evidence network. Submissions are untrusted proposals: they can only become disabled drafts through a reviewed pull request and can never activate a source automatically.
+  - type: input
+    id: name
+    attributes:
+      label: Source name
+      placeholder: OpenAI News
+    validations:
+      required: true
+  - type: input
+    id: owner
+    attributes:
+      label: Canonical owner
+      description: The organization or person that owns and publishes this source.
+      placeholder: OpenAI
+    validations:
+      required: true
+  - type: input
+    id: homepage
+    attributes:
+      label: Official homepage URL
+      description: HTTPS only. Do not submit private feeds, credentials, API keys, or tracking parameters.
+      placeholder: https://example.com/news/
+    validations:
+      required: true
+  - type: input
+    id: endpoint
+    attributes:
+      label: Feed, API, or GitHub Releases URL
+      description: Required for automated sources. GitHub must be an exact repository releases.atom URL.
+      placeholder: https://example.com/feed.xml
+  - type: dropdown
+    id: region
+    attributes:
+      label: Region
+      options: [GLOBAL, CN, US, EU, APAC]
+    validations:
+      required: true
+  - type: dropdown
+    id: language
+    attributes:
+      label: Language
+      options: [en, zh-CN, multilingual]
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Coverage category
+      options:
+        - frontier-lab
+        - china-lab
+        - research-eval
+        - open-source
+        - agent-devtool
+        - robotics
+        - infra-chip-cloud
+        - capital-business
+        - model-economics
+        - policy
+        - expert
+        - media
+        - community-heat
+    validations:
+      required: true
+  - type: dropdown
+    id: role
+    attributes:
+      label: Source role
+      options: [primary, research, expert, media, heat, policy]
+    validations:
+      required: true
+  - type: dropdown
+    id: acquisition
+    attributes:
+      label: Acquisition surface
+      description: This is a public surface suggestion, not an internal adapter selection.
+      options: [rss, github, arxiv, api, html, manual]
+    validations:
+      required: true
+  - type: input
+    id: topics
+    attributes:
+      label: Topics
+      description: One to twelve comma-separated topics.
+      placeholder: foundation-model, agent, safety
+    validations:
+      required: true
+  - type: dropdown
+    id: cadence
+    attributes:
+      label: Expected cadence
+      options: [6h, 12h, 24h, weekly, manual]
+    validations:
+      required: true
+  - type: textarea
+    id: license
+    attributes:
+      label: License, robots, and attribution
+      description: Explain the public access boundary, reuse/attribution expectation, and known robots or terms constraints.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: First-party evidence URLs
+      description: One HTTPS URL per line, up to five. Aggregator story URLs do not count.
+      placeholder: |
+        https://example.com/about/
+        https://example.com/news/launch
+    validations:
+      required: true
+  - type: textarea
+    id: rationale
+    attributes:
+      label: Why should Agent Pulse track it?
+      description: Describe the decision value and what coverage gap it closes.
+    validations:
+      required: true
+  - type: checkboxes
+    id: policy
+    attributes:
+      label: Access boundary
+      options:
+        - label: I confirm this proposal does not require bypassing login, WAF, CAPTCHA, a paywall, or a private feed.
+          required: true
