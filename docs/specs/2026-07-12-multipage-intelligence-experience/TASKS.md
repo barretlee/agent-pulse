@@ -39,7 +39,7 @@
 - [x] audit 恢复并写回 snapshot
 - [x] audit/refresh 共用 writer lock
 - [x] observation reconcile 与 Pages dispatch
-- [ ] GitHub workflow 测试与真实运行
+- [x] GitHub workflow 测试与真实运行
 
 ## 6. 验收与发布
 
@@ -47,4 +47,12 @@
 - [x] 桌面与 390px 全路由浏览器 smoke
 - [x] 内链、title、资源 404、控制台检查
 - [x] 英文 README 与 GitHub 门面检查
-- [ ] PR、Release、CI、Pages 与线上 Stars 验证
+- [x] PR、Release、CI、Pages 与线上 Stars 验证
+
+## 发布证据
+
+- PR：[#3 · feat: launch the intelligence atlas](https://github.com/barretlee/agent-pulse/pull/3)
+- Release：[v0.6.0 · The Intelligence Atlas](https://github.com/barretlee/agent-pulse/releases/tag/v0.6.0)
+- Source Audit：[run 29185456876](https://github.com/barretlee/agent-pulse/actions/runs/29185456876)，258 个来源完成检查
+- Health Issue：[#4 · Automated source health summary](https://github.com/barretlee/agent-pulse/issues/4)
+- Pages：12 个代表线上路由返回 200，构建期数据为 2 Stars、0 Forks、1 Open Issue
