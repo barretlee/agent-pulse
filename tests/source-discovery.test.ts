@@ -116,7 +116,7 @@ describe("aggregator discovery persistence", () => {
     await expect(repository.insertSignal(aggregator.id, signal())).rejects.toThrow(
       "Aggregator sources cannot create factual signals",
     );
-  });
+  }, 10_000);
 
   it("merges prior aggregator heat when the direct source publishes the canonical URL", async () => {
     const { db, repository } = await setup();

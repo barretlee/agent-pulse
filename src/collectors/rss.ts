@@ -1,19 +1,31 @@
 import { XMLParser } from "fast-xml-parser";
 import type { CollectedSignal } from "../domain/types.js";
-import type { SourceAdapter } from "./types.js";
+import type { FetchResult, SourceAdapter } from "./types.js";
 
 const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@_" });
 
 export const rssAdapter: SourceAdapter = {
   kind: "rss",
   async collect(source, context) {
-    const { body, status } = await context.fetchText(source.config.url);
+    let response: FetchResult;
+    try {
+      response = await context.fetchText(source.config.url);
+    } catch (error) {
+      if (source.homepageUrl === source.config.url) throw error;
+      const homepage = await context.fetchText(source.homepageUrl);
+      const discoveredFeed = discoverFeedUrl(homepage.body, source.homepageUrl);
+      if (!discoveredFeed || discoveredFeed === source.config.url) throw error;
+      response = await context.fetchText(discoveredFeed);
+    }
+    const { body, status } = response;
     if (status === 304) return [];
     const document = parser.parse(body) as Record<string, unknown>;
     const items = extractItems(document);
     return items
       .slice(0, source.config.take ?? 50)
-      .flatMap((item) => normalizeItem(item, source.language, source.config.category));
+      .flatMap((item) =>
+        normalizeItem(item, source.language, source.config.category, response.finalUrl),
+      );
   },
 };
 
@@ -28,14 +40,16 @@ function normalizeItem(
   item: Record<string, unknown>,
   language: string,
   fallbackCategory?: string,
+  baseUrl?: string,
 ): CollectedSignal[] {
   const title = textValue(item.title);
-  const link = linkValue(item.link);
+  const link = resolvePublicUrl(linkValue(item.link), baseUrl);
   if (!title || !link) return [];
   const summary = stripHtml(
     textValue(item.description) || textValue(item.summary) || textValue(item.content) || title,
   );
   const published = textValue(item.pubDate) || textValue(item.published) || textValue(item.updated);
+  const date = normalizeDate(published);
   return [
     {
       externalId: textValue(item.guid) || textValue(item.id) || link,
@@ -43,11 +57,11 @@ function normalizeItem(
       title: stripHtml(title),
       summary: summary.slice(0, 8_000),
       language,
-      publishedAt: validDate(published),
+      publishedAt: date.value,
       category: fallbackCategory ?? "industry",
       tags: [],
       metrics: { platforms: ["rss"] },
-      rawMeta: {},
+      rawMeta: { dateInferred: date.inferred },
     },
   ];
 }
@@ -77,9 +91,33 @@ function stripHtml(value: string): string {
     .trim();
 }
 
-function validDate(value: string): string {
+function normalizeDate(value: string): { value: string; inferred: boolean } {
   const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? new Date().toISOString() : date.toISOString();
+  return Number.isNaN(date.getTime())
+    ? { value: new Date().toISOString(), inferred: true }
+    : { value: date.toISOString(), inferred: false };
+}
+
+function discoverFeedUrl(html: string, baseUrl: string): string | null {
+  for (const tag of html.matchAll(/<link\b[^>]*>/gi)) {
+    const value = tag[0];
+    if (!/rel=["']alternate["']/i.test(value)) continue;
+    if (!/type=["']application\/(?:rss|atom)\+xml["']/i.test(value)) continue;
+    const href = value.match(/href=["']([^"']+)["']/i)?.[1];
+    const resolved = resolvePublicUrl(href ?? "", baseUrl);
+    if (resolved) return resolved;
+  }
+  return null;
+}
+
+function resolvePublicUrl(value: string, baseUrl?: string): string {
+  if (!value) return "";
+  try {
+    const url = new URL(value, baseUrl);
+    return url.protocol === "http:" || url.protocol === "https:" ? url.toString() : "";
+  } catch {
+    return "";
+  }
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

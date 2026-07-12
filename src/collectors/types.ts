@@ -13,6 +13,7 @@ export interface FetchResult {
   attemptCount: number;
   responseBytes: number;
   finalUrl: string;
+  transport?: "direct" | "env-proxy";
 }
 
 export interface SourceAdapter {

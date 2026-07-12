@@ -43,6 +43,43 @@ describe("RSS adapter", () => {
     );
     expect(items).toHaveLength(1);
     expect(items[0]?.summary).toBe("New model");
+    expect(items[0]?.rawMeta.dateInferred).toBe(false);
+  });
+
+  it("discovers an official alternate feed when a configured feed endpoint is stale", async () => {
+    const homepage =
+      '<html><head><link href="/updates.atom" type="application/atom+xml" rel="alternate"></head></html>';
+    const feed =
+      '<feed><entry><title>Recovered update</title><link href="/posts/recovered"/><published>2026-07-12T00:00:00Z</published><summary>Recovered from the declared feed.</summary></entry></feed>';
+    let call = 0;
+    const items = await rssAdapter.collect(source("rss"), {
+      ...context(""),
+      fetchText: async (url) => {
+        call += 1;
+        if (call === 1) throw new Error("HTTP 404");
+        const body = call === 2 ? homepage : feed;
+        return {
+          body,
+          status: 200,
+          headers: new Headers(),
+          attemptCount: 1,
+          responseBytes: body.length,
+          finalUrl: url,
+        };
+      },
+    });
+    expect(call).toBe(3);
+    expect(items[0]?.url).toBe("https://example.com/posts/recovered");
+  });
+
+  it("marks missing dates as inferred instead of pretending they were published now", async () => {
+    const items = await rssAdapter.collect(
+      source("rss"),
+      context(
+        "<rss><channel><item><title>Undated</title><link>https://example.com/undated</link><description>No date.</description></item></channel></rss>",
+      ),
+    );
+    expect(items[0]?.rawMeta.dateInferred).toBe(true);
   });
 });
 

@@ -12,6 +12,7 @@ interface RepositorySnapshot {
   schemaVersion: number;
   sources: Array<Record<string, unknown>>;
   signals: Array<Record<string, unknown>>;
+  signalTriage?: Array<Record<string, unknown>>;
   discoveries: Array<Record<string, unknown>>;
   events: Array<Record<string, unknown>>;
   eventSignals: Array<Record<string, unknown>>;
@@ -56,36 +57,39 @@ export async function restoreRepositorySnapshot(
 }
 
 async function buildRepositorySnapshot(db: Kysely<DatabaseSchema>): Promise<RepositorySnapshot> {
-  const [sourceRows, signalRows, discoveryRows, eventRows, eventSignalRows] = await Promise.all([
-    db.selectFrom("sources").selectAll().execute(),
-    db
-      .selectFrom("signals")
-      .innerJoin("sources", "sources.id", "signals.source_id")
-      .selectAll("signals")
-      .select("sources.slug as sourceSlug")
-      .execute(),
-    db
-      .selectFrom("source_discoveries")
-      .innerJoin(
-        "sources as aggregator",
-        "aggregator.id",
-        "source_discoveries.aggregator_source_id",
-      )
-      .leftJoin("sources as matched", "matched.id", "source_discoveries.matched_source_id")
-      .selectAll("source_discoveries")
-      .select(["aggregator.slug as aggregatorSlug", "matched.slug as matchedSourceSlug"])
-      .execute(),
-    db.selectFrom("events").selectAll().execute(),
-    db.selectFrom("event_signals").selectAll().execute(),
-  ]);
+  const [sourceRows, signalRows, triageRows, discoveryRows, eventRows, eventSignalRows] =
+    await Promise.all([
+      db.selectFrom("sources").selectAll().execute(),
+      db
+        .selectFrom("signals")
+        .innerJoin("sources", "sources.id", "signals.source_id")
+        .selectAll("signals")
+        .select("sources.slug as sourceSlug")
+        .execute(),
+      db.selectFrom("signal_triage").selectAll().execute(),
+      db
+        .selectFrom("source_discoveries")
+        .innerJoin(
+          "sources as aggregator",
+          "aggregator.id",
+          "source_discoveries.aggregator_source_id",
+        )
+        .leftJoin("sources as matched", "matched.id", "source_discoveries.matched_source_id")
+        .selectAll("source_discoveries")
+        .select(["aggregator.slug as aggregatorSlug", "matched.slug as matchedSourceSlug"])
+        .execute(),
+      db.selectFrom("events").selectAll().execute(),
+      db.selectFrom("event_signals").selectAll().execute(),
+    ]);
   const sourceSlugById = new Map(sourceRows.map((source) => [source.id, source.slug]));
 
-  return {
+  const snapshot: RepositorySnapshot = {
     schemaVersion: SNAPSHOT_SCHEMA_VERSION,
     sources: sourceRows
       .map((source) => ({
         slug: source.slug,
         enabled: source.enabled,
+        observationEnabled: source.observation_enabled,
         lifecycleStatus: source.lifecycle_status,
         healthScore: source.health_score,
         consecutiveFailures: source.consecutive_failures,
@@ -114,6 +118,16 @@ async function buildRepositorySnapshot(db: Kysely<DatabaseSchema>): Promise<Repo
         };
       })
       .sort(byString("urlHash")),
+    signalTriage: triageRows
+      .map((triage) => ({
+        signalId: triage.signal_id,
+        status: triage.status,
+        reason: triage.reason,
+        eventabilityScore: triage.eventability_score,
+        details: parseJson(triage.details_json, {}),
+        createdAt: triage.created_at,
+      }))
+      .sort(byString("signalId")),
     discoveries: discoveryRows
       .map((discovery) => {
         const discoveryUrl = snapshotUrl(discovery.discovery_url);
@@ -189,6 +203,7 @@ async function buildRepositorySnapshot(db: Kysely<DatabaseSchema>): Promise<Repo
         `${left.eventId}:${left.signalId}`.localeCompare(`${right.eventId}:${right.signalId}`),
       ),
   };
+  return sanitizeSnapshotValue(snapshot) as RepositorySnapshot;
 }
 
 async function restoreSnapshot(
@@ -205,6 +220,8 @@ async function restoreSnapshot(
       .updateTable("sources")
       .set({
         enabled: requiredNumber(value, "enabled"),
+        observation_enabled:
+          typeof value.observationEnabled === "number" ? value.observationEnabled : 0,
         lifecycle_status: requiredString(value, "lifecycleStatus"),
         health_score: requiredNumber(value, "healthScore"),
         consecutive_failures: requiredNumber(value, "consecutiveFailures"),
@@ -297,6 +314,31 @@ async function restoreSnapshot(
         .values({ id, ...row })
         .execute();
     eventIdMap.set(snapshotId, id);
+  }
+
+  for (const value of snapshot.signalTriage ?? []) {
+    const signalId = signalIdMap.get(requiredString(value, "signalId"));
+    if (!signalId) continue;
+    const existing = await db
+      .selectFrom("signal_triage")
+      .select("signal_id")
+      .where("signal_id", "=", signalId)
+      .executeTakeFirst();
+    const row = {
+      status: requiredString(value, "status"),
+      reason: requiredString(value, "reason"),
+      eventability_score: requiredNumber(value, "eventabilityScore"),
+      details_json: JSON.stringify(value.details ?? {}),
+      updated_at: requiredString(value, "createdAt"),
+    };
+    if (existing) {
+      await db.updateTable("signal_triage").set(row).where("signal_id", "=", signalId).execute();
+    } else {
+      await db
+        .insertInto("signal_triage")
+        .values({ signal_id: signalId, created_at: requiredString(value, "createdAt"), ...row })
+        .execute();
+    }
   }
 
   for (const value of snapshot.discoveries) {
@@ -411,6 +453,27 @@ function snapshotMetrics(value: unknown): Record<string, unknown> {
   return result;
 }
 
+function sanitizeSnapshotValue(value: unknown): unknown {
+  if (typeof value === "string") return sanitizeSnapshotText(value);
+  if (Array.isArray(value)) return value.map(sanitizeSnapshotValue);
+  if (!value || typeof value !== "object") return value;
+  return Object.fromEntries(
+    Object.entries(value as Record<string, unknown>).map(([key, item]) => [
+      key,
+      sanitizeSnapshotValue(item),
+    ]),
+  );
+}
+
+function sanitizeSnapshotText(value: string): string {
+  const sanitized = value
+    .replace(/\/Users\/[A-Za-z0-9._-]+(?:\/[^\s"'`<>]*)?/g, "[local-path]")
+    .replace(/\/home\/[A-Za-z0-9._-]+(?:\/[^\s"'`<>]*)?/g, "[local-path]")
+    .replace(/[A-Za-z]:\\Users\\[^\\\s"'`<>]+(?:\\[^\s"'`<>]*)*/g, "[local-path]");
+  if (sanitized.length <= 2_000) return sanitized;
+  return `${sanitized.slice(0, 1_999).trimEnd()}…`;
+}
+
 function snapshotUrl(value: string): string {
   const url = new URL(canonicalizeUrl(value));
   url.username = "";
@@ -473,6 +536,7 @@ function snapshotCounts(snapshot: RepositorySnapshot) {
   return {
     sources: snapshot.sources.length,
     signals: snapshot.signals.length,
+    signalTriage: snapshot.signalTriage?.length ?? 0,
     discoveries: snapshot.discoveries.length,
     events: snapshot.events.length,
     eventSignals: snapshot.eventSignals.length,
@@ -480,5 +544,12 @@ function snapshotCounts(snapshot: RepositorySnapshot) {
 }
 
 function emptyCounts() {
-  return { sources: 0, signals: 0, discoveries: 0, events: 0, eventSignals: 0 };
+  return {
+    sources: 0,
+    signals: 0,
+    signalTriage: 0,
+    discoveries: 0,
+    events: 0,
+    eventSignals: 0,
+  };
 }

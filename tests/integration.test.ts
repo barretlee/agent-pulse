@@ -28,13 +28,18 @@ describe("SQLite application", () => {
     await seedDatabase(db);
 
     const repository = new Repository(db);
+    const sourceBySlug = await repository.getSourceByIdOrSlug(sourceCatalog[0]?.slug ?? "missing");
+    expect(sourceBySlug?.slug).toBe(sourceCatalog[0]?.slug);
+    expect((await repository.getSourceByIdOrSlug(sourceBySlug?.id ?? "missing"))?.id).toBe(
+      sourceBySlug?.id,
+    );
     expect((await repository.publicEvents()).length).toBeGreaterThanOrEqual(6);
     const result = await exportStaticSite(db, config);
     expect(result).toMatchObject({
       events: historicalEvents.length + 6,
       tracks: 10,
       sources: sourceCatalog.length,
-      version: "0.4.0",
+      version: "0.5.0",
     });
     const timeline = await readFile(join(config.distDir, "data/timeline.json"), "utf8");
     expect(timeline).not.toContain("ADMIN_TOKEN");
@@ -47,9 +52,27 @@ describe("SQLite application", () => {
     const product = JSON.parse(await readFile(join(config.distDir, "data/product.json"), "utf8"));
     expect(product.roadmap).toHaveLength(5);
     expect(product.sourceCoverage.total).toBeGreaterThanOrEqual(100);
+    expect(product.sourceCoverage.observing).toBe(0);
+    expect(product.evaluation).toMatchObject({
+      rawWeightedScore: expect.any(Number),
+      evidenceCoverage: expect.any(Number),
+    });
     expect(product.evaluation.dimensions).toHaveLength(10);
     expect(product.evaluation.status).toBe("partial");
     expect(product.evaluation.overallScore).toBeLessThan(50);
+    expect(
+      product.evaluation.dimensions.every(
+        (item: { sampleTarget: number }) => item.sampleTarget > 0,
+      ),
+    ).toBe(true);
+    expect(
+      product.evaluation.dimensions
+        .filter((item: { status: string }) => item.status === "insufficient_data")
+        .every(
+          (item: { score: number; scoreCap: number }) =>
+            item.score <= 45 && item.score <= item.scoreCap,
+        ),
+    ).toBe(true);
   });
 
   it("protects production admin APIs", async () => {
@@ -79,6 +102,72 @@ describe("SQLite application", () => {
     });
     expect(evaluation.statusCode).toBe(200);
     expect(evaluation.json().dimensions).toHaveLength(10);
+    const funnel = await app.inject({
+      method: "GET",
+      url: "/api/admin/pipeline/funnel",
+      headers: { authorization: "Bearer a-secure-token-for-tests" },
+    });
+    expect(funnel.statusCode).toBe(200);
+    expect(funnel.json()).toMatchObject({
+      signals: { backlog: expect.any(Number), deferred: expect.any(Number) },
+      events: { ready: expect.any(Number), blocked: expect.any(Number) },
+    });
+    for (const url of [
+      "/api/admin/source-checks",
+      "/api/admin/event-readiness",
+      "/api/admin/event-merge-candidates",
+    ]) {
+      const response = await app.inject({
+        method: "GET",
+        url,
+        headers: { authorization: "Bearer a-secure-token-for-tests" },
+      });
+      expect(response.statusCode, url).toBe(200);
+    }
+    const shadowSource = (await new Repository(db).listSources()).find(
+      (source) => source.lifecycle_status === "shadow" && source.acquisition === "rss",
+    );
+    const prematureObservation = await app.inject({
+      method: "POST",
+      url: `/api/admin/sources/${shadowSource?.id}/observation`,
+      headers: { authorization: "Bearer a-secure-token-for-tests" },
+      payload: { enabled: true },
+    });
+    expect(prematureObservation.statusCode).toBe(409);
+    expect(prematureObservation.json().error).toContain("not eligible");
     await app.close();
+  });
+
+  it("refreshes catalog metadata without resetting source runtime state", async () => {
+    const config = loadConfig({ NODE_ENV: "test", DATABASE_URL: "sqlite::memory:" });
+    const db = createDatabase(config);
+    databases.push(db);
+    await migrateToLatest(db, config);
+    await seedDatabase(db);
+    const repository = new Repository(db);
+    const source = (await repository.listSources()).find((item) => item.slug === "openai");
+    expect(source).toBeTruthy();
+    await repository.updateSource(source?.id ?? "missing", {
+      lifecycle_status: "degraded",
+      enabled: 1,
+      health_score: 42,
+      consecutive_failures: 3,
+      state_json: JSON.stringify({ etag: "runtime-state" }),
+      last_success_at: "2026-07-12T00:00:00.000Z",
+      last_error: "transient",
+    });
+
+    await seedDatabase(db);
+
+    const preserved = await repository.getSource(source?.id ?? "missing");
+    expect(preserved).toMatchObject({
+      lifecycle_status: "degraded",
+      enabled: 1,
+      health_score: 42,
+      consecutive_failures: 3,
+      last_success_at: "2026-07-12T00:00:00.000Z",
+      last_error: "transient",
+    });
+    expect(JSON.parse(preserved?.state_json ?? "{}")).toEqual({ etag: "runtime-state" });
   });
 });

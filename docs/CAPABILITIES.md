@@ -6,7 +6,7 @@
 
 ## Capability Map
 
-v0.4.0 在下方 v0.3 基线之上新增四项能力资产：`Continuous Data Refresh`（experimental）、`Two-year Baseline`（experimental）、`Track Synthesis`（operational）和 `Repository Snapshot`（operational）。完整机器可读状态以 `src/catalog/product.ts` 和公开 `product.json` 为准。
+v0.5 在 v0.4 基线之上沉淀了六项可复用能力资产：逐源恢复审计、隔离观察数据池、可逆信号分诊、人工事件收敛、发布就绪门禁和有界持续进化。来源可观测性已从 experimental 升为 operational；完整机器可读状态以 `src/catalog/product.ts` 和公开 `product.json` 为准。
 
 <div style="width:1200px;box-sizing:border-box;position:relative;background:#0f172a;padding:20px;border-radius:12px;"><style scoped>.cap-title{text-align:center;font-size:22px;font-weight:700;color:#f1f5f9;margin-bottom:16px;letter-spacing:1px}.cap-catalog{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.cap-card{border:1px solid #334155;border-radius:8px;padding:14px;background:rgba(30,41,59,.72)}.cap-card-title{font-size:12px;font-weight:700;color:#94a3b8;text-align:center;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid #334155}.cap-box{border-radius:6px;padding:8px;text-align:center;font-size:10px;font-weight:600;line-height:1.35;color:#e2e8f0;background:rgba(15,23,42,.7);border-left:2px solid #64748b;margin:5px 0}.cap-box.op{border-left-color:#22c55e}.cap-box.exp{border-left-color:#f59e0b}.cap-box.plan{opacity:.5}.cap-legend{display:flex;justify-content:center;gap:16px;margin-top:14px;color:#94a3b8;font-size:10px}.cap-legend i{display:inline-block;width:7px;height:7px;margin-right:5px;border-radius:50%}</style><div class="cap-title">Agent Pulse Capability Map · v0.3.0</div><div class="cap-catalog"><div class="cap-card"><div class="cap-card-title">Sensing / 感知</div><div class="cap-box op">Source Catalog</div><div class="cap-box exp">Upstream Discovery</div><div class="cap-box op">Source Lifecycle</div><div class="cap-box op">Resilient Fetch</div><div class="cap-box exp">Contract & Fixture</div><div class="cap-box exp">Coverage Map</div></div><div class="cap-card"><div class="cap-card-title">Understanding / 理解</div><div class="cap-box op">Normalize & Sanitize</div><div class="cap-box exp">URL / Content Dedupe</div><div class="cap-box exp">Event Clustering</div><div class="cap-box exp">Fact / Reason / Impact</div><div class="cap-box plan">Entity Resolution</div><div class="cap-box plan">Claim / Evidence Graph</div></div><div class="cap-card"><div class="cap-card-title">Intelligence / 挖掘</div><div class="cap-box exp">Confidence Scoring</div><div class="cap-box exp">Cross-circle Heat</div><div class="cap-box exp">Impact & Value</div><div class="cap-box exp">Opportunity Scout</div><div class="cap-box plan">Trend / Contradiction</div><div class="cap-box plan">Forecast Calibration</div></div><div class="cap-card"><div class="cap-card-title">Experience / 决策</div><div class="cap-box exp">Today Brief</div><div class="cap-box op">Narrative Timeline</div><div class="cap-box exp">Industry Radar</div><div class="cap-box exp">Opportunity Inbox</div><div class="cap-box exp">Control Room</div><div class="cap-box op">Static Release</div></div><div class="cap-card"><div class="cap-card-title">Governance / 治理</div><div class="cap-box op">Primary Source Gate</div><div class="cap-box op">Security Guardrails</div><div class="cap-box op">Provenance</div><div class="cap-box exp">Evaluation Scorecard</div><div class="cap-box op">Capability Accounting</div><div class="cap-box plan">Audit / Replay / Rollback</div></div></div><div class="cap-legend"><span><i style="background:#22c55e"></i>operational</span><span><i style="background:#f59e0b"></i>experimental</span><span><i style="background:#64748b"></i>planned</span></div></div>
 
@@ -20,18 +20,34 @@ v0.4.0 在下方 v0.3 基线之上新增四项能力资产：`Continuous Data Re
 真实运行数据 / 人工反馈 / release evidence
                     │
                     ▼
-        Evaluation dimensions + sample size
+ Evaluation dimensions + sample target + penalties
                     │
           ┌─────────┴─────────┐
           ▼                   ▼
  sufficient evidence     insufficient data
- 计入综合水位             只显示缺口，不参与总分
+按实测分计入总分        计入总分且单项硬封顶 <= 45
           │                   │
           └─────────┬─────────┘
+                    ▼
+ 加权分 × (0.65 + 充分证据覆盖率 × 0.35)
+                    │
                     ▼
       capability maturity + next action
                     ▼
       next spec / implementation / release
 ```
 
-当前评测维度包括来源覆盖、来源质量、一手来源归属、采集稳定性、事实置信度、认知与决策价值、实时处理、内容时效、机会行动效果、安全与治理。后续增加聚类 F1、Claim 证据覆盖、预测 Brier score、用户节省时间、行动转化和产物完成率。
+当前评测维度包括有效来源覆盖、来源内容质量、一手来源归属、采集稳定性、事实置信度、认知与决策价值、端到端实时性、内容时效、机会行动效果、安全与治理。目录数量、目录预填质量分、单一来源重复成功运行、人工 confidence/value 自评分、字段完整度和 Scout 编辑状态不再单独构成高分。
+
+重标定运行检查点：变更前最近一次公开评测记录是 **69 分**（195 个目录源、68 healthy、44 个公开事件、个位数多源事件）；第一版新口径降至 27 分。完成 258 源扩张和 99 源隔离观察后，最终工作库为 **30 分**（维度加权 42，充分证据覆盖 20%）。来源覆盖只给 4 个 active 且健康的 E4 源计生产样本，131 个单轮 healthy 和 99 个 E3 observing 不会伪装成生产覆盖。分数降低不是产品变差，而是把“配置存在”“一次可用”“隔离观察”和“生产验证”分开。后续只有连续观测、多源事件、端到端延迟、用户行动反馈和回滚演练增加，分数才会增长。
+
+硬约束如下：
+
+- `insufficient_data` 维度仍进入总分，统一上限 45；事实置信度、决策价值、实时性和行动效果可使用更严格的 42/35/30/20 上限。
+- 有效来源覆盖以最新 `source_checks=healthy` 为核心样本，100 个健康来源是满量程目标；catalog、draft 和 manual 不算有效来源。
+- 采集稳定性按每个来源的最新检查/运行去重，至少连续 7 个自然日且 100 个健康来源才视为充分证据。
+- 事实置信度要求至少 20 个多源公开事件和 30 个就绪公开事件；人工置信分权重上限为 10%。
+- 认知价值和 Scout 效果必须依赖真实保存、引用、行动、产物或付费反馈；编辑状态不算用户结果。
+- 实时性必须记录 upstream publish → Signal → Event → Pages 的端到端延迟，collector 请求耗时不能替代。
+
+后续增加聚类 F1、Claim 证据覆盖、预测 Brier score、用户节省时间、行动转化和产物完成率。

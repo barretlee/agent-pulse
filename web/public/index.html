@@ -3,82 +3,143 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Agent Pulse：用 Today、六条趋势和两年演进理解 AI 行业变化。" />
+    <meta
+      name="description"
+      content="Agent Pulse：用一手证据、六条主线和两年时间轴理解 AI 行业变化。"
+    />
     <meta name="theme-color" content="#080b12" />
-    <title>Agent Pulse · AI 行业决策面</title>
+    <title>Agent Pulse · AI 行业决策情报</title>
     <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="./assets/app.css" />
   </head>
   <body>
+    <a class="skip-link" href="#brief">跳到决策简报</a>
     <div class="ambient ambient-one"></div>
     <div class="ambient ambient-two"></div>
+
     <header class="topbar">
       <a class="brand" href="#top" aria-label="Agent Pulse 首页">
-        <span class="brand-mark"><i></i><i></i><i></i></span>
-        <span><strong>AGENT PULSE</strong><small>SIGNAL, NOT NOISE.</small></span>
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span><strong>AGENT PULSE</strong><small>决策情报 · 不是新闻流</small></span>
       </a>
       <nav class="topnav" aria-label="页面导航">
-        <a href="#today">Today</a><a href="#trends">六条趋势</a><a href="#evolution">两年演进</a><a href="#more">更多</a>
+        <a href="#brief">今日判断</a>
+        <a href="#lines">六条主线</a>
+        <a href="#timeline">证据时间轴</a>
+        <a href="#more">决策工具</a>
       </nav>
       <div class="top-actions">
         <button class="icon-button" id="themeButton" type="button" aria-label="切换主题">◐</button>
-        <a class="github-link" href="https://github.com/barretlee/agent-pulse" target="_blank" rel="noopener">GitHub ↗</a>
+        <a
+          class="github-link"
+          href="https://github.com/barretlee/agent-pulse"
+          target="_blank"
+          rel="noopener noreferrer"
+        >GitHub ↗</a>
       </div>
     </header>
 
     <main id="top">
-      <section class="masthead shell">
+      <section class="masthead shell" aria-labelledby="pageTitle">
         <div class="masthead-copy">
-          <div class="eyebrow"><span class="live-dot"></span> EXECUTIVE INTELLIGENCE / CHINA + GLOBAL</div>
-          <h1>用三层信息，<br /><em>抓住 AI 的主线。</em></h1>
-          <p>先看今天必须知道什么，再看六条趋势往哪里走，最后回到两年演进判断变化是否成立。</p>
-          <div class="freshness"><span id="generatedAt">正在载入最新情报…</span><span class="freshness-rule">事实与推断分离</span></div>
+          <div class="eyebrow"><span class="live-dot"></span> CHINA FIRST · GLOBAL CONTEXT</div>
+          <h1 id="pageTitle">别追每条新闻。<br /><em>看清变化的方向。</em></h1>
+          <p>从一手事实出发，沿技术、AGI、商业、资本与中国追赶主线，找到真正会改变决策的行业转折。</p>
+          <div class="freshness">
+            <span id="generatedAt">正在载入最新情报…</span>
+            <span class="freshness-rule">事实 / 分析 / 预测明确分层</span>
+          </div>
         </div>
-        <aside class="pulse-summary" aria-label="当前情报概览">
-          <div class="pulse-score"><span>最高价值</span><strong id="heroScore">—</strong></div>
-          <div><span>公开节点</span><strong id="eventCount">—</strong></div>
-          <div><span>战略趋势</span><strong id="trendCount">6</strong></div>
-          <div><span>热点节点</span><strong id="hotCount">—</strong></div>
+        <aside class="pulse-summary" aria-label="当前情报覆盖">
+          <div class="pulse-primary"><span>一手证据覆盖</span><strong id="primaryRate">—</strong><small>至少含一个原始来源</small></div>
+          <div><span>公开事件</span><strong id="eventCount">—</strong><small>达到发布门槛</small></div>
+          <div><span>一手 + 多源</span><strong id="crossVerified">—</strong><small>原始来源并有独立佐证</small></div>
+          <div><span>观察跨度</span><strong id="coverageSpan">—</strong><small>最早至最新证据</small></div>
         </aside>
       </section>
 
-      <section class="today-section shell" id="today">
-        <div class="section-head compact-head">
-          <div><span class="section-kicker">01 / TODAY</span><h2>最新决策面</h2></div>
-          <label class="search-control"><span>⌕</span><input id="searchInput" type="search" placeholder="按公司、技术或关键词搜索全部事件" /></label>
-        </div>
-        <div class="today-grid">
-          <article class="today-lead" id="todayLead"></article>
-          <div class="today-list" id="todayList"></div>
-        </div>
-        <div class="search-results" id="searchResults" hidden>
-          <div class="result-head"><strong>搜索结果</strong><span id="searchCount">0</span></div>
-          <div id="searchResultList"></div>
-        </div>
+      <section class="brief-section shell" id="brief" aria-labelledby="briefTitle">
+        <header class="section-head">
+          <div><span class="section-kicker">01 / 30-SECOND BRIEF</span><h2 id="briefTitle">今天，先判断这件事</h2></div>
+          <p>选择近期、价值较高且具备一手证据的事件。事实本身与系统分析分开呈现。</p>
+        </header>
+        <div id="decisionBrief" class="decision-brief" aria-live="polite"></div>
       </section>
 
-      <section class="trends-section" id="trends">
+      <section class="lines-section" id="lines" aria-labelledby="linesTitle">
         <div class="shell">
-          <div class="section-head inverse">
-            <div><span class="section-kicker">02 / SIX SIGNAL LINES</span><h2>六条主线趋势</h2></div>
-            <p>同一事实只保留一份；趋势卡只给出方向、最新证据和节点数量，详细事件在需要时展开。</p>
-          </div>
-          <div class="trend-grid" id="trendGrid"></div>
+          <header class="section-head inverse">
+            <div><span class="section-kicker">02 / STRATEGIC LINES</span><h2 id="linesTitle">六条主线，不是六个标签</h2></div>
+            <p>每条主线只保留当前判断、下一观察点和可回溯的证据节点。</p>
+          </header>
+          <div class="line-tabs" id="lineTabs" role="tablist" aria-label="战略主线"></div>
+          <div class="line-focus" id="lineFocus" aria-live="polite"></div>
         </div>
       </section>
 
-      <section class="evolution-section shell" id="evolution">
-        <div class="section-head">
-          <div><span class="section-kicker">03 / 24-MONTH VIEW</span><h2>两年演进摘要</h2></div>
-          <p>按半年观察被公开证据确认的关键转折。空白代表尚无达到发布门槛的节点，不代表行业没有变化。</p>
+      <section class="timeline-section shell" id="timeline" aria-labelledby="timelineTitle">
+        <header class="section-head timeline-heading">
+          <div><span class="section-kicker">03 / EVIDENCE TIMELINE</span><h2 id="timelineTitle">沿时间，看证据如何累积</h2></div>
+          <p>左侧快速扫读，右侧同步核验事实、判断与原始链接。分数是系统估计，不是事实。</p>
+        </header>
+
+        <div class="timeline-controls">
+          <label class="search-control">
+            <span aria-hidden="true">⌕</span>
+            <input id="searchInput" type="search" placeholder="搜索公司、技术、事件或关键词" autocomplete="off" />
+          </label>
+          <fieldset class="timeline-filters" id="timelineFilters" aria-label="按主线筛选"></fieldset>
+          <span class="result-count" id="timelineCount">—</span>
         </div>
+
+        <div class="timeline-workbench">
+          <div class="timeline-stream" id="timelineStream" aria-live="polite"></div>
+          <aside class="detail-preview" id="detailDrawer" aria-label="事件证据预览" aria-hidden="false">
+            <button class="drawer-close" id="drawerClose" type="button" aria-label="关闭事件预览">×</button>
+            <div class="drawer-scroll">
+              <div class="preview-empty" id="previewEmpty">
+                <span>SELECT AN EVENT</span>
+                <strong>点击左侧事件，核验事实与判断</strong>
+                <p>预览不会离开时间轴；原始证据将在新窗口打开。</p>
+              </div>
+              <div id="previewContent" hidden>
+                <div class="drawer-meta"><span id="drawerCategory"></span><span id="drawerDate"></span></div>
+                <h2 id="drawerTitle">事件详情</h2>
+                <section class="fact-panel">
+                  <span class="content-label fact-label">事实陈述</span>
+                  <p id="drawerFact"></p>
+                </section>
+                <div class="evidence-status" id="evidenceStatus"></div>
+                <div class="score-row" id="drawerScores"></div>
+                <p class="score-disclaimer">系统估计 · 用于排序，不代表客观真值</p>
+                <div class="drawer-keywords" id="drawerKeywords"></div>
+                <div class="insight-stack">
+                  <section class="summary-insight"><span>分析摘要</span><p id="drawerSummary"></p></section>
+                  <section><span>技术判断</span><p id="drawerTechnical"></p></section>
+                  <section><span>行业影响</span><p id="drawerIndustry"></p></section>
+                  <section class="action-insight"><span>决策价值</span><p id="drawerBusiness"></p></section>
+                  <section><span>接下来观察</span><p id="drawerFuture"></p></section>
+                </div>
+                <div class="drawer-section"><h3>所属主线</h3><div id="drawerTracks" class="drawer-tracks"></div></div>
+                <div class="drawer-section"><h3>原始证据</h3><div id="drawerEvidence" class="evidence-list"></div></div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="evolution-section shell" id="evolution" aria-labelledby="evolutionTitle">
+        <header class="section-head">
+          <div><span class="section-kicker">04 / 24-MONTH CONTEXT</span><h2 id="evolutionTitle">两年演进，不被今天绑架</h2></div>
+          <p>阶段叙事帮助判断一条新闻是孤立噪声，还是延续、加速或扭转了长期趋势。</p>
+        </header>
         <div class="evolution-strip" id="evolutionStrip"></div>
         <p class="coverage-note" id="coverageNote"></p>
       </section>
 
-      <section class="more-section shell" id="more">
+      <section class="more-section shell" id="more" aria-labelledby="moreTitle">
         <div class="more-intro">
-          <div><span class="more-kicker">ON DEMAND</span><h2>需要时再下钻</h2><p>机会、角色、模型资源和系统进度不占据默认阅读路径。</p></div>
+          <div><span class="more-kicker">05 / DECISION TOOLS</span><h2 id="moreTitle">需要时，再向下钻</h2><p>机会、角色、购买资源与系统水位不挤占主阅读路径。</p></div>
           <fieldset class="tool-switcher" id="toolSwitcher" aria-label="更多情报工具">
             <button type="button" data-tool="scout">✦ 星探机会</button>
             <button type="button" data-tool="actors">⌬ 中国角色</button>
@@ -90,28 +151,9 @@
       </section>
     </main>
 
-    <footer><div class="shell footer-inner"><div><strong>AGENT PULSE</strong><p>Signal, not noise.</p></div><p>一手来源优先 · 热度可解释 · 详细信息按需展开</p><span id="footerTime">—</span></div></footer>
+    <footer><div class="shell footer-inner"><div><strong>AGENT PULSE</strong><p>Signal, not noise.</p></div><p>一手来源优先 · 事实与判断分离 · 证据可追溯</p><span id="footerTime">—</span></div></footer>
 
     <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
-    <aside class="detail-drawer" id="detailDrawer" aria-hidden="true" aria-label="事件详情">
-      <button class="drawer-close" id="drawerClose" type="button" aria-label="关闭详情">×</button>
-      <div class="drawer-scroll">
-        <div class="drawer-meta"><span id="drawerCategory"></span><span id="drawerDate"></span></div>
-        <h2 id="drawerTitle">事件详情</h2>
-        <p class="drawer-lead" id="drawerFact"></p>
-        <div class="score-row" id="drawerScores"></div>
-        <div class="drawer-keywords" id="drawerKeywords"></div>
-        <div class="insight-stack">
-          <section><span>01 / 核心摘要</span><p id="drawerSummary"></p></section>
-          <section><span>02 / 技术洞察</span><p id="drawerTechnical"></p></section>
-          <section><span>03 / 行业判断</span><p id="drawerIndustry"></p></section>
-          <section><span>04 / 业务价值</span><p id="drawerBusiness"></p></section>
-          <section><span>05 / 未来观察</span><p id="drawerFuture"></p></section>
-        </div>
-        <div class="drawer-section"><h3>所属主线</h3><div id="drawerTracks" class="drawer-tracks"></div></div>
-        <div class="drawer-section"><h3>证据链</h3><div id="drawerEvidence" class="evidence-list"></div></div>
-      </div>
-    </aside>
     <script type="module" src="./assets/app.js"></script>
   </body>
 </html>

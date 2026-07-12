@@ -25,7 +25,6 @@ export function applySourceSuccess(state: SourceHealth, notModified = false): So
   }
   return {
     ...state,
-    lifecycle: state.lifecycle === "degraded" ? "active" : state.lifecycle,
     healthScore: Math.min(100, state.healthScore + (notModified ? 3 : 8)),
     consecutiveFailures: 0,
     successCount: state.successCount + 1,
@@ -35,8 +34,9 @@ export function applySourceSuccess(state: SourceHealth, notModified = false): So
 export function applySourceFailure(state: SourceHealth, severe = false): SourceHealth {
   if (state.lifecycle === "retired") return state;
   const consecutiveFailures = state.consecutiveFailures + 1;
-  const lifecycle: SourceLifecycle =
-    consecutiveFailures >= 5
+  const lifecycle: SourceLifecycle = severe
+    ? "quarantined"
+    : consecutiveFailures >= 5
       ? "quarantined"
       : consecutiveFailures >= 2
         ? "degraded"

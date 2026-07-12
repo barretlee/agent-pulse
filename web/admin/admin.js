@@ -12,6 +12,10 @@ const state = {
   discoverySummary: {},
   discoveryStatus: "all",
   evaluation: null,
+  monitor: null,
+  sourceChecks: [],
+  funnel: null,
+  mergeCandidates: [],
 };
 const $ = (selector) => document.querySelector(selector);
 const node = (tag, className, text) => {
@@ -25,6 +29,7 @@ const titles = {
   sources: "信源矩阵",
   discoveries: "来源雷达",
   scout: "星探驾驶舱",
+  health: "系统健康",
   evaluation: "评测中心",
   events: "事件与发布",
   tracks: "主线编排",
@@ -39,7 +44,11 @@ async function api(path, options = {}) {
   if (state.token) headers.authorization = `Bearer ${state.token}`;
   const response = await fetch(path, { ...options, headers });
   const payload = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(payload.error || `HTTP ${response.status}`);
+  if (!response.ok) {
+    const error = new Error(payload.error || `HTTP ${response.status}`);
+    error.payload = payload;
+    throw error;
+  }
   return payload;
 }
 async function loadAll() {
@@ -57,6 +66,8 @@ async function loadAll() {
       actors,
       resources,
       view,
+      funnel,
+      mergeCandidates,
     ] = await Promise.all([
       api("/api/admin/dashboard"),
       api("/api/admin/sources"),
@@ -70,6 +81,8 @@ async function loadAll() {
       api("/api/admin/actors"),
       api("/api/admin/resources"),
       api("/api/admin/view"),
+      api("/api/admin/pipeline/funnel"),
+      api("/api/admin/event-merge-candidates"),
     ]);
     Object.assign(state, {
       sources,
@@ -83,14 +96,18 @@ async function loadAll() {
       actors,
       resources,
       view,
+      funnel,
+      mergeCandidates,
     });
     renderMetrics(dashboard);
+    renderFunnel(funnel);
     renderJobs(jobs);
     renderSources();
     renderDiscoveries();
     renderScout();
     renderEvaluation();
     renderEvents();
+    renderMergeCandidates();
     renderTracks();
     renderActors();
     renderResources();
@@ -98,6 +115,159 @@ async function loadAll() {
   } catch (error) {
     toast(error.message, true);
   }
+}
+
+function renderMergeCandidates() {
+  const root = $("#mergeCandidateList");
+  const count = $("#mergeCandidateCount");
+  if (!root || !count) return;
+  const groups = state.mergeCandidates || [];
+  count.textContent = `${groups.length} GROUPS`;
+  root.replaceChildren();
+  groups.slice(0, 20).forEach((group) => {
+    const card = node("article", "merge-candidate");
+    const header = node("div", "merge-candidate-head");
+    header.append(
+      node("strong", "", `${group.events.length} 个疑似重复事件`),
+      node("span", "", `${group.confidence}% · ${group.reason}`),
+    );
+    card.append(header);
+    group.events.forEach((event) => {
+      const row = node(
+        "button",
+        event.id === group.targetEventId ? "merge-event target" : "merge-event",
+      );
+      row.type = "button";
+      row.append(
+        node("span", "", event.id === group.targetEventId ? "建议主事件" : "候选分支"),
+        node("strong", "", event.title),
+        node(
+          "small",
+          "",
+          `${event.status} · ${event.independentSources} 来源 · ${event.evidenceCount} 证据`,
+        ),
+      );
+      row.addEventListener("click", () => openEvent(event.id));
+      card.append(row);
+    });
+    const mergeable = group.events.filter(
+      (event) => event.id !== group.targetEventId && event.status !== "published",
+    );
+    if (mergeable.length) {
+      const action = node(
+        "button",
+        "row-action merge-confirm",
+        `合并 ${mergeable.length} 个 review 分支`,
+      );
+      action.type = "button";
+      action.addEventListener("click", async () => {
+        const approved = window.confirm(
+          `将 ${mergeable.length} 个 review 事件的证据、主线和角色合并到建议主事件。该操作会写入审计记录，确认继续？`,
+        );
+        if (!approved) return;
+        try {
+          const result = await api("/api/admin/events/merge", {
+            method: "POST",
+            body: JSON.stringify({
+              targetEventId: group.targetEventId,
+              sourceEventIds: mergeable.map((event) => event.id),
+              reason: group.reason,
+              confirmation: "merge-reviewed-events",
+            }),
+          });
+          toast(`已收敛 ${result.merged} 个事件分支`);
+          await loadAll();
+        } catch (error) {
+          toast(error.message, true);
+        }
+      });
+      card.append(action);
+    }
+    root.append(card);
+  });
+  if (!groups.length) root.append(node("p", "cell-muted", "未发现高置信事件合并候选。"));
+}
+
+function renderFunnel(report) {
+  state.funnel = report;
+  const flow = $("#funnelFlow");
+  const blockers = $("#funnelBlockers");
+  if (!flow || !blockers) return;
+  const steps = [
+    ["原始信号", report.signals.total, `${report.signals.primary} 条一手归属`],
+    [
+      "已聚类",
+      report.signals.clustered,
+      `${report.signals.backlog} 条待处理 · ${report.signals.deferred} 条延后`,
+    ],
+    ["事件", report.events.total, `${report.events.multiSource} 个多源事件`],
+    ["内容就绪", report.events.ready, `${report.events.blocked} 个仍被门禁阻止`],
+    ["已发布", report.events.published, `事件发布率 ${report.conversion.eventToPublishedPercent}%`],
+  ];
+  flow.replaceChildren();
+  steps.forEach(([label, value, note], index) => {
+    const card = node("div", "funnel-step");
+    card.append(
+      node("small", "", label),
+      node("strong", "", String(value)),
+      node("span", "", note),
+    );
+    flow.append(card);
+    if (index < steps.length - 1) flow.append(node("i", "funnel-arrow", "→"));
+  });
+  const blockerLabels = {
+    placeholder_content: "占位内容",
+    thin_fact: "事实过薄",
+    generic_entity: "实体泛化",
+    missing_category: "缺分类",
+    missing_keywords: "缺关键词",
+    missing_track: "缺主线",
+    missing_evidence: "缺证据",
+    missing_primary_evidence: "缺一手证据",
+    low_confidence: "低置信",
+    unsupported_heat: "热度证据不足",
+  };
+  blockers.replaceChildren();
+  Object.entries(report.blockerCounts)
+    .sort((left, right) => right[1] - left[1])
+    .slice(0, 8)
+    .forEach(([key, value]) => {
+      const item = node("span", "funnel-blocker");
+      item.append(
+        node("b", "", String(value)),
+        document.createTextNode(` ${blockerLabels[key] || key}`),
+      );
+      blockers.append(item);
+    });
+  if (report.signals.aggregatorDebt > 0) {
+    const cleanup = node(
+      "button",
+      "funnel-cleanup",
+      `清理 ${report.signals.aggregatorDebt} 条未挂载聚合信号`,
+    );
+    cleanup.type = "button";
+    cleanup.addEventListener("click", async () => {
+      if (
+        !window.confirm(
+          "只删除未进入任何事件证据链的聚合器事实信号；已挂载记录会保留待审。确认继续？",
+        )
+      )
+        return;
+      try {
+        const result = await api("/api/admin/pipeline/provenance-cleanup", {
+          method: "POST",
+          body: JSON.stringify({ confirmation: "purge-unattached-aggregator-signals" }),
+        });
+        toast(`已清理 ${result.action.removed} 条，保留 ${result.action.retainedForReview} 条待审`);
+        await loadAll();
+      } catch (error) {
+        toast(error.message, true);
+      }
+    });
+    blockers.append(cleanup);
+  }
+  const freshness = $("#funnelFreshness");
+  freshness.textContent = `MULTI-SOURCE ${report.conversion.multiSourcePercent}%`;
 }
 
 function renderEvaluation() {
@@ -108,15 +278,23 @@ function renderEvaluation() {
   if (!state.evaluation) {
     $("#evaluationScore").textContent = "—";
     $("#evaluationStatus").textContent = "点击流水线中的评测开始";
+    $("#evaluationCalibration").textContent = "尚未评测";
     return;
   }
   $("#evaluationScore").textContent = state.evaluation.overallScore;
   $("#evaluationStatus").textContent =
     `${state.evaluation.status} · v${state.evaluation.releaseVersion}`;
+  $("#evaluationCalibration").textContent =
+    `维度加权 ${state.evaluation.rawWeightedScore ?? "—"} · 充分证据覆盖 ${state.evaluation.evidenceCoverage ?? 0}% · ${state.evaluation.notes ?? "已应用低样本惩罚"}`;
   state.evaluation.dimensions.forEach((dimension) => {
     const card = node("article", `evaluation-card ${dimension.status}`);
     const top = node("div", "evaluation-card-top");
-    top.append(node("strong", "", dimension.name), node("b", "", String(dimension.score)));
+    const score = node("div", "evaluation-card-score");
+    score.append(node("b", "", String(dimension.score)));
+    if (Number.isFinite(dimension.rawScore) && dimension.rawScore !== dimension.score) {
+      score.append(node("del", "", String(dimension.rawScore)));
+    }
+    top.append(node("strong", "", dimension.name), score);
     const bar = node("div", "evaluation-bar");
     const fill = node("i");
     fill.style.width = `${dimension.score}%`;
@@ -128,12 +306,19 @@ function renderEvaluation() {
         "span",
         "",
         dimension.status === "measured"
-          ? `样本 ${dimension.sampleSize}`
-          : `证据不足 · 样本 ${dimension.sampleSize}`,
+          ? `样本 ${dimension.sampleSize}/${dimension.sampleTarget ?? "—"}`
+          : `证据不足 · 样本 ${dimension.sampleSize}/${dimension.sampleTarget ?? "—"} · 上限 ${dimension.scoreCap ?? 45}`,
       ),
       node("p", "", dimension.summary),
-      node("small", "", `下一步：${dimension.nextAction}`),
     );
+    if (dimension.penalties?.length) {
+      const penalties = node("ul", "evaluation-penalties");
+      dimension.penalties.forEach((penalty) => {
+        penalties.append(node("li", "", penalty));
+      });
+      card.append(penalties);
+    }
+    card.append(node("small", "", `下一步：${dimension.nextAction}`));
     root.append(card);
   });
   const domains = state.evaluation.capabilities.reduce((groups, capability) => {
@@ -203,7 +388,7 @@ function renderSources(filter = "") {
         node(
           "span",
           "cell-muted",
-          `Tier ${source.tier} / ${source.role}\n${source.lifecycle_status}`,
+          `Tier ${source.tier} / ${source.role}\n${source.lifecycle_status}${source.observation_enabled === 1 ? " · OBSERVING" : ""}`,
         ),
       );
       const score = input("number", source.authority_score, "score-input");
@@ -230,6 +415,17 @@ function renderSources(filter = "") {
       const run = node("button", "row-action", "单源拉取");
       run.addEventListener("click", () => runSource(source.id));
       if (["shadow", "active", "degraded"].includes(source.lifecycle_status)) actions.append(run);
+      if (source.lifecycle_status === "shadow") {
+        const observe = node(
+          "button",
+          "row-action",
+          source.observation_enabled === 1 ? "停止观察" : "开启观察",
+        );
+        observe.addEventListener("click", () =>
+          sourceObservation(source.id, source.observation_enabled !== 1),
+        );
+        actions.append(observe);
+      }
       row.append(actions);
       root.append(row);
     });
@@ -467,6 +663,19 @@ async function runSource(sourceId) {
   }
 }
 
+async function sourceObservation(sourceId, enabled) {
+  try {
+    await api(`/api/admin/sources/${sourceId}/observation`, {
+      method: "POST",
+      body: JSON.stringify({ enabled }),
+    });
+    toast(enabled ? "已进入 shadow 观察采集" : "已停止 shadow 观察采集");
+    await loadAll();
+  } catch (error) {
+    toast(error.message, true);
+  }
+}
+
 function renderScout(filter = "") {
   const root = $("#scoutTable");
   root.replaceChildren();
@@ -656,15 +865,23 @@ async function patch(path, body) {
     await api(path, { method: "PATCH", body: JSON.stringify(body) });
     toast("已保存");
     await loadAll();
+    return true;
   } catch (error) {
-    toast(error.message, true);
+    const blockers = error.payload?.readiness?.blockers;
+    toast(blockers?.length ? `${error.message}：${blockers.join("、")}` : error.message, true);
+    return false;
   }
 }
-function openEvent(event) {
+async function openEvent(event) {
   const form = $("#eventForm");
+  $("#eventModal").hidden = false;
+  $("#eventReadiness").textContent = "正在检查发布条件…";
+  $("#eventEvidenceAdmin").replaceChildren();
   [
     "id",
     "title",
+    "company",
+    "category",
     "factSummary",
     "summary",
     "technicalInsight",
@@ -689,8 +906,46 @@ function openEvent(event) {
       }[name] || name;
     form.elements[name].value = event[key] ?? "";
   });
+  form.elements.keywords.value = parseList(event.keywords_json).join(", ");
   form.elements.featured.checked = event.featured === 1;
-  $("#eventModal").hidden = false;
+  try {
+    const detail = await api(`/api/admin/events/${event.id}/detail`);
+    renderEventReadiness(detail.readiness, detail.evidence, detail.tracks);
+  } catch (error) {
+    $("#eventReadiness").textContent = `检查失败：${error.message}`;
+  }
+}
+
+function renderEventReadiness(readiness, evidence, tracks) {
+  const panel = $("#eventReadiness");
+  panel.className = `event-readiness ${readiness.status}`;
+  panel.replaceChildren();
+  panel.append(
+    node(
+      "strong",
+      "",
+      readiness.status === "ready" ? "满足发布硬门禁" : `尚有 ${readiness.blockers.length} 项阻塞`,
+    ),
+    node(
+      "span",
+      "",
+      `${readiness.evidenceLevel} · ${readiness.evidenceCount} 条证据 · ${readiness.independentSources} 个独立来源 · ${tracks.length} 条主线`,
+    ),
+  );
+  if (readiness.blockers.length) {
+    panel.append(node("small", "", readiness.blockers.join(" · ")));
+  }
+  const root = $("#eventEvidenceAdmin");
+  root.replaceChildren();
+  evidence.forEach((item) => {
+    const link = externalLink(item.url, item.title);
+    const row = node("div", "event-evidence-row");
+    row.append(
+      link || node("span", "", item.title),
+      node("small", "", `${item.source} · Tier ${item.tier} · ${item.role} · ${item.evidenceRole}`),
+    );
+    root.append(row);
+  });
 }
 $("#eventForm").addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -699,6 +954,8 @@ $("#eventForm").addEventListener("submit", async (event) => {
   const body = {};
   [
     "title",
+    "company",
+    "category",
     "factSummary",
     "summary",
     "technicalInsight",
@@ -709,12 +966,16 @@ $("#eventForm").addEventListener("submit", async (event) => {
   ].forEach((key) => {
     body[key] = form.get(key);
   });
+  body.keywords = String(form.get("keywords") || "")
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
   ["confidenceScore", "heatScore", "impactScore"].forEach((key) => {
     body[key] = Number(form.get(key));
   });
   body.featured = event.currentTarget.elements.featured.checked;
-  await patch(`/api/admin/events/${id}`, body);
-  $("#eventModal").hidden = true;
+  const saved = await patch(`/api/admin/events/${id}`, body);
+  if (saved) $("#eventModal").hidden = true;
 });
 $(".modal-close").addEventListener("click", () => ($("#eventModal").hidden = true));
 $("#eventModal").addEventListener("click", (event) => {
@@ -764,6 +1025,7 @@ $("#adminNav").addEventListener("click", (event) => {
     page.classList.toggle("active", page.dataset.page === button.dataset.tab);
   });
   $("#pageTitle").textContent = titles[button.dataset.tab];
+  if (button.dataset.tab === "health") loadMonitor();
 });
 $("#discoveryStatusFilter").addEventListener("click", (event) => {
   const button = event.target.closest("button[data-status]");
@@ -796,4 +1058,229 @@ function toast(message, error = false) {
     el.hidden = true;
   }, 2600);
 }
+
+// ─── Health Dashboard ────────────────────────────────────────────
+
+async function loadMonitor() {
+  const [report, checks] = await Promise.all([
+    api("/api/admin/monitor"),
+    api("/api/admin/source-checks?limit=500"),
+  ]);
+  if (!report) return;
+  state.monitor = report;
+  state.sourceChecks = checks;
+  renderHealthMetrics(report);
+  renderCoverageMap(report);
+  renderAttentionList(report);
+  renderRecommendations(report);
+  renderSourceChecks(checks);
+}
+
+function renderHealthMetrics(report) {
+  const grid = $("#healthMetrics");
+  if (!grid) return;
+  const items = [
+    { label: "活跃来源", value: report.activeSources, cls: "ok" },
+    {
+      label: "已降级",
+      value: report.degradedSources,
+      cls: report.degradedSources > 5 ? "warn" : "ok",
+    },
+    {
+      label: "已隔离",
+      value: report.quarantinedSources,
+      cls: report.quarantinedSources > 0 ? "critical" : "ok",
+    },
+    {
+      label: "待激活",
+      value: report.shadowSources,
+      cls: report.shadowSources > 50 ? "warn" : "ok",
+    },
+    {
+      label: "Shadow 观察",
+      value: report.observedShadowSources ?? 0,
+      cls: report.observedShadowSources > 0 ? "ok" : "warn",
+    },
+    { label: "已退休", value: report.retiredSources, cls: "ok" },
+    { label: "草稿", value: report.draftSources, cls: "ok" },
+    {
+      label: "已检查",
+      value: `${report.checkedSources}/${report.totalSources}`,
+      cls: report.checkCoveragePercent < 50 ? "warn" : "ok",
+    },
+    {
+      label: "检查通过",
+      value: report.healthyCheckedSources,
+      cls: report.healthyCheckedSources ? "ok" : "warn",
+    },
+    {
+      label: "检查覆盖",
+      value: `${report.checkCoveragePercent}%`,
+      cls: report.checkCoveragePercent < 50 ? "critical" : "ok",
+    },
+    {
+      label: "审计健康率",
+      value: `${report.auditHealthyPercent ?? 0}%`,
+      cls:
+        report.auditHealthyPercent < 40
+          ? "critical"
+          : report.auditHealthyPercent < 70
+            ? "warn"
+            : "ok",
+    },
+    {
+      label: "自动源异常",
+      value: report.repairableCheckedSources ?? 0,
+      cls: report.repairableCheckedSources > 0 ? "critical" : "ok",
+    },
+  ];
+  grid.innerHTML = items
+    .map(
+      (item) =>
+        `<div class="health-metric ${item.cls}"><div class="metric-value">${item.value}</div><div class="metric-label">${item.label}</div></div>`,
+    )
+    .join("");
+}
+
+function renderCoverageMap(report) {
+  const map = $("#coverageMap");
+  if (!map) return;
+  map.innerHTML = report.coverageGaps
+    .map((gap) => {
+      const pct = Math.min(100, Math.round((gap.current / Math.max(1, gap.target)) * 100));
+      const barCls =
+        gap.severity === "critical" ? "critical" : gap.severity === "warning" ? "warning" : "ok";
+      return `<div class="coverage-row">
+        <span class="cov-label">${gap.label}</span>
+        <div class="cov-bar-wrap"><div class="cov-bar ${barCls}" style="width:${pct}%"></div></div>
+        <span class="cov-count">有效 ${gap.current} · 目录 ${gap.catalogCurrent ?? 0} · 目标 ${gap.target}</span>
+      </div>`;
+    })
+    .join("");
+}
+
+function renderAttentionList(report) {
+  const list = $("#attentionList");
+  if (!list) return;
+  if (!report.sourcesNeedingAttention.length) {
+    list.innerHTML =
+      '<div style="padding:20px;text-align:center;color:var(--muted)">✓ 所有来源运行正常</div>';
+    return;
+  }
+  const icons = {
+    active: "◉",
+    degraded: "⚠",
+    quarantined: "✗",
+    shadow: "◌",
+    draft: "◌",
+    retired: "⊘",
+  };
+  list.innerHTML = report.sourcesNeedingAttention
+    .slice(0, 15)
+    .map(
+      (s) => `<div class="attention-item">
+        <span class="att-icon">${icons[s.lifecycle] ?? "?"}</span>
+        <span class="att-slug">${s.slug}</span>
+        <span class="att-lifecycle ${s.lifecycle}">${s.lifecycle}</span>
+        <span class="att-health">HP:${s.healthScore}</span>
+        ${s.checkStatus ? `<span class="att-lifecycle ${s.checkStatus}">${escHtml(s.checkStatus)}</span>` : ""}
+        ${s.itemCount !== null ? `<span class="att-health">${s.itemCount} items · Q${s.qualityScore ?? 0}</span>` : ""}
+        ${s.lastError ? `<span class="att-error" title="${escAttr(s.lastError)}">${escHtml(s.lastError.slice(0, 60))}</span>` : ""}
+      </div>`,
+    )
+    .join("");
+}
+
+function renderRecommendations(report) {
+  const list = $("#recommendationsList");
+  if (!list) return;
+  if (!report.recommendations.length) {
+    list.innerHTML =
+      '<div style="padding:20px;text-align:center;color:var(--muted)">✓ 系统运行良好，暂无建议</div>';
+    return;
+  }
+  list.innerHTML = report.recommendations
+    .map((rec) => {
+      const cls = rec.startsWith("[CRITICAL]")
+        ? "critical"
+        : rec.startsWith("[WARNING]")
+          ? "warning"
+          : "info";
+      const icon = cls === "critical" ? "✗" : cls === "warning" ? "⚠" : "ℹ";
+      return `<div class="rec-item ${cls}"><span class="rec-icon">${icon}</span><span>${escHtml(rec)}</span></div>`;
+    })
+    .join("");
+}
+
+async function applyHealthFixes() {
+  try {
+    const res = await fetch("/api/admin/pipeline/health", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${state.token}` },
+      body: "{}",
+    });
+    if (res.ok) {
+      const result = await res.json();
+      toast(
+        `健康策略已执行：降级 ${result.degraded}，隔离 ${result.quarantined}；恢复和退役仍需人工确认`,
+      );
+      await loadMonitor();
+    } else {
+      toast("修复失败，请检查 Token", true);
+    }
+  } catch {
+    toast("网络错误", true);
+  }
+}
+
+function renderSourceChecks(checks) {
+  const list = $("#sourceCheckList");
+  if (!list) return;
+  const latest = new Map();
+  for (const check of checks) {
+    if (!latest.has(check.source_id)) latest.set(check.source_id, check);
+  }
+  const rows = [...latest.values()].sort(
+    (left, right) =>
+      sourceCheckOrder(left.status) - sourceCheckOrder(right.status) ||
+      left.source_slug.localeCompare(right.source_slug),
+  );
+  if (!rows.length) {
+    list.innerHTML =
+      '<div style="padding:24px;text-align:center;color:var(--muted)">尚无来源检查记录。运行 npm run sources:audit 建立基线。</div>';
+    return;
+  }
+  list.innerHTML = rows
+    .map(
+      (check) => `<div class="source-check-row">
+        <div><strong>${escHtml(check.source_name)}</strong><small>${escHtml(check.source_slug)} · ${escHtml(check.adapter)}</small></div>
+        <span class="check-status ${escAttr(check.status)}">${escHtml(check.status)}</span>
+        <span>${escHtml(check.access_status)} / ${escHtml(check.parse_status)}${check.proxy_used ? " · PROXY" : ""}</span>
+        <span>${check.item_count} items</span>
+        <span>Q${check.quality_score} · dup ${(check.duplicate_ratio_bps / 100).toFixed(1)}%</span>
+        <span>${check.latest_item_at ? new Date(check.latest_item_at).toLocaleDateString("zh-CN") : "无内容时间"}</span>
+        <span title="${escAttr(check.error_summary || "")}">${escHtml(check.repair_action)}</span>
+      </div>`,
+    )
+    .join("");
+}
+
+function sourceCheckOrder(status) {
+  return { failed: 0, degraded: 1, skipped: 2, healthy: 3 }[status] ?? 4;
+}
+
+function escHtml(value) {
+  return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+function escAttr(value) {
+  return String(value).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const refreshBtn = $("#refreshHealth");
+  const applyBtn = $("#applyHealth");
+  if (refreshBtn) refreshBtn.addEventListener("click", loadMonitor);
+  if (applyBtn) applyBtn.addEventListener("click", applyHealthFixes);
+});
+
 loadAll();

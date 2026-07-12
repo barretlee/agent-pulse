@@ -25,17 +25,20 @@ describe("repository data snapshot", () => {
     const repository = new Repository(sourceDb);
     const openai = (await repository.listSources()).find((source) => source.slug === "openai");
     expect(openai).toBeDefined();
-    await repository.insertSignal(openai?.id ?? "", {
+    const snapshotSignal = await repository.insertSignal(openai?.id ?? "", {
       externalId: "snapshot-sensitive-url",
       url: "https://openai.com/index/snapshot-test?api_key=must-not-leak&utm_source=test",
       title: "Snapshot persistence test signal",
-      summary: "A stable signal used to validate repository snapshot restore.",
+      summary: `A stable signal used to validate repository snapshot restore from /Users/alice/private/workspace. ${"context ".repeat(400)}`,
       language: "en",
       publishedAt: "2026-07-11T08:00:00.000Z",
       category: "test",
       tags: ["snapshot"],
       metrics: { platforms: ["official"] },
       rawMeta: { ignored: true },
+    });
+    await repository.deferSignal(snapshotSignal?.id ?? "", "snapshot-triage-fixture", 42, {
+      reversible: true,
     });
 
     const root = await mkdtemp(join(tmpdir(), "agent-pulse-snapshot-"));
@@ -47,6 +50,13 @@ describe("repository data snapshot", () => {
     expect(serialized).not.toContain("must-not-leak");
     expect(serialized).not.toContain("raw_meta_json");
     expect(serialized).not.toContain("/Users/");
+    expect(serialized).toContain("[local-path]");
+    const snapshot = JSON.parse(serialized);
+    const persisted = snapshot.signals.find(
+      (signal: { title: string }) => signal.title === "Snapshot persistence test signal",
+    );
+    expect(persisted.summary.length).toBeLessThanOrEqual(2_000);
+    expect(first.counts.signalTriage).toBe(1);
 
     const targetDb = createDatabase(config);
     databases.push(targetDb);
@@ -85,6 +95,13 @@ describe("repository data snapshot", () => {
       .executeTakeFirst();
     expect(restoredSignal?.canonical_url).toBe("https://openai.com/index/snapshot-test");
     expect(restoredSignal?.raw_meta_json).toBe("{}");
+    expect(
+      await targetDb
+        .selectFrom("signal_triage")
+        .select(["reason", "eventability_score"])
+        .where("signal_id", "=", restoredSignal?.id ?? "")
+        .executeTakeFirst(),
+    ).toEqual({ reason: "snapshot-triage-fixture", eventability_score: 42 });
     expect(
       await targetDb
         .selectFrom("event_signals")

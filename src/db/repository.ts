@@ -13,6 +13,7 @@ import type {
   DatabaseSchema,
   EventRow,
   NewEventRow,
+  NewSourceCheckRow,
   NewSourceRow,
   SignalRow,
   SourceDiscoveryRow,
@@ -73,12 +74,32 @@ export class Repository {
     return this.db.selectFrom("sources").selectAll().where("id", "=", id).executeTakeFirst();
   }
 
+  async getSourceByIdOrSlug(identifier: string): Promise<SourceRow | undefined> {
+    return this.db
+      .selectFrom("sources")
+      .selectAll()
+      .where((expression) =>
+        expression.or([expression("id", "=", identifier), expression("slug", "=", identifier)]),
+      )
+      .executeTakeFirst();
+  }
+
   async getEnabledSources(): Promise<SourceRow[]> {
     return this.db
       .selectFrom("sources")
       .selectAll()
-      .where("enabled", "=", 1)
-      .where("lifecycle_status", "in", ["active", "degraded"])
+      .where((expression) =>
+        expression.or([
+          expression.and([
+            expression("enabled", "=", 1),
+            expression("lifecycle_status", "in", ["active", "degraded"]),
+          ]),
+          expression.and([
+            expression("observation_enabled", "=", 1),
+            expression("lifecycle_status", "=", "shadow"),
+          ]),
+        ]),
+      )
       .orderBy("priority", "desc")
       .execute();
   }
@@ -102,6 +123,45 @@ export class Repository {
         .values({ ...input, created_at: timestamp, updated_at: timestamp })
         .execute();
     }
+  }
+
+  async saveCatalogSource(input: Omit<NewSourceRow, "created_at" | "updated_at">): Promise<void> {
+    const existing = await this.db
+      .selectFrom("sources")
+      .select("id")
+      .where("slug", "=", input.slug)
+      .executeTakeFirst();
+    const timestamp = now();
+    if (!existing) {
+      await this.db
+        .insertInto("sources")
+        .values({ ...input, created_at: timestamp, updated_at: timestamp })
+        .execute();
+      return;
+    }
+
+    await this.db
+      .updateTable("sources")
+      .set({
+        name: input.name,
+        homepage_url: input.homepage_url,
+        adapter: input.adapter,
+        tier: input.tier,
+        role: input.role,
+        region: input.region,
+        language: input.language,
+        authority_score: input.authority_score,
+        config_json: input.config_json,
+        source_category: input.source_category,
+        acquisition: input.acquisition,
+        topics_json: input.topics_json,
+        cadence: input.cadence,
+        license_note: input.license_note,
+        quality_score: input.quality_score,
+        updated_at: timestamp,
+      })
+      .where("id", "=", existing.id)
+      .execute();
   }
 
   async updateSource(id: string, patch: SourceUpdate): Promise<void> {
@@ -196,6 +256,32 @@ export class Repository {
     let query = this.db.selectFrom("source_runs").selectAll();
     if (sourceId) query = query.where("source_id", "=", sourceId);
     return query.orderBy("started_at", "desc").limit(limit).execute();
+  }
+
+  async insertSourceCheck(input: NewSourceCheckRow): Promise<void> {
+    await this.db.insertInto("source_checks").values(input).execute();
+  }
+
+  async listSourceChecks(sourceId?: string, limit = 500) {
+    let query = this.db
+      .selectFrom("source_checks")
+      .innerJoin("sources", "sources.id", "source_checks.source_id")
+      .selectAll("source_checks")
+      .select(["sources.slug as source_slug", "sources.name as source_name"]);
+    if (sourceId) query = query.where("source_checks.source_id", "=", sourceId);
+    return query
+      .orderBy("source_checks.finished_at", "desc")
+      .limit(Math.min(Math.max(limit, 1), 2_000))
+      .execute();
+  }
+
+  async latestSourceChecks() {
+    const rows = await this.listSourceChecks(undefined, 2_000);
+    const latest = new Map<string, (typeof rows)[number]>();
+    for (const row of rows) {
+      if (!latest.has(row.source_id)) latest.set(row.source_id, row);
+    }
+    return [...latest.values()];
   }
 
   async listScoutInsights(status?: string) {
@@ -712,10 +798,63 @@ export class Repository {
       .selectFrom("signals")
       .innerJoin("sources", "sources.id", "signals.source_id")
       .leftJoin("event_signals", "event_signals.signal_id", "signals.id")
+      .leftJoin("signal_triage", "signal_triage.signal_id", "signals.id")
       .selectAll("signals")
       .where("event_signals.signal_id", "is", null)
+      .where("signal_triage.signal_id", "is", null)
       .where("sources.role", "!=", "aggregator")
       .where("sources.source_category", "!=", "aggregator")
+      .orderBy("signals.published_at", "desc")
+      .limit(limit)
+      .execute();
+  }
+
+  async deferSignal(
+    signalId: string,
+    reason: string,
+    eventabilityScore: number,
+    details: Record<string, unknown>,
+  ): Promise<void> {
+    const existing = await this.db
+      .selectFrom("signal_triage")
+      .select("signal_id")
+      .where("signal_id", "=", signalId)
+      .executeTakeFirst();
+    const value = {
+      status: "deferred",
+      reason: reason.slice(0, 120),
+      eventability_score: eventabilityScore,
+      details_json: json(details),
+      updated_at: now(),
+    };
+    if (existing) {
+      await this.db
+        .updateTable("signal_triage")
+        .set(value)
+        .where("signal_id", "=", signalId)
+        .execute();
+    } else {
+      await this.db
+        .insertInto("signal_triage")
+        .values({ ...value, signal_id: signalId, created_at: now() })
+        .execute();
+    }
+  }
+
+  async clearSignalTriage(signalId: string): Promise<void> {
+    await this.db.deleteFrom("signal_triage").where("signal_id", "=", signalId).execute();
+  }
+
+  async listDeferredSignalsNear(isoDate: string, days = 21, limit = 500): Promise<SignalRow[]> {
+    const center = new Date(isoDate).getTime();
+    const radius = days * 86_400_000;
+    return this.db
+      .selectFrom("signal_triage")
+      .innerJoin("signals", "signals.id", "signal_triage.signal_id")
+      .selectAll("signals")
+      .where("signal_triage.status", "=", "deferred")
+      .where("signals.published_at", ">=", new Date(center - radius).toISOString())
+      .where("signals.published_at", "<=", new Date(center + radius).toISOString())
       .orderBy("signals.published_at", "desc")
       .limit(limit)
       .execute();
@@ -876,9 +1015,12 @@ export class Repository {
 
   async eventScoringContext(eventId: string): Promise<
     Array<{
+      sourceId: string;
+      sourceSlug: string;
       authorityScore: number;
       tier: number;
       role: string;
+      sourceCategory: string;
       metrics: Record<string, unknown>;
       publishedAt: string;
     }>
@@ -888,18 +1030,24 @@ export class Repository {
       .innerJoin("signals", "signals.id", "event_signals.signal_id")
       .innerJoin("sources", "sources.id", "signals.source_id")
       .select([
+        "sources.id as sourceId",
+        "sources.slug as sourceSlug",
         "sources.authority_score as authorityScore",
         "sources.tier as tier",
         "sources.role as role",
+        "sources.source_category as sourceCategory",
         "signals.metrics_json as metricsJson",
         "signals.published_at as publishedAt",
       ])
       .where("event_signals.event_id", "=", eventId)
       .execute();
     return rows.map((row) => ({
+      sourceId: row.sourceId,
+      sourceSlug: row.sourceSlug,
       authorityScore: row.authorityScore,
       tier: row.tier,
       role: row.role,
+      sourceCategory: row.sourceCategory,
       metrics: parseJson(row.metricsJson, {}),
       publishedAt: row.publishedAt,
     }));

@@ -12,6 +12,7 @@ export interface SourceTable {
   language: string;
   authority_score: number;
   enabled: number;
+  observation_enabled: Generated<number>;
   config_json: string;
   state_json: string;
   last_collected_at: string | null;
@@ -58,6 +59,42 @@ export interface SourceRunTable {
   error_summary: string | null;
   started_at: string;
   finished_at: string | null;
+}
+
+export interface SourceCheckTable {
+  id: string;
+  source_id: string;
+  job_id: string | null;
+  status: string;
+  adapter: string;
+  adapter_version: string;
+  access_status: string;
+  fetch_status: string;
+  parse_status: string;
+  schema_status: string;
+  policy_status: string;
+  http_status: number | null;
+  final_url: string | null;
+  content_type: string | null;
+  response_bytes: number;
+  item_count: number;
+  duplicate_count: number;
+  duplicate_ratio_bps: number;
+  quality_score: number;
+  latest_item_at: string | null;
+  freshness_hours: number | null;
+  error_type: string | null;
+  error_code: string | null;
+  error_summary: string | null;
+  repair_action: string;
+  proxy_hint: string;
+  proxy_used: Generated<number>;
+  retention_decision: string;
+  recommended_lifecycle: string;
+  sample_json: string;
+  started_at: string;
+  finished_at: string;
+  duration_ms: number;
 }
 
 export interface SourceDiscoveryTable {
@@ -158,6 +195,16 @@ export interface SignalTable {
   updated_at: string;
 }
 
+export interface SignalTriageTable {
+  signal_id: string;
+  status: string;
+  reason: string;
+  eventability_score: number;
+  details_json: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface EventTable {
   id: string;
   slug: string;
@@ -190,6 +237,16 @@ export interface EventSignalTable {
   signal_id: string;
   evidence_role: string;
   relevance_score: number;
+  created_at: string;
+}
+
+export interface EventMergeTable {
+  id: string;
+  target_event_id: string;
+  source_event_id: string;
+  source_snapshot_json: string;
+  reason: string;
+  merged_by: string;
   created_at: string;
 }
 
@@ -303,10 +360,13 @@ export interface ViewTable {
 export interface DatabaseSchema {
   sources: SourceTable;
   source_runs: SourceRunTable;
+  source_checks: SourceCheckTable;
   source_discoveries: SourceDiscoveryTable;
   signals: SignalTable;
+  signal_triage: SignalTriageTable;
   events: EventTable;
   event_signals: EventSignalTable;
+  event_merges: EventMergeTable;
   jobs: JobTable;
   settings: SettingTable;
   tracks: TrackTable;
@@ -324,6 +384,8 @@ export type SourceRow = Selectable<SourceTable>;
 export type NewSourceRow = Insertable<SourceTable>;
 export type SourceUpdate = Updateable<SourceTable>;
 export type SourceRunRow = Selectable<SourceRunTable>;
+export type SourceCheckRow = Selectable<SourceCheckTable>;
+export type NewSourceCheckRow = Insertable<SourceCheckTable>;
 export type SourceDiscoveryRow = Selectable<SourceDiscoveryTable>;
 export type ScoutInsightRow = Selectable<ScoutInsightTable>;
 export type SignalRow = Selectable<SignalTable>;

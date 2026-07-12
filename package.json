@@ -1,6 +1,6 @@
 {
   "name": "agent-pulse",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": false,
   "description": "A curated AI industry intelligence timeline — signal, not noise.",
   "type": "module",
@@ -20,6 +20,14 @@
     "db:seed": "tsx src/cli/seed.ts",
     "db:snapshot": "tsx src/cli/snapshot.ts",
     "collect": "tsx src/cli/collect.ts",
+    "sources:audit": "tsx src/cli/audit-sources.ts",
+    "repair:provenance": "tsx src/cli/repair-provenance.ts",
+    "repair:activations": "tsx src/cli/repair-activations.ts",
+    "repair:review-noise": "tsx src/cli/repair-review-noise.ts",
+    "activate": "tsx src/cli/activate.ts",
+    "observe:sources": "tsx src/cli/observe-sources.ts",
+    "evolve": "tsx src/cli/evolve.ts",
+    "monitor": "tsx src/cli/monitor-cli.ts",
     "export": "tsx src/cli/export.ts",
     "check": "npm run lint && npm run typecheck && npm test && npm run export"
   },
@@ -39,6 +47,7 @@
     "fastify": "^5.6.2",
     "kysely": "^0.28.8",
     "mysql2": "^3.15.3",
+    "undici": "^7.28.0",
     "zod": "^4.1.12"
   },
   "devDependencies": {

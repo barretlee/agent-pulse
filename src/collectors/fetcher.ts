@@ -1,5 +1,6 @@
 import { resolve4, resolve6 } from "node:dns/promises";
 import { isIP } from "node:net";
+import { EnvHttpProxyAgent, fetch as undiciFetch } from "undici";
 import type { AppConfig } from "../config/env.js";
 import type { FetchResult } from "./types.js";
 
@@ -36,6 +37,7 @@ export interface FetchPolicy {
 
 interface FetcherDependencies {
   fetchImpl?: typeof fetch;
+  proxyFetchImpl?: typeof fetch;
   sleep?: (milliseconds: number) => Promise<void>;
   random?: () => number;
   validateUrl?: (url: string) => Promise<void>;
@@ -43,6 +45,9 @@ interface FetcherDependencies {
 
 export function createSafeFetcher(config: AppConfig, dependencies: FetcherDependencies = {}) {
   const fetchImpl = dependencies.fetchImpl ?? fetch;
+  const proxyFetchImpl =
+    dependencies.proxyFetchImpl ??
+    (dependencies.fetchImpl ? undefined : createEnvironmentProxyFetch(config));
   const sleep =
     dependencies.sleep ?? ((ms: number) => new Promise((resolve) => setTimeout(resolve, ms)));
   const random = dependencies.random ?? Math.random;
@@ -67,9 +72,23 @@ export function createSafeFetcher(config: AppConfig, dependencies: FetcherDepend
           fetchImpl,
           validateUrl,
         );
-        return { ...result, attemptCount: attempt };
+        return { ...result, attemptCount: attempt, transport: "direct" as const };
       } catch (error) {
-        const classified = classifyError(error, attempt);
+        let classified = classifyError(error, attempt);
+        if (proxyFetchImpl && ["network", "timeout"].includes(classified.type)) {
+          try {
+            const result = await fetchWithRedirects(
+              urlValue,
+              { "user-agent": config.COLLECTOR_USER_AGENT, ...headers },
+              timeoutMs,
+              proxyFetchImpl,
+              validateUrl,
+            );
+            return { ...result, attemptCount: attempt, transport: "env-proxy" as const };
+          } catch (proxyError) {
+            classified = classifyError(proxyError, attempt);
+          }
+        }
         lastError = classified;
         if (!classified.retryable || attempt > maxRetries) throw classified;
         const retryAfter = classified.status === 429 ? retryAfterMs(error) : null;
@@ -79,6 +98,28 @@ export function createSafeFetcher(config: AppConfig, dependencies: FetcherDepend
     }
     throw lastError ?? new FetchError("Request failed", "network", true);
   };
+}
+
+function createEnvironmentProxyFetch(config: AppConfig): typeof fetch | undefined {
+  if (config.COLLECTOR_PROXY_MODE !== "env-fallback" || !hasEnvironmentProxy()) return undefined;
+  const dispatcher = new EnvHttpProxyAgent();
+  return ((input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) =>
+    undiciFetch(
+      input as Parameters<typeof undiciFetch>[0],
+      {
+        ...(init ?? {}),
+        dispatcher,
+      } as Parameters<typeof undiciFetch>[1],
+    ) as unknown as Promise<Response>) as typeof fetch;
+}
+
+function hasEnvironmentProxy(): boolean {
+  return Boolean(
+    process.env.http_proxy ??
+      process.env.https_proxy ??
+      process.env.HTTP_PROXY ??
+      process.env.HTTPS_PROXY,
+  );
 }
 
 async function fetchWithRedirects(
@@ -248,7 +289,16 @@ function errorCode(error: unknown): string | null {
 }
 
 function message(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
+  let value = error instanceof Error ? error.message : String(error);
+  for (const proxy of [
+    process.env.http_proxy,
+    process.env.https_proxy,
+    process.env.HTTP_PROXY,
+    process.env.HTTPS_PROXY,
+  ]) {
+    if (proxy) value = value.replaceAll(proxy, "[proxy]");
+  }
+  return value.replace(/(https?:\/\/)[^\s/@:]+:[^\s/@]+@/gi, "$1[credentials]@");
 }
 
 function clamp(value: number, min: number, max: number): number {

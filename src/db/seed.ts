@@ -673,7 +673,7 @@ export async function seedDatabase(db: Kysely<DatabaseSchema>): Promise<void> {
   const timestamp = isoNow();
 
   for (const source of sourceCatalog) {
-    await repository.saveSource({
+    await repository.saveCatalogSource({
       id: stableId("source", source.slug),
       slug: source.slug,
       name: source.name,

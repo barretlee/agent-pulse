@@ -12,8 +12,15 @@ import { transitionSource } from "../domain/source-lifecycle.js";
 import { clusterSignals } from "../pipeline/cluster.js";
 import { collectSources } from "../pipeline/collect.js";
 import { evaluateSystem, latestEvaluation } from "../pipeline/evaluate.js";
+import { findEventMergeCandidates, mergeEventCandidates } from "../pipeline/event-merge.js";
 import { exportStaticSite } from "../pipeline/export.js";
+import { generatePipelineFunnel } from "../pipeline/funnel.js";
+import { applyAdaptiveHealth, generateMonitorReport } from "../pipeline/monitor.js";
+import { releaseObservationTriage, setObservationMode } from "../pipeline/observation.js";
+import { inspectProvenanceDebt, purgeUnattachedAggregatorSignals } from "../pipeline/provenance.js";
+import { evaluateEventReadiness, eventReadinessSummary } from "../pipeline/readiness.js";
 import { runScout } from "../pipeline/scout.js";
+import { auditSources } from "../pipeline/source-audit.js";
 
 const SourcePatch = z.object({
   authorityScore: z.number().int().min(0).max(100).optional(),
@@ -30,9 +37,16 @@ const SourceAction = z.object({
   action: z.enum(["verify", "activate", "degrade", "quarantine", "restore", "retire"]),
 });
 
+const ObservationPatch = z.object({ enabled: z.boolean() });
+
 const SourceDiscoveryQuery = z.object({
   status: z.enum(["pending", "candidate", "matched_source", "merged_signal"]).optional(),
   limit: z.coerce.number().int().min(1).max(500).default(100),
+});
+
+const SourceCheckQuery = z.object({
+  sourceId: z.string().uuid().optional(),
+  limit: z.coerce.number().int().min(1).max(2_000).default(500),
 });
 
 const ScoutPatch = z.object({
@@ -55,6 +69,17 @@ const EventPatch = z.object({
   impactScore: z.number().int().min(0).max(100).optional(),
   status: z.enum(["draft", "review", "published", "hidden"]).optional(),
   featured: z.boolean().optional(),
+});
+
+const EventMergeRequest = z.object({
+  targetEventId: z.string().uuid(),
+  sourceEventIds: z.array(z.string().uuid()).min(1).max(50),
+  reason: z.string().min(4).max(80),
+  confirmation: z.literal("merge-reviewed-events"),
+});
+
+const ProvenanceCleanupRequest = z.object({
+  confirmation: z.literal("purge-unattached-aggregator-signals"),
 });
 
 const TrackPatch = z.object({
@@ -136,10 +161,26 @@ export async function buildApp(db: Kysely<DatabaseSchema>, config: AppConfig) {
   });
 
   app.get("/api/admin/dashboard", async () => repository.dashboard());
+  app.get("/api/admin/pipeline/funnel", async (_request, reply) => {
+    reply.header("Cache-Control", "no-store");
+    return generatePipelineFunnel(db);
+  });
+  app.post("/api/admin/pipeline/provenance-cleanup", async (request) => {
+    ProvenanceCleanupRequest.parse(request.body);
+    const before = await inspectProvenanceDebt(db);
+    const action = await purgeUnattachedAggregatorSignals(db);
+    const after = await inspectProvenanceDebt(db);
+    return { before, action, after };
+  });
   app.get("/api/admin/sources", async () => repository.listSources());
   app.get("/api/admin/source-runs", async (request) => {
     const query = z.object({ sourceId: z.string().uuid().optional() }).parse(request.query);
     return repository.listSourceRuns(query.sourceId);
+  });
+  app.get("/api/admin/source-checks", async (request, reply) => {
+    const query = SourceCheckQuery.parse(request.query);
+    reply.header("Cache-Control", "no-store");
+    return repository.listSourceChecks(query.sourceId, query.limit);
   });
   app.get("/api/admin/source-discoveries", async (request, reply) => {
     const query = SourceDiscoveryQuery.parse(request.query);
@@ -151,6 +192,57 @@ export async function buildApp(db: Kysely<DatabaseSchema>, config: AppConfig) {
     return { items, summary, filter: { status: query.status ?? "all", limit: query.limit } };
   });
   app.get("/api/admin/events", async () => repository.listEvents());
+  app.get("/api/admin/event-readiness", async (_request, reply) => {
+    reply.header("Cache-Control", "no-store");
+    return eventReadinessSummary(db);
+  });
+  app.get("/api/admin/event-merge-candidates", async (_request, reply) => {
+    reply.header("Cache-Control", "no-store");
+    return findEventMergeCandidates(db);
+  });
+  app.post("/api/admin/events/merge", async (request, reply) => {
+    const input = EventMergeRequest.parse(request.body);
+    try {
+      return await mergeEventCandidates(db, {
+        targetEventId: input.targetEventId,
+        sourceEventIds: input.sourceEventIds,
+        reason: input.reason,
+        mergedBy: "admin-api",
+      });
+    } catch (error) {
+      return reply
+        .code(409)
+        .send({ error: error instanceof Error ? error.message : String(error) });
+    }
+  });
+  app.get("/api/admin/events/:id/detail", async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const event = await repository.getEvent(id);
+    if (!event) return reply.code(404).send({ error: "Event not found" });
+    const [readiness, evidence, tracks] = await Promise.all([
+      evaluateEventReadiness(db, id),
+      db
+        .selectFrom("event_signals")
+        .innerJoin("signals", "signals.id", "event_signals.signal_id")
+        .innerJoin("sources", "sources.id", "signals.source_id")
+        .select([
+          "signals.id",
+          "signals.title",
+          "signals.canonical_url as url",
+          "signals.published_at as publishedAt",
+          "signals.author",
+          "sources.name as source",
+          "sources.slug as sourceSlug",
+          "sources.tier",
+          "sources.role",
+          "event_signals.evidence_role as evidenceRole",
+        ])
+        .where("event_signals.event_id", "=", id)
+        .execute(),
+      repository.eventTracks(id),
+    ]);
+    return { event, readiness, evidence, tracks };
+  });
   app.get("/api/admin/jobs", async () => repository.listJobs());
   app.get("/api/admin/tracks", async () => repository.listTracks());
   app.get("/api/admin/actors", async () => repository.listActors());
@@ -185,10 +277,25 @@ export async function buildApp(db: Kysely<DatabaseSchema>, config: AppConfig) {
     const { action } = SourceAction.parse(request.body);
     const source = await repository.getSource(id);
     if (!source) return reply.code(404).send({ error: "Source not found" });
-    if (action === "activate" && !source.last_success_at)
-      return reply
-        .code(409)
-        .send({ error: "Source must pass a verification run before activation" });
+    if (action === "activate") {
+      const checks = await repository.listSourceChecks(source.id, 100);
+      const healthyChecks = checks.filter((check) => check.status === "healthy");
+      const oldestHealthy = healthyChecks.at(-1);
+      const observationDays = oldestHealthy
+        ? (Date.now() - new Date(oldestHealthy.finished_at).getTime()) / 86_400_000
+        : 0;
+      if (checks[0]?.status !== "healthy" || healthyChecks.length < 20 || observationDays < 7) {
+        return reply.code(409).send({
+          error:
+            "Source activation requires a healthy latest check, 20 healthy checks, and a 7-day observation window",
+          evidence: {
+            latestStatus: checks[0]?.status ?? null,
+            healthyChecks: healthyChecks.length,
+            observationDays: Math.floor(observationDays),
+          },
+        });
+      }
+    }
     let next: string;
     try {
       next = transitionSource(source.lifecycle_status, action);
@@ -200,6 +307,7 @@ export async function buildApp(db: Kysely<DatabaseSchema>, config: AppConfig) {
     await repository.updateSource(id, {
       lifecycle_status: next,
       enabled: next === "active" || next === "degraded" ? 1 : 0,
+      observation_enabled: 0,
       retired_at: next === "retired" ? new Date().toISOString() : null,
       maintenance_status:
         next === "active"
@@ -214,13 +322,26 @@ export async function buildApp(db: Kysely<DatabaseSchema>, config: AppConfig) {
       action === "verify" || action === "restore"
         ? await collectSources(db, config, id)
         : undefined;
-    return { ok: true, lifecycle: next, verification };
+    const releasedSignals = next === "active" ? await releaseObservationTriage(db, id) : 0;
+    return { ok: true, lifecycle: next, verification, releasedSignals };
   });
 
-  app.patch("/api/admin/events/:id", async (request) => {
+  app.post("/api/admin/sources/:id/observation", async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const { enabled } = ObservationPatch.parse(request.body);
+    try {
+      return { ok: true, source: await setObservationMode(db, id, enabled) };
+    } catch (error) {
+      return reply
+        .code(409)
+        .send({ error: error instanceof Error ? error.message : String(error) });
+    }
+  });
+
+  app.patch("/api/admin/events/:id", async (request, reply) => {
     const { id } = request.params as { id: string };
     const patch = EventPatch.parse(request.body);
-    await repository.updateEvent(id, {
+    const eventPatch = {
       ...(patch.title === undefined ? {} : { title: patch.title }),
       ...(patch.factSummary === undefined ? {} : { fact_summary: patch.factSummary }),
       ...(patch.summary === undefined ? {} : { summary: patch.summary }),
@@ -247,7 +368,14 @@ export async function buildApp(db: Kysely<DatabaseSchema>, config: AppConfig) {
             published_at: patch.status === "published" ? new Date().toISOString() : null,
           }),
       ...(patch.featured === undefined ? {} : { featured: patch.featured ? 1 : 0 }),
-    });
+    };
+    if (patch.status === "published") {
+      const readiness = await evaluateEventReadiness(db, id, eventPatch);
+      if (readiness.status !== "ready") {
+        return reply.code(409).send({ error: "Event is not publication-ready", readiness });
+      }
+    }
+    await repository.updateEvent(id, eventPatch);
     return { ok: true };
   });
 
@@ -346,6 +474,26 @@ export async function buildApp(db: Kysely<DatabaseSchema>, config: AppConfig) {
     });
     return { ok: true };
   });
+
+  app.get("/api/admin/monitor", async (_request, reply) => {
+    reply.header("Cache-Control", "no-store");
+    return generateMonitorReport(db);
+  });
+
+  app.post("/api/admin/pipeline/audit-sources", async (request) => {
+    const body = z
+      .object({
+        sourceId: z.string().uuid().optional(),
+        concurrency: z.number().int().min(1).max(8).optional(),
+      })
+      .parse(request.body ?? {});
+    return auditSources(db, config, {
+      ...(body.sourceId ? { sourceId: body.sourceId } : {}),
+      ...(body.concurrency ? { concurrency: body.concurrency } : {}),
+    });
+  });
+
+  app.post("/api/admin/pipeline/health", async () => applyAdaptiveHealth(db));
 
   app.post("/api/admin/pipeline/collect", async (request) => {
     const body = z.object({ sourceId: z.string().uuid().optional() }).parse(request.body ?? {});

@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "iteration": 1,
+  "phase": "reported",
+  "status": "completed",
+  "startedAt": "2026-07-12T06:15:03.565Z",
+  "updatedAt": "2026-07-12T06:16:47.398Z",
+  "stopRequested": false,
+  "stopReason": null,
+  "reportPath": "iteration-0001-2026-07-12T06-15-03-565Z.json"
+}

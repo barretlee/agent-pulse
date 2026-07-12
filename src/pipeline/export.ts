@@ -76,6 +76,8 @@ export async function exportStaticSite(db: Kysely<DatabaseSchema>, config: AppCo
         ? {
             status: evaluation.status,
             overallScore: evaluation.overallScore,
+            rawWeightedScore: evaluation.rawWeightedScore,
+            evidenceCoverage: evaluation.evidenceCoverage,
             dimensions: evaluation.dimensions,
             finishedAt: evaluation.finishedAt,
           }
@@ -83,6 +85,7 @@ export async function exportStaticSite(db: Kysely<DatabaseSchema>, config: AppCo
       sourceCoverage: {
         total: sources.length,
         active: sources.filter((source) => source.lifecycle_status === "active").length,
+        observing: sources.filter((source) => source.observation_enabled === 1).length,
         candidate: sources.filter((source) => source.maintenance_status === "candidate").length,
         regions: [...new Set(sources.map((source) => source.region))],
         categories: [...new Set(sources.map((source) => source.source_category))],
@@ -102,6 +105,7 @@ export async function exportStaticSite(db: Kysely<DatabaseSchema>, config: AppCo
         topics: parseJson(source.topics_json, []),
         maintenanceStatus: source.maintenance_status,
         lifecycle: source.lifecycle_status,
+        observationEnabled: source.observation_enabled === 1,
         qualityScore: source.quality_score,
         cadence: source.cadence,
       })),

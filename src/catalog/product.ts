@@ -1,4 +1,4 @@
-export const productVersion = "0.4.0";
+export const productVersion = "0.5.0";
 
 export const capabilities = [
   {
@@ -8,7 +8,7 @@ export const capabilities = [
     status: "operational",
     maturity: 68,
     release: "0.2.0",
-    evidence: "195 sources classified by region, role, acquisition and maintenance state",
+    evidence: "258 sources classified by region, role, acquisition and maintenance state",
   },
   {
     slug: "upstream-discovery",
@@ -70,19 +70,40 @@ export const capabilities = [
     name: "弹性拉取",
     domain: "sensing",
     status: "operational",
-    maturity: 64,
+    maturity: 72,
     release: "0.2.0",
     evidence:
-      "timeout, retry classification, backoff, Retry-After, conditional request and redirect guard",
+      "direct-first fetch with bounded fallback proxy, timeout, retry classification, backoff, cache, per-host rate limit and redirect guard",
   },
   {
     slug: "source-observability",
     name: "来源可观测性",
     domain: "sensing",
-    status: "experimental",
-    maturity: 52,
+    status: "operational",
+    maturity: 70,
     release: "0.2.0",
-    evidence: "per-source run records, health score and error classification",
+    evidence:
+      "append-only checks for access, fetch, parse, schema, volume, freshness, duplicates, quality, proxy, repair and retention with admin history",
+  },
+  {
+    slug: "source-audit",
+    name: "逐源恢复审计",
+    domain: "sensing",
+    status: "operational",
+    maturity: 68,
+    release: "0.5.0",
+    evidence:
+      "259/259 live rows checked; 131 healthy, 120 strict effective and 104 strict realtime effective sources",
+  },
+  {
+    slug: "shadow-observation",
+    name: "隔离观察数据池",
+    domain: "sensing",
+    status: "operational",
+    maturity: 58,
+    release: "0.5.0",
+    evidence:
+      "99 qualified shadow sources supply an isolated observation pool; their signals cannot enter public events before production promotion",
   },
   {
     slug: "source-contract",
@@ -134,9 +155,30 @@ export const capabilities = [
     name: "事件聚类",
     domain: "understanding",
     status: "experimental",
-    maturity: 34,
+    maturity: 48,
     release: "0.1.0",
-    evidence: "deterministic title/time clustering; multilingual semantic clustering pending",
+    evidence:
+      "eventability gate, model family/facet fingerprints and reviewable merge candidates; multilingual semantic clustering pending",
+  },
+  {
+    slug: "reversible-signal-triage",
+    name: "可逆信号分诊",
+    domain: "understanding",
+    status: "experimental",
+    maturity: 58,
+    release: "0.5.0",
+    evidence:
+      "533 low-eventability signals retained as deferred observations, zero clustering backlog and reversible review snapshots",
+  },
+  {
+    slug: "event-convergence",
+    name: "人工事件收敛",
+    domain: "understanding",
+    status: "experimental",
+    maturity: 50,
+    release: "0.5.0",
+    evidence:
+      "family/facet merge queue, readiness-aware target selection, explicit confirmation and append-only merge audit",
   },
   {
     slug: "entity-resolution",
@@ -269,9 +311,20 @@ export const capabilities = [
     name: "Control Room",
     domain: "experience",
     status: "experimental",
-    maturity: 48,
+    maturity: 65,
     release: "0.1.0",
-    evidence: "source, event, track, actor, resource and Scout controls",
+    evidence:
+      "source checks, coverage, funnel, blockers, event evidence, merge queue, release gate, source lifecycle, views and Scout controls",
+  },
+  {
+    slug: "publication-readiness",
+    name: "发布就绪门禁",
+    domain: "governance",
+    status: "operational",
+    maturity: 66,
+    release: "0.5.0",
+    evidence:
+      "publish API rejects missing primary evidence, placeholders, generic entities, taxonomy gaps, low confidence and unsupported heat",
   },
   {
     slug: "static-release",
@@ -306,9 +359,20 @@ export const capabilities = [
     name: "多维评测体系",
     domain: "governance",
     status: "experimental",
-    maturity: 45,
+    maturity: 56,
     release: "0.2.0",
-    evidence: "persisted scorecards with sample size and insufficient-data status",
+    evidence:
+      "persisted scorecards plus live source audit, coverage and Signal-to-Ready-to-Published funnel with blocker counts",
+  },
+  {
+    slug: "bounded-evolution",
+    name: "有界持续进化循环",
+    domain: "governance",
+    status: "experimental",
+    maturity: 54,
+    release: "0.5.0",
+    evidence:
+      "bounded scheduled loop with atomic checkpoints, per-iteration reports, failure isolation, explicit mutation flags and graceful shutdown",
   },
   {
     slug: "security",
@@ -394,6 +458,30 @@ export const roadmap = [
 ] as const;
 
 export const releases = [
+  {
+    version: "0.5.0",
+    date: "2026-07-12",
+    name: "The Evidence Engine",
+    summary: "恢复 100+ 严格有效信源，以隔离观察、诚实评测和证据优先体验重建从供给到决策的链路。",
+    capabilities: [
+      "100+ 严格实时有效信源",
+      "隔离观察数据池",
+      "逐源恢复审计",
+      "可逆信号分诊",
+      "人工事件收敛",
+      "诚实评测校准",
+      "证据优先时间轴",
+      "有界持续进化",
+    ],
+    changes: [
+      "来源目录扩至 258 个；全量实测 131 healthy、120 strict effective、104 strict realtime effective",
+      "99 个合格 shadow 来源进入 E3 隔离观察，数据可采集但不会绕过 E4 门禁进入公开事实",
+      "建立逐源检查、失败分类、代理降级、质量门禁、可逆 triage、事件合并候选和发布就绪漏斗",
+      "评测从目录数量和人工自评分转向真实样本、证据覆盖与硬上限，旧口径 69 分回落到诚实水位",
+      "公开页改为 30 秒判断、六条主线和证据优先时间轴；默认事件必须包含一手来源",
+      "管理台补齐来源健康、观察开关、漏斗、阻断原因、证据详情、合并队列与校准评测",
+    ],
+  },
   {
     version: "0.4.0",
     date: "2026-07-11",

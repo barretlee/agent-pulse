@@ -9,6 +9,7 @@ export const SourceConfigSchema = z.object({
   detailTake: z.number().int().min(0).max(10).optional(),
   identityHosts: z.array(z.string().min(1)).optional(),
   socialHandles: z.array(z.string().min(1)).optional(),
+  dataPath: z.string().min(1).max(200).optional(),
 });
 
 export type SourceConfig = z.infer<typeof SourceConfigSchema>;

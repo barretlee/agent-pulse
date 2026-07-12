@@ -24,6 +24,23 @@ describe("knowledge source catalog", () => {
     ).toHaveLength(0);
   });
 
+  it("keeps the first-party release pool explicit and shadow-first", () => {
+    const releaseSources = sourceCatalog.filter((source) => source.acquisition === "github");
+    const chinaReleaseSources = releaseSources.filter((source) => source.region === "CN");
+
+    expect(releaseSources.length).toBeGreaterThanOrEqual(70);
+    expect(chinaReleaseSources.length).toBeGreaterThanOrEqual(20);
+    expect(releaseSources.every((source) => source.adapter === "github-releases")).toBe(true);
+    expect(releaseSources.every((source) => source.endpoint.endsWith("/releases.atom"))).toBe(true);
+    expect(
+      releaseSources.every((source) =>
+        /^https:\/\/github\.com\/[^/]+\/[^/]+\/releases\.atom$/i.test(source.endpoint),
+      ),
+    ).toBe(true);
+    expect(releaseSources.filter((source) => source.enabled)).toEqual([]);
+    expect(releaseSources.every((source) => source.lifecycleStatus === "shadow")).toBe(true);
+  });
+
   it("keeps roadmap and releases tied to capability evidence", () => {
     expect(roadmap).toHaveLength(5);
     expect(roadmap.every((state) => state.milestones.length >= 3)).toBe(true);

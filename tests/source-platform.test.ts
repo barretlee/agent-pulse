@@ -87,6 +87,42 @@ describe("resilient fetcher", () => {
     });
     expect(visited).toEqual(["https://example.com/start", "http://127.0.0.1/private"]);
   });
+
+  it("falls back to an explicitly configured environment proxy only for network failures", async () => {
+    const fetchImpl = vi.fn<typeof fetch>().mockRejectedValue(new Error("network unreachable"));
+    const proxyFetchImpl = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(new Response("through proxy", { status: 200 }));
+    const fetchText = createSafeFetcher(config, {
+      fetchImpl,
+      proxyFetchImpl,
+      validateUrl: async () => undefined,
+    });
+
+    await expect(
+      fetchText("https://example.com/feed", {}, { maxRetries: 0 }),
+    ).resolves.toMatchObject({ body: "through proxy", transport: "env-proxy", attemptCount: 1 });
+    expect(fetchImpl).toHaveBeenCalledOnce();
+    expect(proxyFetchImpl).toHaveBeenCalledOnce();
+  });
+
+  it("does not use a proxy to bypass permanent HTTP policy responses", async () => {
+    const fetchImpl = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(new Response("forbidden", { status: 403 }));
+    const proxyFetchImpl = vi.fn<typeof fetch>();
+    const fetchText = createSafeFetcher(config, {
+      fetchImpl,
+      proxyFetchImpl,
+      validateUrl: async () => undefined,
+    });
+
+    await expect(fetchText("https://example.com/restricted")).rejects.toMatchObject({
+      status: 403,
+      type: "permanent_http",
+    });
+    expect(proxyFetchImpl).not.toHaveBeenCalled();
+  });
 });
 
 describe("source health lifecycle", () => {
@@ -115,7 +151,7 @@ describe("source health lifecycle", () => {
       healthScore: 70,
       consecutiveFailures: 2,
     };
-    expect(applySourceSuccess(degraded).lifecycle).toBe("active");
+    expect(applySourceSuccess(degraded).lifecycle).toBe("degraded");
     expect(applySourceSuccess({ ...degraded, lifecycle: "quarantined" }).lifecycle).toBe(
       "quarantined",
     );
