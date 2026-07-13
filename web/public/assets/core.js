@@ -14,6 +14,7 @@ const timeline = document.querySelector("[data-timeline]");
 if (timeline) setupTimeline(timeline);
 setupCardFilters();
 setupSourceFilters();
+setupStockWidgets();
 
 function setupTimeline(root) {
   const cards = [...root.querySelectorAll("[data-event]")];
@@ -458,4 +459,34 @@ function setupSourceFilters() {
     });
   });
   search?.addEventListener("input", apply);
+}
+
+function setupStockWidgets() {
+  document.querySelectorAll(".actor-stock-chart[data-stock-ticker]").forEach((container) => {
+    const ticker = container.dataset.stockTicker;
+    if (!ticker) return;
+    const widgetContainer = document.createElement("div");
+    widgetContainer.className = "tradingview-widget-container";
+    const widgetEl = document.createElement("div");
+    widgetEl.className = "tradingview-widget-container__widget";
+    const script = document.createElement("script");
+    script.type = "text/javascript";
+    script.async = true;
+    const config = JSON.stringify({
+      symbol: ticker,
+      width: "100%",
+      height: 130,
+      locale: document.documentElement.lang === "zh-CN" ? "zh_CN" : "en",
+      dateRange: "6M",
+      colorTheme: document.documentElement.dataset.theme === "midnight" ? "dark" : "light",
+      isTransparent: true,
+      autosize: false,
+      noTimeScale: false,
+    });
+    script.text = config;
+    script.src =
+      "https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js";
+    widgetContainer.append(widgetEl, script);
+    container.append(widgetContainer);
+  });
 }

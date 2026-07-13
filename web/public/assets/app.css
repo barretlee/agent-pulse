@@ -1829,21 +1829,21 @@ summary:focus-visible {
   background: var(--accent);
   color: #0a0712;
 }
-.scout-hero-head {
+.tool-hero-head {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
   gap: 12px 32px;
   margin: 12px 0 18px;
 }
-.scout-hero-head h1 {
+.tool-hero-head h1 {
   margin: 0;
 }
-.scout-hero-head .tool-tabs {
+.tool-hero-head .tool-tabs {
   margin-bottom: 0;
 }
 .scout-section {
-  padding-block: 0;
+  padding-block: 0 var(--space-section);
 }
 .filter-toolbar {
   margin-bottom: 18px;
@@ -1985,6 +1985,15 @@ summary:focus-visible {
   gap: 5px;
   color: var(--accent);
   text-decoration: none;
+}
+.actor-stock-chart {
+  margin-top: 14px;
+  border-radius: 8px;
+  overflow: hidden;
+  min-height: 130px;
+}
+.tradingview-widget-container {
+  width: 100%;
 }
 .resource-grid {
   display: grid;

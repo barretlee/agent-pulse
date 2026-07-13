@@ -494,23 +494,14 @@ function eventPage(model: StaticSiteModel, event: EnrichedEvent, locale: Locale)
 }
 
 function scoutPage(model: StaticSiteModel, locale: Locale): string {
-  return `<section class="tool-hero shell">
-    <div>${icon("sparkles")}<span class="section-kicker">${locale === "en" ? "GO DEEPER" : "继续深入"}</span>
-      <div class="scout-hero-head">
-        <h1>${escapeHtml(t("scout.heroTitle", locale))}</h1>
-        <div class="tool-tabs">${toolTabs("scout", locale)}</div>
-      </div>
-      <p>${escapeHtml(t("scout.heroDesc", locale))}</p>
-    </div>
-  </section>
+  return `${toolHeader("sparkles", t("scout.heroTitle", locale), t("scout.heroDesc", locale), "scout", locale)}
   <section class="section shell scout-section"><div class="filter-toolbar"><button class="active" data-card-filter="all">${t("scout.filterAll", locale)}</button><button data-card-filter="venture">${t("scout.filterVenture", locale)}</button><button data-card-filter="media">${t("scout.filterMedia", locale)}</button><button data-card-filter="work">${t("scout.filterWork", locale)}</button><button data-card-filter="learning">${t("scout.filterLearning", locale)}</button><button data-card-filter="artifact">${t("scout.filterArtifact", locale)}</button><button data-card-filter="influence">${t("scout.filterInfluence", locale)}</button></div>
     <div class="scout-grid" data-filter-grid>${model.scout.map((insight) => scoutCard(insight, locale)).join("") || emptyState(t("scout.empty", locale), "")}</div></section>`;
 }
 
 function actorsPage(model: StaticSiteModel, locale: Locale): string {
-  const cn = model.actors.filter((actor) => actor.region === "CN").length;
-  return `${toolHeader("users", t("actors.heroTitle", locale), t("actors.heroDesc", locale), t("actors.statusActors", locale).replace("{count}", String(model.actors.length)), t("actors.statusChina", locale).replace("{count}", String(cn)), locale)}
-    <section class="section shell"><div class="tool-tabs">${toolTabs("actors", locale)}</div><div class="filter-toolbar"><button class="active" data-card-filter="all">${t("actors.filterAll", locale)}</button><button data-card-filter="CN">${t("actors.filterChina", locale)}</button><button data-card-filter="GLOBAL">${t("actors.filterGlobal", locale)}</button><button data-card-filter="US">${t("actors.filterUS", locale)}</button></div>
+  return `${toolHeader("users", t("actors.heroTitle", locale), t("actors.heroDesc", locale), "actors", locale)}
+    <section class="section shell"><div class="filter-toolbar"><button class="active" data-card-filter="all">${t("actors.filterAll", locale)}</button><button data-card-filter="CN">${t("actors.filterChina", locale)}</button><button data-card-filter="GLOBAL">${t("actors.filterGlobal", locale)}</button><button data-card-filter="US">${t("actors.filterUS", locale)}</button></div>
     <div class="actor-grid" data-filter-grid>${[...model.actors]
       .sort((a, b) => b.tableScore - a.tableScore)
       .map((actor) => actorCard(actor, locale))
@@ -518,15 +509,15 @@ function actorsPage(model: StaticSiteModel, locale: Locale): string {
 }
 
 function resourcesPage(model: StaticSiteModel, locale: Locale): string {
-  return `${toolHeader("box", t("resources.heroTitle", locale), t("resources.heroDesc", locale), t("resources.statusCount", locale).replace("{count}", String(model.resources.length)), t("resources.statusCheck", locale), locale)}
-    <section class="section shell"><div class="tool-tabs">${toolTabs("resources", locale)}</div><div class="resource-grid">${model.resources.map((resource) => resourceCard(resource, locale)).join("")}</div><p class="legal-note">${escapeHtml(t("resources.legalNote", locale))}</p></section>`;
+  return `${toolHeader("box", t("resources.heroTitle", locale), t("resources.heroDesc", locale), "resources", locale)}
+    <section class="section shell"><div class="resource-grid">${model.resources.map((resource) => resourceCard(resource, locale)).join("")}</div><p class="legal-note">${escapeHtml(t("resources.legalNote", locale))}</p></section>`;
 }
 
 function productPage(model: StaticSiteModel, locale: Locale): string {
   const evaluation = model.product.evaluation;
   const domains = [...new Set(model.product.capabilities.map((item) => item.domain))];
-  return `${toolHeader("gauge", t("product.heroTitle", locale), t("product.heroDesc", locale), evaluation ? t("product.statusScore", locale).replace("{score}", String(evaluation.overallScore)) : t("product.statusPending", locale), t("product.statusCapabilities", locale).replace("{count}", String(model.product.capabilities.length)), locale)}
-    <section class="section shell"><div class="tool-tabs">${toolTabs("product", locale)}</div>
+  return `${toolHeader("gauge", t("product.heroTitle", locale), t("product.heroDesc", locale), "product", locale)}
+    <section class="section shell">
       <div class="product-metrics">${metric(t("product.metricVersion", locale), `v${model.product.version}`)}${metric(t("product.metricSources", locale), model.product.sourceCoverage.total)}${metric(t("product.metricObserving", locale), model.product.sourceCoverage.observing)}${metric(t("product.metricCoverage", locale), evaluation ? `${evaluation.evidenceCoverage}%` : "—")}</div>
       ${sectionHead("01 / EVALUATION", t("product.evalTitle", locale), t("product.evalDesc", locale))}
       <div class="evaluation-grid">${(evaluation?.dimensions || []).map((item) => evaluationCard(item, locale)).join("") || emptyState(t("product.evalEmpty", locale), "")}</div>
@@ -627,11 +618,10 @@ function toolHeader(
   iconName: string,
   title: string,
   copy: string,
-  state: string,
-  action: string,
+  tabActive: string,
   locale: Locale,
 ): string {
-  return `<section class="tool-hero shell"><div>${icon(iconName)}<span class="section-kicker">${locale === "en" ? "GO DEEPER" : "继续深入"}</span><h1>${escapeHtml(title)}</h1><p>${escapeHtml(copy)}</p></div>${pageStatus(state, action, "")}</section>`;
+  return `<section class="tool-hero shell"><div>${icon(iconName)}<span class="section-kicker">${locale === "en" ? "GO DEEPER" : "继续深入"}</span><div class="tool-hero-head"><h1>${escapeHtml(title)}</h1><div class="tool-tabs">${toolTabs(tabActive, locale)}</div></div><p>${escapeHtml(copy)}</p></div></section>`;
 }
 
 function toolTabs(active: string, locale: Locale): string {
@@ -819,9 +809,30 @@ function scoutCard(insight: PublicScoutInsight, locale: Locale): string {
   return `<article class="scout-card" data-filter-value="${escapeHtml(insight.kind)}"><header><span>${escapeHtml(scoutKind(insight.kind, locale))}</span><span>${escapeHtml(insight.horizon)}</span><span>${locale === "en" ? "For" : "适合"} · ${escapeHtml(insight.targetAudience)}</span></header><h2>${escapeHtml(insight.title)}</h2><p class="scout-observation"><strong>${locale === "en" ? "Observed shift" : "触发变化"}</strong>${escapeHtml(insight.observation)}</p><p class="hypothesis">${escapeHtml(insight.hypothesis)}</p><div class="scout-metrics"><span>${locale === "en" ? "Confidence" : "置信度"} <strong>${insight.confidenceScore}</strong></span><span>${locale === "en" ? "Evidence" : "证据强度"} <strong>${insight.evidenceScore}</strong></span><span>${locale === "en" ? "Novelty" : "新颖度"} <strong>${insight.noveltyScore}</strong></span><span>${locale === "en" ? "Actionability" : "行动价值"} <strong>${insight.leverageScore}</strong></span></div><div class="scout-sections"><section><span>${locale === "en" ? "Why Now" : "为什么现在"}</span><p>${escapeHtml(insight.whyNow)}</p></section><section><span>${locale === "en" ? "Minimum Action" : "最小动作"}</span><p>${escapeHtml(insight.suggestedAction)}</p></section><section><span>${locale === "en" ? "Artifact" : "建议产物"}</span><p>${escapeHtml(insight.artifactIdea)}</p></section><section class="counter"><span>${locale === "en" ? "What Could Go Wrong" : "可能错在哪"}</span><p>${escapeHtml(insight.counterSignals)}</p></section></div><footer>${insight.evidence.map((item) => `<a data-event-link="${escapeHtml(item.slug)}" href="__PREFIX__events/${escapeHtml(item.slug)}/">${locale === "en" ? "Evidence" : "证据"} · ${escapeHtml(item.title)}</a>`).join("")}</footer></article>`;
 }
 
+const STOCK_TICKERS: Record<string, string> = {
+  google: "NASDAQ:GOOGL",
+  meta: "NASDAQ:META",
+  microsoft: "NASDAQ:MSFT",
+  nvidia: "NASDAQ:NVDA",
+  alibaba: "HKEX:9988",
+  tencent: "HKEX:700",
+  baidu: "HKEX:9888",
+  kuaishou: "HKEX:1024",
+  xiaomi: "HKEX:1810",
+  meituan: "HKEX:3690",
+  sensetime: "HKEX:20",
+  iflytek: "SZSE:002230",
+  jd: "NASDAQ:JD",
+  cambricon: "SSE:688256",
+};
+
 function actorCard(actor: PublicActor, locale: Locale): string {
   const url = safeExternalLink(actor.websiteUrl);
-  return `<article class="actor-card" data-filter-value="${escapeHtml(actor.region)}"><header><span>${escapeHtml(actor.region)} · ${escapeHtml(actor.type)}</span><strong>${escapeHtml(scoreBand(actor.tableScore, locale))}</strong></header><h2>${escapeHtml(actor.name)}</h2><p>${escapeHtml(actor.scale)} · ${escapeHtml(actor.domains.join(" / ") || t("actors.domainUnknown", locale))}</p><div class="observation-note">${escapeHtml(t("actors.observationNote", locale))}</div>${url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(t("actors.website", locale))} ${icon("external-link")}</a>` : ""}</article>`;
+  const ticker = STOCK_TICKERS[actor.slug];
+  const stockWidget = ticker
+    ? `<div class="actor-stock-chart" data-stock-ticker="${escapeHtml(ticker)}"></div>`
+    : "";
+  return `<article class="actor-card" data-filter-value="${escapeHtml(actor.region)}"><header><span>${escapeHtml(actor.region)} · ${escapeHtml(actor.type)}</span><strong>${escapeHtml(scoreBand(actor.tableScore, locale))}</strong></header><h2>${escapeHtml(actor.name)}</h2><p>${escapeHtml(actor.scale)} · ${escapeHtml(actor.domains.join(" / ") || t("actors.domainUnknown", locale))}</p><div class="observation-note">${escapeHtml(t("actors.observationNote", locale))}</div>${url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(t("actors.website", locale))} ${icon("external-link")}</a>` : ""}${stockWidget}</article>`;
 }
 
 function resourceCard(resource: PublicResource, locale: Locale): string {

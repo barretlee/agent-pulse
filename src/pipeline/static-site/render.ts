@@ -190,6 +190,9 @@ export function pageLayout(input: PageChrome): string {
     <div class="shell footer-grid">
       <div><strong>AGENT PULSE</strong><p>${escapeHtml(t("footer.tagline", locale))}</p></div>
       <nav aria-label="${escapeHtml(t("ui.footerNav", locale))}">
+        <a href="${prefix}lines/">${escapeHtml(t("footer.lines", locale))}</a>
+        <a href="${prefix}timeline/">${escapeHtml(t("footer.timeline", locale))}</a>
+        <a href="${prefix}scout/">${escapeHtml(t("footer.scout", locale))}</a>
         <a href="${prefix}sources/">${escapeHtml(t("footer.sources", locale))}</a>
         <a href="${prefix}legal/">${escapeHtml(t("footer.legal", locale))}</a>
         <a href="${prefix}changelog/">${escapeHtml(t("footer.changelog", locale))}</a>

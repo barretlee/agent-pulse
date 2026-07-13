@@ -40,6 +40,9 @@ const translations: Record<string, Record<Locale, string>> = {
 
   // ─── Footer ────────────────────────────────────────────────
   "footer.tagline": { "zh-CN": "Signal, not noise.", en: "Signal, not noise." },
+  "footer.lines": { "zh-CN": "主线", en: "Strategic Lines" },
+  "footer.timeline": { "zh-CN": "事件时间线", en: "Timeline" },
+  "footer.scout": { "zh-CN": "行动参考", en: "Action Ideas" },
   "footer.sources": { "zh-CN": "覆盖与来源", en: "Coverage & Sources" },
   "footer.legal": { "zh-CN": "版权与纠错", en: "Legal & Corrections" },
   "footer.changelog": { "zh-CN": "Changelog", en: "Changelog" },
@@ -323,7 +326,7 @@ const translations: Record<string, Record<Locale, string>> = {
 
   // ─── Timeline ──────────────────────────────────────────────
   "timeline.heroTitle": {
-    "zh-CN": "一个事件，一条完整脉络",
+    "zh-CN": "追踪每条主线，从信号到完整脉络",
     en: "One Event, One Complete Story",
   },
   "timeline.heroDesc": {
