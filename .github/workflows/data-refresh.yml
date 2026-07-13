@@ -2,7 +2,7 @@ name: Refresh intelligence data
 
 on:
   schedule:
-    - cron: "17 */6 * * *"
+    - cron: "17 */4 * * *"
   workflow_dispatch:
     inputs:
       mode:
@@ -25,7 +25,7 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 35
     env:
       DATABASE_URL: sqlite:./var/automation.db
       PUBLIC_SITE_URL: https://barretlee.github.io/agent-pulse/
@@ -62,8 +62,21 @@ jobs:
       - name: Reconcile sources and source radar
         run: npm run ops:reconcile
 
-      - name: Generate fresh Scout inbox candidates
+      - name: Reconcile observation and activate qualified sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run observe:sources -- --confirm
+          npm run activate:auto
+
+      - name: Remove unattached aggregator provenance debt
+        run: npm run repair:provenance -- --confirm
+
+      - name: Generate and publish qualified Scout opportunities
         run: npm run scout:generate -- 5
+
+      - name: Publish every Event and Scout item that clears hard gates
+        run: npm run auto:publish
 
       - name: Evaluate measured system quality
         run: npm run evaluate:system | tee "$RUNNER_TEMP/evaluation.json"

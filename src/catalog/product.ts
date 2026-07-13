@@ -1,4 +1,4 @@
-export const productVersion = "0.6.0";
+export const productVersion = "0.7.0";
 
 export const capabilities = [
   {
@@ -23,11 +23,11 @@ export const capabilities = [
     slug: "continuous-data-refresh",
     name: "持续数据刷新",
     domain: "sensing",
-    status: "experimental",
-    maturity: 58,
-    release: "0.4.0",
+    status: "operational",
+    maturity: 72,
+    release: "0.7.0",
     evidence:
-      "scheduled GitHub Actions collection with serialized writes and explicit Pages dispatch",
+      "six daily GitHub Actions refreshes plus a two-hour quality guard, serialized snapshot writes and explicit Pages dispatch",
   },
   {
     slug: "two-year-baseline",
@@ -128,9 +128,10 @@ export const capabilities = [
     name: "国内外覆盖地图",
     domain: "sensing",
     status: "experimental",
-    maturity: 46,
-    release: "0.2.0",
-    evidence: "region/category catalog; continuous coverage metrics pending",
+    maturity: 58,
+    release: "0.7.0",
+    evidence:
+      "region/category coverage plus a 12-person AI expert identity matrix with automatic feeds and restricted social profiles",
   },
   {
     slug: "normalize",
@@ -257,9 +258,10 @@ export const capabilities = [
     name: "Opportunity Scout",
     domain: "intelligence",
     status: "experimental",
-    maturity: 38,
-    release: "0.2.0",
-    evidence: "evidence-bound deterministic candidates, cooldown and human publication gate",
+    maturity: 56,
+    release: "0.7.0",
+    evidence:
+      "evidence-bound deterministic opportunities with recency-aware selection, cooldown, automatic publication gates and archival",
   },
   {
     slug: "forecast",
@@ -300,32 +302,32 @@ export const capabilities = [
   },
   {
     slug: "inbox",
-    name: "Inbox 机会沉淀",
+    name: "自动机会沉淀",
     domain: "experience",
     status: "experimental",
-    maturity: 42,
-    release: "0.2.0",
-    evidence: "Scout status workflow and public/private gate",
+    maturity: 55,
+    release: "0.7.0",
+    evidence: "Scout opportunities are automatically published or archived without a human queue",
   },
   {
     slug: "control-room",
     name: "Control Room",
     domain: "experience",
     status: "experimental",
-    maturity: 65,
-    release: "0.1.0",
+    maturity: 70,
+    release: "0.7.0",
     evidence:
-      "source checks, coverage, funnel, blockers, event evidence, merge queue, release gate, source lifecycle, views and Scout controls",
+      "read-only operational audit for source health, automated publication, merge candidates, evaluation and Scout outcomes",
   },
   {
     slug: "publication-readiness",
     name: "发布就绪门禁",
     domain: "governance",
     status: "operational",
-    maturity: 66,
-    release: "0.5.0",
+    maturity: 74,
+    release: "0.7.0",
     evidence:
-      "publish API rejects missing primary evidence, placeholders, generic entities, taxonomy gaps, low confidence and unsupported heat",
+      "ready events publish automatically while missing evidence, placeholders, taxonomy gaps, low confidence and unsupported heat remain isolated",
   },
   {
     slug: "static-release",
@@ -382,9 +384,10 @@ export const capabilities = [
     name: "版本演进与 Changelog",
     domain: "delivery",
     status: "operational",
-    maturity: 60,
-    release: "0.2.0",
-    evidence: "versioned changelog, capability deltas and public evolution spine",
+    maturity: 74,
+    release: "0.7.0",
+    evidence:
+      "versioned repository and website changelogs with an enforced contract and automatic GitHub Release creation",
   },
   {
     slug: "evaluation",
@@ -491,27 +494,29 @@ export const roadmap = [
 
 export const releases = [
   {
-    status: "unreleased",
-    version: "next",
-    date: "持续更新",
-    name: "The Decision Intelligence Loop",
+    version: "0.7.0",
+    date: "2026-07-13",
+    name: "The Autonomous Intelligence Loop",
     summary:
-      "从前台认知体验延伸到来源审计、自动运营与发布验证，让每次内容和产品更新都能被解释、被追溯、被稳定交付。",
+      "把来源、事件、论文、星探、评测、版本和 Pages 收敛为无人值守闭环，同时补齐近期密度与核心 AI 专家覆盖。",
     capabilities: [
       "全站证据抽屉",
       "年月事件脉络",
       "研究内容分层",
-      "自主来源治理",
-      "动态机会星探",
-      "发布验证闭环",
+      "事件与星探自动发布",
+      "低分质量守卫",
+      "核心 AI 专家矩阵",
+      "GitHub Release 闭环",
     ],
     changes: [
       "首页围绕 30 秒了解变化、3 分钟理解影响、10 分钟形成判断重建信息消费路径",
       "事件脉络按年月倒序组织，证据在首页、趋势、研究、事件和星探等入口原地打开",
-      "论文与研究采用时间轴完整覆盖、首页高质量精选的双层门槛，并补强方法、影响和验证边界",
-      "来源审计自动协调降级、隔离、恢复与观察；2026-07-13 00:27 UTC 实测 260 个来源中 139 healthy、107 个处于隔离观察",
-      "中英文 README 重写首屏定位与参与入口，仓库和网站 Changelog 建立同步更新门禁",
-      "发布完成以 CI、Pages 与线上内容真实验证为准，来源健康 Issue 由定时审计持续更新并接受新鲜度监控",
+      "最近 7 天内容统一高亮，并把最近三个完整自然月补齐到每月不少于 6 个一手证据事件",
+      "论文区域展示最近三天批次状态，区分真实更新、周末节奏与等待下一批，不用空卡或虚构数据掩盖缺口",
+      "事件通过事实门禁后自动发布；星探建议通过质量门禁后直接上架，不合格项自动归档",
+      "数据每日刷新 6 次，评测低于 60 分时由两小时质量守卫按冷却规则触发增量更新",
+      "新增 12 位国内外核心 AI 专家矩阵，个人 RSS 自动采集，受限社交账户明确标记而不绕过平台限制",
+      "CI 校验仓库与网站 Changelog 后自动创建对应 GitHub Release，并继续触发隐私安全的 Pages 发布",
     ],
   },
   {

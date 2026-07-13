@@ -1,0 +1,101 @@
+name: Guard evaluation quality
+
+on:
+  schedule:
+    - cron: "47 */2 * * *"
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: agent-pulse-quality-guard-main
+  cancel-in-progress: true
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      DATABASE_URL: sqlite:./var/quality-guard.db
+      QUALITY_FLOOR: 60
+      REFRESH_COOLDOWN_HOURS: 2
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Restore auditable repository snapshot
+        run: npm run db:snapshot -- restore
+
+      - name: Evaluate current system quality
+        id: evaluation
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run --silent evaluate:system > "$RUNNER_TEMP/evaluation.json"
+          jq -e . "$RUNNER_TEMP/evaluation.json" >/dev/null
+          score="$(jq -r '.overallScore' "$RUNNER_TEMP/evaluation.json")"
+          test "$score" -ge 0
+          echo "score=$score" >> "$GITHUB_OUTPUT"
+          if [[ "$score" -lt "$QUALITY_FLOOR" ]]; then
+            echo "below_floor=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "below_floor=false" >> "$GITHUB_OUTPUT"
+          fi
+          jq '{overallScore, rawWeightedScore, evidenceCoverage, target, targetReached}' "$RUNNER_TEMP/evaluation.json"
+
+      - name: Check refresh cooldown
+        if: steps.evaluation.outputs.below_floor == 'true'
+        id: cooldown
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          latest="$(gh run list --workflow data-refresh.yml --limit 1 --json createdAt,status,conclusion --jq '.[0] // {}')"
+          LATEST_REFRESH="$latest" node --input-type=module <<'NODE' >> "$GITHUB_OUTPUT"
+          const latest = JSON.parse(process.env.LATEST_REFRESH || "{}");
+          const ageMs = Date.now() - Date.parse(latest.createdAt || "");
+          const cooldownMs = Number(process.env.REFRESH_COOLDOWN_HOURS || 2) * 60 * 60 * 1000;
+          const stale = !Number.isFinite(ageMs) || ageMs >= cooldownMs;
+          const failed = latest.status === "completed" && latest.conclusion !== "success";
+          process.stdout.write(`dispatch=${stale || failed}\n`);
+          process.stdout.write(`latest_status=${latest.status || "missing"}\n`);
+          NODE
+
+      - name: Trigger one bounded system update
+        if: steps.evaluation.outputs.below_floor == 'true' && steps.cooldown.outputs.dispatch == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run data-refresh.yml --ref main --field mode=incremental
+
+      - name: Record guard summary
+        shell: bash
+        run: |
+          {
+            echo "## Quality Guard"
+            echo "- Score: ${{ steps.evaluation.outputs.score }} / 100"
+            echo "- Floor: $QUALITY_FLOOR"
+            echo "- Below floor: ${{ steps.evaluation.outputs.below_floor }}"
+            echo "- Refresh dispatched: ${{ steps.cooldown.outputs.dispatch || 'false' }}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload evaluation evidence
+        uses: actions/upload-artifact@v7
+        with:
+          name: quality-guard-${{ github.run_id }}
+          path: ${{ runner.temp }}/evaluation.json
+          retention-days: 14
+

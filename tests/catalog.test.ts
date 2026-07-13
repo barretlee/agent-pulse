@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { influencerCatalog } from "../src/catalog/influencers.js";
 import { capabilities, releases, roadmap } from "../src/catalog/product.js";
 import { sourceCatalog } from "../src/catalog/sources.js";
 
@@ -47,7 +48,26 @@ describe("knowledge source catalog", () => {
     expect(capabilities.length).toBeGreaterThanOrEqual(25);
     expect(capabilities.every((capability) => capability.evidence.length > 10)).toBe(true);
     expect(releases[0]?.capabilities.length).toBeGreaterThanOrEqual(5);
-    expect(releases[0]).toMatchObject({ status: "unreleased", version: "next" });
+    expect(releases[0]).toMatchObject({ version: "0.7.0" });
     expect(releases[1]).toMatchObject({ version: "0.6.0" });
+  });
+
+  it("keeps a unique, public and policy-aware AI influencer matrix", () => {
+    expect(influencerCatalog.length).toBeGreaterThanOrEqual(10);
+    expect(new Set(influencerCatalog.map((item) => item.slug)).size).toBe(influencerCatalog.length);
+    expect(influencerCatalog.filter((item) => item.region === "CN").length).toBeGreaterThanOrEqual(
+      4,
+    );
+    expect(influencerCatalog.filter((item) => item.feedSourceSlug).length).toBeGreaterThanOrEqual(
+      7,
+    );
+    for (const influencer of influencerCatalog) {
+      expect(influencer.focus.length).toBeGreaterThanOrEqual(2);
+      for (const profile of influencer.profiles) expect(() => new URL(profile.url)).not.toThrow();
+    }
+    expect(sourceCatalog.find((source) => source.slug === "jike-ai-experts")).toMatchObject({
+      maintenanceStatus: "restricted",
+      enabled: false,
+    });
   });
 });

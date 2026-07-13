@@ -49,4 +49,40 @@ describe("GitHub source governance workflows", () => {
     expect(pages).toContain("GITHUB_METADATA_FETCHED_AT=");
     expect(pages.indexOf("gh api")).toBeLessThan(pages.indexOf("npm run export"));
   });
+
+  it("refreshes content six times daily and runs the autonomous publication loop", async () => {
+    const refresh = await workflow("data-refresh.yml");
+    expect(refresh).toContain('cron: "17 */4 * * *"');
+    for (const command of [
+      "npm run collect",
+      "npm run ops:reconcile",
+      "npm run observe:sources -- --confirm",
+      "npm run activate:auto",
+      "npm run scout:generate -- 5",
+      "npm run auto:publish",
+      "npm run evaluate:system",
+      "npm run db:snapshot -- write",
+      "gh workflow run pages.yml --ref main",
+    ]) {
+      expect(refresh).toContain(command);
+    }
+  });
+
+  it("dispatches one cooled-down refresh when measured quality is below 60", async () => {
+    const guard = await workflow("quality-guard.yml");
+    expect(guard).toContain('cron: "47 */2 * * *"');
+    expect(guard).toContain("QUALITY_FLOOR: 60");
+    expect(guard).toContain("REFRESH_COOLDOWN_HOURS: 2");
+    expect(guard).toContain("gh run list --workflow data-refresh.yml");
+    expect(guard).toContain("gh workflow run data-refresh.yml --ref main --field mode=incremental");
+  });
+
+  it("creates a missing GitHub Release only after CI verifies main", async () => {
+    const release = await workflow("release.yml");
+    expect(release).toContain('workflows: ["CI"]');
+    expect(release).toContain("github.event.workflow_run.conclusion == 'success'");
+    expect(release).toContain("npm run release:check");
+    expect(release).toContain("gh release view");
+    expect(release).toContain("gh release create");
+  });
 });

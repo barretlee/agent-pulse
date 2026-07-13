@@ -2,6 +2,7 @@ import type {
   EnrichedEvent,
   EvaluationDimension,
   PublicActor,
+  PublicInfluencer,
   PublicResource,
   PublicScoutInsight,
   PublicSource,
@@ -18,7 +19,10 @@ import {
   eventDevelopments,
   groupEventsByYearMonth,
   groupTimelineMonthItems,
+  isRecentEvent,
   latestDevelopmentAt,
+  recentMonthlyDensity,
+  recentResearchBatches,
   sortEventsByLatestDevelopment,
 } from "./intelligence.js";
 import { escapeHtml, formatDate, icon, pageLayout, safeExternalLink } from "./render.js";
@@ -389,9 +393,15 @@ function timeline(model: StaticSiteModel, locale: Locale): string {
         `<button type="button" data-filter-track="${escapeHtml(track.slug)}">${escapeHtml(track.name)}</button>`,
     )
     .join("");
+  const density = recentMonthlyDensity(events, model.generatedAt);
+  const researchBatches = recentResearchBatches(events, model.generatedAt);
   return `<section class="page-hero compact shell">
       <span class="section-kicker">EVIDENCE TIMELINE</span><h1>${escapeHtml(t("timeline.heroTitle", locale))}</h1><p>${escapeHtml(t("timeline.heroDesc", locale))}</p>
       ${pageStatus(t("timeline.statusEvents", locale).replace("{count}", String(events.length)), t("timeline.statusPrimary", locale).replace("{count}", String(events.filter(hasPrimaryEvidence).length)), locale === "en" ? "Newest development first" : "按最近进展倒序")}
+    </section>
+    <section class="timeline-intelligence shell">
+      <article><span class="section-kicker">${locale === "en" ? "RECENT DENSITY" : "近三月密度"}</span><h2>${locale === "en" ? "A consistent evidence baseline" : "持续补齐，而不是只追今天"}</h2><div class="density-strip">${density.map((item) => densityItem(item, locale)).join("")}</div></article>
+      <article><span class="section-kicker">${locale === "en" ? "RESEARCH CADENCE" : "论文批次状态"}</span><h2>${locale === "en" ? "Why a daily digest may be empty" : "为什么最近两天没有论文日报"}</h2><div class="research-cadence">${researchBatches.map((item) => researchBatchItem(item, locale)).join("")}</div><p>${locale === "en" ? "arXiv announces submissions five days a week. Empty weekend dates are shown as cadence, never fabricated as papers." : "arXiv 通常每周发布五天；周末空档会如实说明，系统不会为了凑日报伪造论文。"}</p></article>
     </section>
     <section class="timeline-shell shell" data-timeline>
       <div class="timeline-controls">
@@ -520,12 +530,21 @@ function sourcesPage(model: StaticSiteModel, locale: Locale): string {
   const coverage = model.product.sourceCoverage;
   const technologyCoverage = analyzeTechnologyCoverage(model.sources);
   const gaps = technologyCoverage.filter((item) => item.status !== "covered").length;
+  const automaticInfluencers = model.influencers.filter((item) => item.feedSourceSlug).length;
+  const restrictedProfiles = model.influencers
+    .flatMap((item) => item.profiles)
+    .filter((profile) => profile.access === "restricted").length;
   return `<section class="page-hero shell"><span class="section-kicker">SOURCE MAP</span><h1>${escapeHtml(t("sources.heroTitle", locale))}</h1><p>${escapeHtml(t("sources.heroDesc", locale))}</p>${pageStatus(t("sources.statusTotal", locale).replace("{total}", String(coverage.total)), t("sources.statusObserving", locale).replace("{total}", String(coverage.observing)), t("sources.statusActive", locale).replace("{total}", String(coverage.active)))}</section>
     <section class="section shell coverage-audit-section">
       ${sectionHead(t("sources.coverageKicker", locale), t("sources.coverageTitle", locale), t("sources.coverageDesc", locale))}
       <div class="coverage-summary">${metric(locale === "en" ? "Technology areas" : "重点技术领域", technologyCoverage.length)}${metric(locale === "en" ? "Need strengthening" : "需要补强", gaps)}${metric(locale === "en" ? "Recently healthy sources" : "最近健康来源", model.sources.filter((source) => source.healthStatus === "healthy").length)}${metric(locale === "en" ? "Unchecked sources" : "尚未验证来源", model.sources.filter((source) => source.healthStatus === "unchecked").length)}</div>
       <div class="filter-toolbar coverage-filters"><button class="active" data-card-filter="all">${locale === "en" ? "All" : "全部"}</button><button data-card-filter="gap">${t("sources.coverageGap", locale)}</button><button data-card-filter="watch">${t("sources.coverageWatch", locale)}</button><button data-card-filter="unchecked">${t("sources.coverageUnchecked", locale)}</button><button data-card-filter="covered">${t("sources.coverageCovered", locale)}</button></div>
       <div class="technology-coverage-grid" data-filter-grid>${technologyCoverage.map((item) => technologyCoverageCard(item, locale)).join("")}</div>
+    </section>
+    <section class="section shell influencer-section">
+      ${sectionHead("KOL SIGNAL MATRIX", locale === "en" ? "The people shaping AI judgment" : "值得持续跟踪的 AI 核心个人", locale === "en" ? "Personal feeds enter the normal evidence pipeline; restricted social profiles remain discovery signals and never become sole factual evidence." : "个人 RSS/Atom 进入正常证据链；X、LinkedIn、微博与即刻受限账号只作为发现线索，不会单独成为重大事实证据。")}
+      <div class="coverage-summary">${metric(locale === "en" ? "Core people" : "核心个人", model.influencers.length)}${metric(locale === "en" ? "Automatic feeds" : "自动个人 Feed", automaticInfluencers)}${metric(locale === "en" ? "China" : "中国", model.influencers.filter((item) => item.region === "CN").length)}${metric(locale === "en" ? "Restricted profiles" : "平台受限入口", restrictedProfiles)}</div>
+      <div class="influencer-grid">${model.influencers.map((item) => influencerCard(item, locale)).join("")}</div>
     </section>
     <section class="section section-tint"><div class="shell">
       ${sectionHead("SOURCE RUNTIME", t("sources.catalogTitle", locale), t("sources.catalogDesc", locale))}
@@ -534,6 +553,18 @@ function sourcesPage(model: StaticSiteModel, locale: Locale): string {
       <div class="source-table" data-source-grid>${model.sources.map((src) => sourceRow(src, locale)).join("")}</div>
       <div class="contribute-card"><div>${icon("git-pull-request")}<h2>${escapeHtml(t("sources.contributeTitle", locale))}</h2><p>${escapeHtml(t("sources.contributeDesc", locale))}</p></div><a class="button primary" href="${escapeHtml(model.github.repositoryUrl)}/issues/new/choose" target="_blank" rel="noopener noreferrer">${t("sources.contributeButton", locale)} ${icon("arrow-right")}</a></div>
     </div></section>`;
+}
+
+function influencerCard(item: PublicInfluencer, locale: Locale): string {
+  const profiles = item.profiles
+    .map((profile) => {
+      const url = safeExternalLink(profile.url);
+      if (!url) return "";
+      const label = `${profile.platform === "x" ? "X" : profile.platform} · ${profile.handle}`;
+      return `<a class="influencer-profile ${escapeHtml(profile.access)}" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer"><span>${escapeHtml(label)}</span><small>${profile.access === "automatic" ? (locale === "en" ? "automatic" : "可自动采集") : locale === "en" ? "restricted" : "平台受限"}</small>${icon("external-link")}</a>`;
+    })
+    .join("");
+  return `<article class="influencer-card"><header><span>${escapeHtml(item.region === "CN" ? (locale === "en" ? "China" : "中国") : locale === "en" ? "Global" : "全球")}</span><strong>${item.feedSourceSlug ? (locale === "en" ? "FEED ACTIVE" : "FEED 已接入") : locale === "en" ? "IDENTITY ONLY" : "身份观测"}</strong></header><h3>${escapeHtml(item.name)}</h3><p>${item.focus.map((focus) => escapeHtml(focus)).join(" · ")}</p><div>${profiles}</div></article>`;
 }
 
 function legalPage(model: StaticSiteModel, locale: Locale): string {
@@ -645,7 +676,7 @@ function phaseCard(
   },
   locale: Locale,
 ): string {
-  return `<article><span>${escapeHtml(stage.period)}</span><h3>${escapeHtml(stage.label)}</h3><p>${escapeHtml(stage.summary)}</p><div><strong>${locale === "en" ? "China Position" : "中国位置"}</strong><p>${escapeHtml(stage.chinaPosition)}</p></div></article>`;
+  return `<article><span>${escapeHtml(stage.period)}</span><h3>${escapeHtml(stage.label)}</h3><p>${escapeHtml(stage.summary)}</p><div><strong>${locale === "en" ? "China Progress" : "本土进展"}</strong><p>${escapeHtml(stage.chinaPosition)}</p></div></article>`;
 }
 
 function roleLens(role: string, question: string, locale: Locale, answer?: string): string {
@@ -653,11 +684,13 @@ function roleLens(role: string, question: string, locale: Locale, answer?: strin
 }
 
 function eventRow(event: EnrichedEvent, locale: Locale): string {
-  return `<a class="event-row" data-event-link="${escapeHtml(event.slug)}" href="__PREFIX__events/${escapeHtml(event.slug)}/"><time>${escapeHtml(formatDate(event.happenedAt, locale))}</time><div><span>${escapeHtml(event.company || t("event.unknownEntity", locale))} · ${escapeHtml(event.tracks[0]?.name || t("timeline.pendingTrack", locale))}</span><h3>${escapeHtml(event.title)}</h3><p>${escapeHtml(event.factSummary)}</p></div><small>${escapeHtml(evidenceLabel(event, locale))}</small>${icon("arrow-right")}</a>`;
+  const recent = isRecentEvent(event);
+  return `<a class="event-row${recent ? " is-recent" : ""}" data-recent="${recent}" data-event-link="${escapeHtml(event.slug)}" href="__PREFIX__events/${escapeHtml(event.slug)}/"><time>${escapeHtml(formatDate(event.happenedAt, locale))}</time><div><span>${recent ? `${recentBadge(locale)} · ` : ""}${escapeHtml(event.company || t("event.unknownEntity", locale))} · ${escapeHtml(event.tracks[0]?.name || t("timeline.pendingTrack", locale))}</span><h3>${escapeHtml(event.title)}</h3><p>${escapeHtml(event.factSummary)}</p></div><small>${escapeHtml(evidenceLabel(event, locale))}</small>${icon("arrow-right")}</a>`;
 }
 
 function researchCard(event: EnrichedEvent, locale: Locale): string {
-  return `<article class="research-card"><header><span>${escapeHtml(t("home.researchPreprint", locale))}</span><time>${escapeHtml(formatDate(event.happenedAt, locale))}</time></header><h3>${escapeHtml(event.title)}</h3><div><span>${escapeHtml(t("home.researchMethod", locale))}</span><p>${escapeHtml(event.technicalInsight)}</p></div><div><span>${escapeHtml(t("home.researchDecision", locale))}</span><p>${escapeHtml(event.businessValue || event.industryInsight)}</p></div><a data-event-link="${escapeHtml(event.slug)}" href="__PREFIX__events/${escapeHtml(event.slug)}/">${t("home.readResearch", locale)} ${icon("arrow-right")}</a></article>`;
+  const recent = isRecentEvent(event);
+  return `<article class="research-card${recent ? " is-recent" : ""}" data-recent="${recent}"><header><span>${recent ? `${recentBadge(locale)} · ` : ""}${escapeHtml(t("home.researchPreprint", locale))}</span><time>${escapeHtml(formatDate(event.happenedAt, locale))}</time></header><h3>${escapeHtml(event.title)}</h3><div><span>${escapeHtml(t("home.researchMethod", locale))}</span><p>${escapeHtml(event.technicalInsight)}</p></div><div><span>${escapeHtml(t("home.researchDecision", locale))}</span><p>${escapeHtml(event.businessValue || event.industryInsight)}</p></div><a data-event-link="${escapeHtml(event.slug)}" href="__PREFIX__events/${escapeHtml(event.slug)}/">${t("home.readResearch", locale)} ${icon("arrow-right")}</a></article>`;
 }
 
 function isResearchEvent(event: EnrichedEvent): boolean {
@@ -686,7 +719,8 @@ function timelineCard(event: EnrichedEvent, locale: Locale): string {
     .toLowerCase();
   const tracks = event.tracks.map((track) => track.slug).join(" ");
   const developments = eventDevelopments(event);
-  return `<button class="timeline-card${isResearchEvent(event) ? " research" : ""}" type="button" data-event="${escapeHtml(event.slug)}" data-search="${escapeHtml(search)}" data-tracks="${escapeHtml(tracks)}" data-category="${escapeHtml(event.category)}" data-research="${isResearchEvent(event)}" data-research-reviewed="${isReviewedResearch(event)}" data-primary="${hasPrimaryEvidence(event)}" aria-controls="event-drawer" aria-haspopup="dialog"><span>${escapeHtml(t("timeline.latestUpdate", locale).replace("{date}", formatDate(latestDevelopmentAt(event), locale)))} · ${escapeHtml(event.company || t("event.unknownEntity", locale))}</span><h2>${escapeHtml(event.title)}</h2><p>${escapeHtml(event.factSummary)}</p><div class="timeline-card-tags"><span>${escapeHtml(categoryName(event.category, locale))}</span>${event.keywords
+  const recent = isRecentEvent(event);
+  return `<button class="timeline-card${isResearchEvent(event) ? " research" : ""}${recent ? " is-recent" : ""}" type="button" data-recent="${recent}" data-event="${escapeHtml(event.slug)}" data-search="${escapeHtml(search)}" data-tracks="${escapeHtml(tracks)}" data-category="${escapeHtml(event.category)}" data-research="${isResearchEvent(event)}" data-research-reviewed="${isReviewedResearch(event)}" data-primary="${hasPrimaryEvidence(event)}" aria-controls="event-drawer" aria-haspopup="dialog"><span>${recent ? `${recentBadge(locale)} · ` : ""}${escapeHtml(t("timeline.latestUpdate", locale).replace("{date}", formatDate(latestDevelopmentAt(event), locale)))} · ${escapeHtml(event.company || t("event.unknownEntity", locale))}</span><h2>${escapeHtml(event.title)}</h2><p>${escapeHtml(event.factSummary)}</p><div class="timeline-card-tags"><span>${escapeHtml(categoryName(event.category, locale))}</span>${event.keywords
     .slice(0, 3)
     .map((keyword) => `<span>${escapeHtml(keyword)}</span>`)
     .join(
@@ -746,7 +780,56 @@ function evidenceLinks(event: EnrichedEvent, locale: Locale): string {
 }
 
 function eventCompact(event: EnrichedEvent, locale: Locale): string {
-  return `<a data-event-link="${escapeHtml(event.slug)}" href="__PREFIX__events/${escapeHtml(event.slug)}/"><span>${escapeHtml(formatDate(event.happenedAt, locale))}</span><h3>${escapeHtml(event.title)}</h3><p>${escapeHtml(event.factSummary)}</p></a>`;
+  const recent = isRecentEvent(event);
+  return `<a class="${recent ? "is-recent" : ""}" data-recent="${recent}" data-event-link="${escapeHtml(event.slug)}" href="__PREFIX__events/${escapeHtml(event.slug)}/"><span>${recent ? `${recentBadge(locale)} · ` : ""}${escapeHtml(formatDate(event.happenedAt, locale))}</span><h3>${escapeHtml(event.title)}</h3><p>${escapeHtml(event.factSummary)}</p></a>`;
+}
+
+function recentBadge(locale: Locale): string {
+  return locale === "en" ? "LAST 7 DAYS" : "近 7 天";
+}
+
+function densityItem(
+  item: ReturnType<typeof recentMonthlyDensity>[number],
+  locale: Locale,
+): string {
+  const label = new Intl.DateTimeFormat(locale === "en" ? "en-US" : "zh-CN", {
+    year: "numeric",
+    month: "short",
+    timeZone: "UTC",
+  }).format(new Date(`${item.key}-01T00:00:00.000Z`));
+  const status =
+    item.status === "in-progress"
+      ? locale === "en"
+        ? "in progress"
+        : "持续更新"
+      : item.status === "balanced"
+        ? locale === "en"
+          ? "baseline met"
+          : "达到基线"
+        : locale === "en"
+          ? "backfill needed"
+          : "仍需补齐";
+  return `<div class="${escapeHtml(item.status)}"><span>${escapeHtml(label)}</span><strong>${item.count}</strong><small>${escapeHtml(status)}</small></div>`;
+}
+
+function researchBatchItem(
+  item: ReturnType<typeof recentResearchBatches>[number],
+  locale: Locale,
+): string {
+  const label = formatDate(`${item.day}T00:00:00.000Z`, locale);
+  const copy =
+    item.status === "published"
+      ? locale === "en"
+        ? `${item.count} verified papers`
+        : `${item.count} 篇已验证论文`
+      : item.status === "weekend"
+        ? locale === "en"
+          ? "official weekend cadence"
+          : "官方周末无新批次"
+        : locale === "en"
+          ? "awaiting the next verified batch"
+          : "等待下一批官方更新";
+  return `<div class="${escapeHtml(item.status)}"><span>${escapeHtml(label)}</span><strong>${escapeHtml(copy)}</strong></div>`;
 }
 
 function scoutCard(insight: PublicScoutInsight, locale: Locale): string {

@@ -20,6 +20,19 @@ export type TimelineMonthItem =
   | { kind: "event"; event: EnrichedEvent }
   | { kind: "research-day"; key: string; events: EnrichedEvent[] };
 
+export interface MonthlyEventDensity {
+  key: string;
+  count: number;
+  target: number;
+  status: "balanced" | "gap" | "in-progress";
+}
+
+export interface ResearchBatchDay {
+  day: string;
+  count: number;
+  status: "published" | "weekend" | "waiting";
+}
+
 interface CoverageDefinition {
   slug: string;
   name: string;
@@ -154,6 +167,67 @@ export function latestDevelopmentAt(event: EnrichedEvent): string {
   return new Date(latestDevelopmentTime(event)).toISOString();
 }
 
+export function isRecentEvent(
+  event: EnrichedEvent,
+  referenceAt = new Date().toISOString(),
+  windowDays = 7,
+): boolean {
+  const delta = Date.parse(referenceAt) - Date.parse(latestDevelopmentAt(event));
+  return Number.isFinite(delta) && delta >= 0 && delta <= windowDays * 86_400_000;
+}
+
+export function recentMonthlyDensity(
+  events: EnrichedEvent[],
+  referenceAt: string,
+  months = 3,
+  target = 6,
+): MonthlyEventDensity[] {
+  const reference = new Date(referenceAt);
+  return Array.from({ length: months }, (_, offset) => {
+    const date = new Date(
+      Date.UTC(reference.getUTCFullYear(), reference.getUTCMonth() - offset, 1),
+    );
+    const key = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}`;
+    const count = events.filter((event) => latestDevelopmentAt(event).startsWith(key)).length;
+    return {
+      key,
+      count,
+      target,
+      status: offset === 0 ? "in-progress" : count >= target ? "balanced" : "gap",
+    };
+  });
+}
+
+export function recentResearchBatches(
+  events: EnrichedEvent[],
+  referenceAt: string,
+  days = 3,
+): ResearchBatchDay[] {
+  const arxivEvents = events.filter(
+    (event) =>
+      isResearch(event) &&
+      event.evidence.some((evidence) => {
+        try {
+          return new URL(evidence.url).hostname === "arxiv.org";
+        } catch {
+          return false;
+        }
+      }),
+  );
+  const reference = new Date(referenceAt);
+  return Array.from({ length: days }, (_, offset) => {
+    const date = new Date(reference.getTime() - offset * 86_400_000);
+    const day = date.toISOString().slice(0, 10);
+    const count = arxivEvents.filter((event) => latestDevelopmentAt(event).startsWith(day)).length;
+    const weekday = date.getUTCDay();
+    return {
+      day,
+      count,
+      status: count > 0 ? "published" : weekday === 0 || weekday === 6 ? "weekend" : "waiting",
+    };
+  });
+}
+
 export function groupEventsByYearMonth(events: EnrichedEvent[]): EventYearGroup[] {
   const years = new Map<number, Map<number, EnrichedEvent[]>>();
   for (const event of sortEventsByLatestDevelopment(events)) {
@@ -209,6 +283,10 @@ export function groupTimelineMonthItems(
     }
   }
   return items;
+}
+
+function isResearch(event: EnrichedEvent): boolean {
+  return ["research", "paper"].includes(event.category.toLowerCase());
 }
 
 export function eventDevelopments(event: EnrichedEvent): EventDevelopment[] {

@@ -12,6 +12,9 @@ import {
   eventDevelopments,
   groupEventsByYearMonth,
   groupTimelineMonthItems,
+  isRecentEvent,
+  recentMonthlyDensity,
+  recentResearchBatches,
   sortEventsByLatestDevelopment,
 } from "../src/pipeline/static-site/intelligence.js";
 
@@ -96,6 +99,49 @@ describe("static-site intelligence consumption model", () => {
     ]);
   });
 
+  it("highlights only events from the previous seven days", () => {
+    expect(isRecentEvent(event("recent", "2026-07-10T00:00:00Z", []), "2026-07-13T00:00:00Z")).toBe(
+      true,
+    );
+    expect(isRecentEvent(event("old", "2026-07-01T00:00:00Z", []), "2026-07-13T00:00:00Z")).toBe(
+      false,
+    );
+    expect(isRecentEvent(event("future", "2026-07-14T00:00:00Z", []), "2026-07-13T00:00:00Z")).toBe(
+      false,
+    );
+  });
+
+  it("reports recent month density without treating the current partial month as a gap", () => {
+    const events = [
+      ...Array.from({ length: 8 }, (_, index) =>
+        event(`july-${index}`, "2026-07-10T00:00:00Z", []),
+      ),
+      ...Array.from({ length: 6 }, (_, index) =>
+        event(`june-${index}`, "2026-06-10T00:00:00Z", []),
+      ),
+      ...Array.from({ length: 3 }, (_, index) => event(`may-${index}`, "2026-05-10T00:00:00Z", [])),
+    ];
+    expect(recentMonthlyDensity(events, "2026-07-13T00:00:00Z")).toEqual([
+      { key: "2026-07", count: 8, target: 6, status: "in-progress" },
+      { key: "2026-06", count: 6, target: 6, status: "balanced" },
+      { key: "2026-05", count: 3, target: 6, status: "gap" },
+    ]);
+  });
+
+  it("explains weekend research gaps instead of fabricating paper events", () => {
+    const arxivEvidence = evidence("Paper", "primary", "2026-07-11T04:00:00Z");
+    arxivEvidence.url = "https://arxiv.org/abs/2607.00001";
+    const paper = {
+      ...event("paper", "2026-07-11T04:00:00Z", [arxivEvidence]),
+      category: "research",
+    };
+    expect(recentResearchBatches([paper], "2026-07-13T00:30:00Z")).toEqual([
+      { day: "2026-07-13", count: 0, status: "waiting" },
+      { day: "2026-07-12", count: 0, status: "weekend" },
+      { day: "2026-07-11", count: 1, status: "published" },
+    ]);
+  });
+
   it("keeps catalog presence separate from effective technical coverage", () => {
     const sources = [
       source("claude-code-releases", "Claude Code Releases", "healthy", "github", [
@@ -161,6 +207,21 @@ describe("new first-party technology source fixtures", () => {
     await expect(
       githubReleasesAdapter.collect(descriptor(a2a), context(drift, a2a?.endpoint ?? "")),
     ).rejects.toThrow("no entries found");
+  });
+
+  it.each([
+    "baoyu",
+    "mu-li-blog",
+    "lilian-weng",
+    "eugene-yan",
+  ])("parses the %s expert feed through the RSS contract", async (slug) => {
+    const catalog = sourceCatalog.find((source) => source.slug === slug);
+    expect(catalog).toMatchObject({ adapter: "rss", role: "expert", lifecycleStatus: "shadow" });
+    const result = await rssAdapter.collect(
+      descriptor(catalog),
+      context(await fixture("expert-feed.xml"), catalog?.endpoint ?? ""),
+    );
+    expect(result[0]?.title).toBe("A durable AI systems field note");
   });
 });
 

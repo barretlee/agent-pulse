@@ -87,6 +87,20 @@ export interface PublicSource {
   healthErrorCode: string | null;
 }
 
+export interface PublicInfluencer {
+  slug: string;
+  name: string;
+  region: "CN" | "GLOBAL";
+  focus: string[];
+  feedSourceSlug: string | null;
+  profiles: Array<{
+    platform: "website" | "x" | "linkedin" | "weibo" | "jike" | "github";
+    handle: string;
+    url: string;
+    access: "automatic" | "restricted";
+  }>;
+}
+
 export type CoverageStatus = "covered" | "watch" | "gap" | "unchecked";
 
 export interface TechnologyCoverage {
@@ -235,6 +249,7 @@ export interface StaticSiteModel {
   actors: PublicActor[];
   resources: PublicResource[];
   sources: PublicSource[];
+  influencers: PublicInfluencer[];
   scout: PublicScoutInsight[];
   narratives: IndustryNarratives;
   product: ProductData;

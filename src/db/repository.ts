@@ -320,7 +320,13 @@ export class Repository {
     await this.db.transaction().execute(async (transaction) => {
       await transaction
         .insertInto("scout_insights")
-        .values({ ...input, id, published_at: null, created_at: timestamp, updated_at: timestamp })
+        .values({
+          ...input,
+          id,
+          published_at: input.status === "published" ? timestamp : null,
+          created_at: timestamp,
+          updated_at: timestamp,
+        })
         .execute();
       await transaction
         .insertInto("scout_evidence")

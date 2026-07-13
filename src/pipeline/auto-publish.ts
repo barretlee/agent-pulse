@@ -1,19 +1,15 @@
-/**
- * Safe automation preparation.
- *
- * Automation may prepare review queues and enforce source health, but it must
- * not publish facts, publish Scout recommendations or merge conflicting
- * events without an explicit review action.
- */
+/** Autonomous publication behind deterministic evidence and readiness gates. */
 
 import type { Kysely } from "kysely";
 import { now } from "../db/repository.js";
 import type { DatabaseSchema } from "../db/types.js";
 import { findEventMergeCandidates } from "./event-merge.js";
 import { evaluateEventReadiness } from "./readiness.js";
+import { scoutPublicationDecision } from "./scout.js";
 
 export interface PublicationPreparationResult {
   ready: number;
+  published: number;
   blocked: number;
   eventIds: string[];
   errors: string[];
@@ -21,6 +17,8 @@ export interface PublicationPreparationResult {
 
 export interface ScoutPreparationResult {
   recommended: number;
+  published: number;
+  archived: number;
   insightIds: string[];
   errors: string[];
 }
@@ -40,7 +38,13 @@ export interface AutoLifecycleResult {
 export async function autoPublishReadyEvents(
   db: Kysely<DatabaseSchema>,
 ): Promise<PublicationPreparationResult> {
-  const result: PublicationPreparationResult = { ready: 0, blocked: 0, eventIds: [], errors: [] };
+  const result: PublicationPreparationResult = {
+    ready: 0,
+    published: 0,
+    blocked: 0,
+    eventIds: [],
+    errors: [],
+  };
   const events = await db.selectFrom("events").selectAll().where("status", "=", "review").execute();
   for (const event of events) {
     try {
@@ -48,6 +52,13 @@ export async function autoPublishReadyEvents(
       if (readiness.status === "ready") {
         result.ready += 1;
         result.eventIds.push(event.id);
+        await db
+          .updateTable("events")
+          .set({ status: "published", published_at: now(), updated_at: now() })
+          .where("id", "=", event.id)
+          .where("status", "=", "review")
+          .execute();
+        result.published += 1;
       } else {
         result.blocked += 1;
       }
@@ -64,18 +75,52 @@ export async function autoAdvanceScout(
   try {
     const insights = await db
       .selectFrom("scout_insights")
-      .select(["id", "total_score"])
-      .where("status", "=", "inbox")
-      .where("total_score", ">=", 60)
+      .select(["id", "total_score", "evidence_score", "confidence_score", "novelty_score"])
+      .where("status", "in", ["inbox", "considering", "accepted"])
       .orderBy("total_score", "desc")
       .execute();
+    const linkedPublished = await db
+      .selectFrom("scout_evidence")
+      .innerJoin("events", "events.id", "scout_evidence.event_id")
+      .select("scout_evidence.insight_id as insightId")
+      .where("events.status", "=", "published")
+      .execute();
+    const linkedIds = new Set(linkedPublished.map((item) => item.insightId));
+    let published = 0;
+    let archived = 0;
+    const timestamp = now();
+    for (const insight of insights) {
+      const decision = scoutPublicationDecision(insight);
+      const next = decision.allowed && linkedIds.has(insight.id) ? "published" : "archived";
+      await db
+        .updateTable("scout_insights")
+        .set({
+          status: next,
+          published_at: next === "published" ? timestamp : null,
+          updated_at: timestamp,
+        })
+        .where("id", "=", insight.id)
+        .execute();
+      if (next === "published") published += 1;
+      else archived += 1;
+    }
     return {
-      recommended: insights.length,
-      insightIds: insights.map((item) => item.id),
+      recommended: published,
+      published,
+      archived,
+      insightIds: insights
+        .filter((item) => scoutPublicationDecision(item).allowed && linkedIds.has(item.id))
+        .map((item) => item.id),
       errors: [],
     };
   } catch (error) {
-    return { recommended: 0, insightIds: [], errors: [message(error)] };
+    return {
+      recommended: 0,
+      published: 0,
+      archived: 0,
+      insightIds: [],
+      errors: [message(error)],
+    };
   }
 }
 
@@ -142,7 +187,7 @@ export async function runAutoPipeline(db: Kysely<DatabaseSchema>) {
     autoMergeEvents(db),
     autoManageLifecycle(db),
   ]);
-  return { events, scout, merges, lifecycle, mode: "prepare-and-govern" };
+  return { events, scout, merges, lifecycle, mode: "autonomous-publish-and-govern" };
 }
 
 function message(error: unknown): string {

@@ -58,7 +58,7 @@ Agent Pulse 不是新闻聚合器，而是一个中国优先、全球覆盖的 A
 ## 收敛、管理与发布
 
 - 原始 payload 只存在于受控证据层，公开输出只使用 allowlist DTO。
-- 自动收敛必须经过 schema 校验、去重、聚类、事实提取、证据绑定、冲突检测和审核。
+- 自动收敛必须经过 schema 校验、去重、聚类、事实提取、证据绑定、冲突检测和 readiness；全部硬门禁通过后可无人值守发布，未通过对象自动隔离并保留阻塞原因。
 - LLM 生成的洞察必须可追溯到 evidence；未完成收敛的事件保持 `review`，不得用占位洞察发布。
 - 管理台应覆盖 source、signal、event、track、actor、resource、view 和 job 的完整工作流。
 - “可视化编排”必须被静态前台真实消费，并支持预览、diff、发布和回滚，不能只保存 JSON。
@@ -81,13 +81,13 @@ Agent Pulse 不是新闻聚合器，而是一个中国优先、全球覆盖的 A
 - 输出类型包括创业机会、自媒体选题、工作/产品机会、认知升级、可沉淀产物和影响力动作。
 - 每条想法必须绑定触发事件与证据，并说明目标用户、为什么是现在、非共识点、建议产物、首个小实验、风险和失效条件。
 - Scout 结果必须可去重、收藏、暂缓、驳回和反馈，并从反馈中调整个人偏好。
-- Scout 建议不得自动变成公开事实、投资结论或外部动作；发布和执行必须经过人审。
+- Scout 建议达到总分、证据、置信度、新颖度与已公开 Event 绑定门禁后，可自动公开为明确标记的“待验证假设”；不得自动变成公开事实、投资结论或外部动作。
 - 优先 novelty、actionability、owner fit、timing 和 evidence strength，避免围绕同一热点批量生成空泛想法。
 
 ## 自我演进与完成标准
 
 - 系统维护 capability registry、coverage map、quality scorecard 和 maturity stage。
-- 自我生长遵循“发现缺口 -> proposal/spec -> fixture/test -> shadow verification -> 人审 -> rollout -> 复盘”，不得在运行时静默修改 schema、排名或发布规则。
+- 自我生长遵循“发现缺口 -> proposal/spec -> fixture/test -> shadow verification -> 自动契约验证 -> rollout -> 复盘”，不得在运行时静默修改 schema、排名或发布规则。
 - 来源许可边界、schema、排名和发布规则变化必须 docs-first，并具备迁移、回滚和审计方案。
 - TASKS 只能在代码、测试和验收证据齐备后勾选；experimental 能力必须明确标注。
 - 完成定义至少包括 lint、typecheck、单元/集成测试、静态导出隐私扫描和关键浏览器 smoke；来源变更还必须通过 contract、失败隔离和降级恢复测试。

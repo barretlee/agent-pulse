@@ -69,14 +69,14 @@ official releases + papers + filings + expert and propagation signals
        collect → normalize → deduplicate → cluster → evidence binding
                                 │
                                 ▼
-          review → strategic narrative → next signal → public event
+     deterministic gate → strategic narrative → next signal → public event
 ```
 
 Aggregators can suggest candidates or propagation heat, but cannot become the sole factual evidence for a material event. External text is never treated as trusted HTML, and private operational data never enters the public static export.
 
 ## Live, auditable, and honest about its limits
 
-The repository is not a mockup. It contains the source catalog, collectors, evidence model, quality gates, review workflow, static renderer, source-health automation, and GitHub Pages delivery path used by the live product.
+The repository is not a mockup. It contains the source catalog, collectors, evidence model, automatic quality gates, static renderer, source-health automation, and GitHub Pages delivery path used by the live product.
 
 Verification snapshot captured at **2026-07-13 00:27 UTC**:
 
@@ -104,7 +104,7 @@ safe fetch → normalize → quality gate → deduplicate
           │
 isolated observation / event clustering
           │
-evidence binding → readiness review
+evidence binding → deterministic readiness gate
           │
      ┌────┴────┐
      ▼         ▼
@@ -141,7 +141,7 @@ Useful commands:
 npm run collect               # Collect, deduplicate, cluster, and score
 npm run sources:audit         # Run a non-destructive full source audit
 npm run ops:reconcile         # Reconcile source health and discovery state
-npm run scout:generate -- 5   # Generate new evidence-linked Scout candidates
+npm run scout:generate -- 5   # Publish or archive evidence-linked Scout opportunities
 npm run export                # Generate the static site in dist/
 npm run check                 # Lint, typecheck, tests, and static export
 ```

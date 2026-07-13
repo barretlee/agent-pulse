@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Expert AI Notes</title>
+    <link>https://example.com/</link>
+    <description>First-party expert writing</description>
+    <item>
+      <guid>https://example.com/ai-systems-field-note</guid>
+      <title>A durable AI systems field note</title>
+      <link>https://example.com/ai-systems-field-note</link>
+      <pubDate>Sun, 12 Jul 2026 08:00:00 GMT</pubDate>
+      <description>A detailed first-party analysis of agent reliability, evaluation, and production deployment tradeoffs.</description>
+    </item>
+  </channel>
+</rss>

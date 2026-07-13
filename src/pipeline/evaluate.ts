@@ -221,7 +221,7 @@ export async function evaluateSystem(db: Kysely<DatabaseSchema>) {
         ...(activeHealthy.length < 50 ? ["active 且健康的生产来源不足 50"] : []),
         ...(auditWindows < 3 ? ["生产覆盖尚未经历 3 个自然日验证"] : []),
       ],
-      nextAction: "让 E3 来源完成 20 次健康检查和 7 天观察，再经人工确认逐批晋级 E4。",
+      nextAction: "让 E3 来源完成 20 次健康检查和 7 天观察，再由自动契约验证逐批晋级 E4。",
     }),
     calibrateDimension({
       slug: "source-quality",

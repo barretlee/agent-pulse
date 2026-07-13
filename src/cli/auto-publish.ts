@@ -1,9 +1,4 @@
-/**
- * Compatibility CLI for the safe preparation and governance pipeline.
- *
- * It never publishes Events or Scout insights and never merges Events.
- * Usage: npm run auto:publish
- */
+/** Publish ready Events and qualified Scout insights, then enforce lifecycle policy. */
 
 import { loadConfig } from "../config/env.js";
 import { createDatabase } from "../db/database.js";

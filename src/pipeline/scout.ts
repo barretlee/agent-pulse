@@ -11,11 +11,13 @@ export async function runScout(db: Kysely<DatabaseSchema>, limit = 3) {
   const target = Math.max(1, Math.min(limit, 10));
   const events = (await repository.listEvents("published")).sort(
     (a, b) =>
-      b.value_score + b.impact_score - (a.value_score + a.impact_score) ||
+      scoutCandidateScore(b) - scoutCandidateScore(a) ||
       Date.parse(b.updated_at) - Date.parse(a.updated_at),
   );
   const existingCount = (await repository.listScoutInsights()).length;
   let created = 0;
+  let published = 0;
+  let archived = 0;
   let skipped = 0;
 
   for (const [index, event] of events.entries()) {
@@ -28,12 +30,13 @@ export async function runScout(db: Kysely<DatabaseSchema>, limit = 3) {
       continue;
     }
     const card = buildScoutCard(event, kind);
+    const publishable = scoutPublicationDecision(card);
     const generatedAt = new Date().toISOString();
     await repository.insertScoutInsight(
       {
         slug: `${kind}-${event.slug}-${shortHash(generatedAt)}`,
         kind,
-        status: "inbox",
+        status: publishable.allowed ? "published" : "archived",
         ...card,
         cooldown_key: cooldownKey,
         generated_at: generatedAt,
@@ -42,14 +45,38 @@ export async function runScout(db: Kysely<DatabaseSchema>, limit = 3) {
       event.id,
     );
     created += 1;
+    if (publishable.allowed) published += 1;
+    else archived += 1;
   }
   return {
     scanned: Math.min(events.length, created + skipped),
     candidates: events.length,
     created,
+    published,
+    archived,
     skipped,
-    mode: "deterministic-v2-rotating",
+    mode: "deterministic-v3-autonomous-publishing",
   };
+}
+
+export interface ScoutPublicationInput {
+  total_score: number;
+  evidence_score: number;
+  confidence_score: number;
+  novelty_score: number;
+}
+
+export function scoutPublicationDecision(input: ScoutPublicationInput): {
+  allowed: boolean;
+  blockers: string[];
+} {
+  const blockers = [
+    ...(input.total_score < 72 ? ["total_score_below_72"] : []),
+    ...(input.evidence_score < 70 ? ["evidence_score_below_70"] : []),
+    ...(input.confidence_score < 70 ? ["confidence_score_below_70"] : []),
+    ...(input.novelty_score < 55 ? ["novelty_score_below_55"] : []),
+  ];
+  return { allowed: blockers.length === 0, blockers };
 }
 
 export function buildScoutCard(event: EventRow, kind: (typeof kinds)[number]) {
@@ -107,4 +134,10 @@ export function buildScoutCard(event: EventRow, kind: (typeof kinds)[number]) {
 
 function shortHash(value: string): string {
   return createHash("sha256").update(value).digest("hex").slice(0, 8);
+}
+
+function scoutCandidateScore(event: EventRow): number {
+  const ageDays = Math.max(0, (Date.now() - Date.parse(event.happened_at)) / 86_400_000);
+  const recency = Math.max(0, 30 * (1 - ageDays / 90));
+  return event.value_score + event.impact_score + recency;
 }

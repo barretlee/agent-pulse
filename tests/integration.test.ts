@@ -3,6 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { historicalEvents } from "../src/catalog/history.js";
+import { recentDensityEvents } from "../src/catalog/recent-density.js";
 import { sourceCatalog } from "../src/catalog/sources.js";
 import { loadConfig } from "../src/config/env.js";
 import { createDatabase } from "../src/db/database.js";
@@ -73,13 +74,20 @@ describe("SQLite application", () => {
     expect((await repository.getSourceByIdOrSlug(sourceBySlug?.id ?? "missing"))?.id).toBe(
       sourceBySlug?.id,
     );
-    expect((await repository.publicEvents()).length).toBeGreaterThanOrEqual(6);
+    const publishedEvents = await repository.publicEvents();
+    expect(publishedEvents.length).toBeGreaterThanOrEqual(20);
+    for (const month of ["2026-04", "2026-05", "2026-06"]) {
+      expect(
+        publishedEvents.filter((event) => event.happenedAt.startsWith(month)).length,
+        month,
+      ).toBeGreaterThanOrEqual(6);
+    }
     const result = await exportStaticSite(db, config);
     expect(result).toMatchObject({
-      events: historicalEvents.length + 6,
+      events: historicalEvents.length + recentDensityEvents.length + 6,
       tracks: 10,
       sources: sourceCatalog.length,
-      version: "0.6.0",
+      version: "0.7.0",
     });
     const timeline = await readFile(join(config.distDir, "data/timeline.json"), "utf8");
     expect(timeline).not.toContain("ADMIN_TOKEN");
@@ -91,7 +99,7 @@ describe("SQLite application", () => {
     expect(scout.insights[0].evidence[0].slug).toBe("lingbot-vla-2-cross-embodiment");
     const product = JSON.parse(await readFile(join(config.distDir, "data/product.json"), "utf8"));
     expect(product.roadmap).toHaveLength(5);
-    expect(product.releases[0]).toMatchObject({ status: "unreleased", version: "next" });
+    expect(product.releases[0]).toMatchObject({ version: "0.7.0" });
     expect(product.sourceCoverage.total).toBeGreaterThanOrEqual(100);
     expect(product.sourceCoverage.observing).toBe(0);
     expect(product.evaluation).toMatchObject({
@@ -124,6 +132,15 @@ describe("SQLite application", () => {
     });
     expect(publicSources[0]).not.toHaveProperty("sample_json");
     expect(publicSources[0]).not.toHaveProperty("error_summary");
+    const publicInfluencers = JSON.parse(
+      await readFile(join(config.distDir, "data/influencers.json"), "utf8"),
+    );
+    expect(publicInfluencers.length).toBeGreaterThanOrEqual(10);
+    expect(publicInfluencers.find((item: { slug: string }) => item.slug === "baoyu")).toMatchObject(
+      {
+        feedSourceSlug: "baoyu",
+      },
+    );
     const staticPages = [
       ["index.html", "今日 AI 行业判断 · Agent Pulse"],
       ["lines/index.html", "趋势判断 · Agent Pulse"],
@@ -151,14 +168,14 @@ describe("SQLite application", () => {
     expect(englishActors).not.toContain('href="../assets/icons.svg#sun"');
     expect(englishActors).toContain('data-timeline-src="../../data/timeline.json"');
     const changelog = await readFile(join(config.distDir, "changelog/index.html"), "utf8");
-    expect(changelog).toContain('id="unreleased"');
-    expect(changelog).toContain("开发中");
-    expect(changelog).toContain("The Decision Intelligence Loop");
+    expect(changelog).toContain('id="v0-7-0"');
+    expect(changelog).toContain("LATEST RELEASE");
+    expect(changelog).toContain("The Autonomous Intelligence Loop");
     const englishChangelog = await readFile(
       join(config.distDir, "en/changelog/index.html"),
       "utf8",
     );
-    expect(englishChangelog).toContain("IN DEVELOPMENT");
+    expect(englishChangelog).toContain("LATEST RELEASE");
     const home = await readFile(join(config.distDir, "index.html"), "utf8");
     expect(home).toContain("GPT-5.6");
     expect(home).toContain("每天 10 分钟，看懂 AI 行业变化并形成判断");
@@ -186,6 +203,9 @@ describe("SQLite application", () => {
     expect(timelinePage).not.toMatch(/data-category="(?:research|paper)" data-research="false"/);
     expect(timelinePage).toContain('data-research-day="2026-07-09"');
     expect(timelinePage).toContain("当天收录 6 篇研究");
+    expect(timelinePage).toContain("近三月密度");
+    expect(timelinePage).toContain("官方周末无新批次");
+    expect(timelinePage).toContain('data-recent="true"');
     for (const slug of [
       "predicatelongbench-long-context-difficulty",
       "compete-then-collaborate-multi-agent",
@@ -196,9 +216,12 @@ describe("SQLite application", () => {
     ]) {
       expect(timelinePage).toContain(`data-event="${slug}"`);
     }
+    const sourcesPage = await readFile(join(config.distDir, "sources/index.html"), "utf8");
+    expect(sourcesPage).toContain("值得持续跟踪的 AI 核心个人");
+    expect(sourcesPage).toContain("宝玉");
+    expect(sourcesPage).toContain("平台受限");
     expect(timelinePage).toContain("inert");
     expect(timelinePage).not.toContain("data-event-panel");
-    const sourcesPage = await readFile(join(config.distDir, "sources/index.html"), "utf8");
     expect(sourcesPage).toContain("我们持续看到了什么，又漏掉了什么");
     for (const domain of ["Claude Code", "OpenAI / Codex", "Lovable", "MCP", "A2A"]) {
       expect(sourcesPage).toContain(domain);
@@ -222,7 +245,7 @@ describe("SQLite application", () => {
     expect(github).toMatchObject({
       repositoryUrl: "https://github.com/barretlee/agent-pulse",
       stars: null,
-      latestRelease: "v0.6.0",
+      latestRelease: "v0.7.0",
     });
   });
 

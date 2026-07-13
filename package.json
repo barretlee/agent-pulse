@@ -1,6 +1,6 @@
 {
   "name": "agent-pulse",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": false,
   "description": "A curated AI industry intelligence timeline — signal, not noise.",
   "author": "Barret Lee <barret.china@gmail.com>",
@@ -45,6 +45,8 @@
     "evolve": "tsx src/cli/evolve.ts",
     "monitor": "tsx src/cli/monitor-cli.ts",
     "monitor:check": "tsx src/cli/monitor-check.ts",
+    "release:check": "tsx src/cli/release-notes.ts --check",
+    "release:notes": "tsx src/cli/release-notes.ts",
     "export": "tsx src/cli/export.ts",
     "auto:publish": "tsx src/cli/auto-publish.ts",
     "check": "npm run lint && npm run typecheck && npm test && npm run export"

@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { afterEach, describe, expect, it } from "vitest";
 import { historicalEvents } from "../src/catalog/history.js";
+import { recentDensityEvents } from "../src/catalog/recent-density.js";
 import { loadConfig } from "../src/config/env.js";
 import { createDatabase } from "../src/db/database.js";
 import { migrateToLatest } from "../src/db/migrate.js";
@@ -54,7 +55,7 @@ describe("event merge candidate queue", () => {
         .selectFrom("events")
         .select(({ fn }) => fn.countAll<number>().as("count"))
         .executeTakeFirstOrThrow(),
-    ).toMatchObject({ count: historicalEvents.length + 7 });
+    ).toMatchObject({ count: historicalEvents.length + recentDensityEvents.length + 7 });
 
     const result = await mergeEventCandidates(db, {
       targetEventId: original.id,

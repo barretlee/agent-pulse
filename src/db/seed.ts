@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import type { Kysely } from "kysely";
 import { type CuratedEventSeed, historicalEvents } from "../catalog/history.js";
+import { recentDensityEvents } from "../catalog/recent-density.js";
 import { sourceCatalog } from "../catalog/sources.js";
 import { canonicalizeUrl } from "../domain/url.js";
 import { Repository } from "./repository.js";
@@ -667,7 +668,7 @@ const events = [
   },
 ] as const satisfies readonly CuratedEventSeed[];
 
-const allEvents = [...historicalEvents, ...events] as const;
+const allEvents = [...historicalEvents, ...recentDensityEvents, ...events] as const;
 
 export async function seedDatabase(db: Kysely<DatabaseSchema>): Promise<void> {
   const repository = new Repository(db);

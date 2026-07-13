@@ -267,7 +267,7 @@ const translations: Record<string, Record<Locale, string>> = {
     en: "These judgments come from public events on this line — not a substitute for independent decisions.",
   },
   "lines.chinaSection": { "zh-CN": "CHINA / GLOBAL", en: "CHINA / GLOBAL" },
-  "lines.chinaTitle": { "zh-CN": "中国与全球位置", en: "China & Global Position" },
+  "lines.chinaTitle": { "zh-CN": "中国进展与全球坐标", en: "China's Progress in Global Context" },
   "lines.evidenceGap": { "zh-CN": "EVIDENCE GAP", en: "EVIDENCE GAP" },
   "lines.evidenceGapTitle": {
     "zh-CN": "系统还不知道什么",
@@ -599,8 +599,8 @@ const translations: Record<string, Record<Locale, string>> = {
     en: "Isolated collection, not yet in public facts",
   },
   "sources.levelE4Desc": {
-    "zh-CN": "长期验证 + 人工确认",
-    en: "Long-term validation + human confirmation",
+    "zh-CN": "长期验证 + 自动契约",
+    en: "Long-term validation + automated contracts",
   },
   "sources.searchPlaceholder": {
     "zh-CN": "搜索来源、地区、类型",
@@ -616,8 +616,8 @@ const translations: Record<string, Record<Locale, string>> = {
   },
   "sources.contributeDesc": {
     "zh-CN":
-      "Proposal 会经过 URL 安全、重复、许可、fixture、shadow 与人工晋级门禁；Issue 不会直接激活来源。",
-    en: "Proposals go through URL safety, dedup, licensing, fixture, shadow, and human review gates. Issues won't directly activate sources.",
+      "Proposal 会经过 URL 安全、重复、许可、fixture、shadow 与自动晋级门禁；Issue 不会直接激活来源。",
+    en: "Proposals go through URL safety, dedup, licensing, fixtures, shadow observation, and automated promotion gates. Issues never activate sources directly.",
   },
   "sources.contributeButton": { "zh-CN": "提出来源建议", en: "Suggest a Source" },
   "sources.ariaOpen": { "zh-CN": "打开 {name}", en: "Open {name}" },

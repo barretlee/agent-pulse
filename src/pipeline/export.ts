@@ -2,6 +2,7 @@ import { cp, mkdir, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import type { Kysely } from "kysely";
 import { industryNarratives } from "../catalog/history.js";
+import { influencerCatalog } from "../catalog/influencers.js";
 import { capabilities, productVersion, releases, roadmap } from "../catalog/product.js";
 import type { AppConfig } from "../config/env.js";
 import { parseJson, Repository } from "../db/repository.js";
@@ -12,6 +13,7 @@ import type {
   IndustryNarratives,
   ProductData,
   PublicActor,
+  PublicInfluencer,
   PublicResource,
   PublicScoutInsight,
   PublicSource,
@@ -85,6 +87,14 @@ export async function exportStaticSite(db: Kysely<DatabaseSchema>, config: AppCo
     domains: parseJson(actor.domains_json, []),
     tableScore: actor.table_score,
     websiteUrl: actor.website_url,
+  }));
+  const publicInfluencers: PublicInfluencer[] = influencerCatalog.map((influencer) => ({
+    slug: influencer.slug,
+    name: influencer.name,
+    region: influencer.region,
+    focus: [...influencer.focus],
+    feedSourceSlug: influencer.feedSourceSlug ?? null,
+    profiles: influencer.profiles.map((profile) => ({ ...profile })),
   }));
   const publicResources: PublicResource[] = resources.map((resource) => ({
     slug: resource.slug,
@@ -164,6 +174,7 @@ export async function exportStaticSite(db: Kysely<DatabaseSchema>, config: AppCo
       ...productData,
     }),
     writeJson(join(config.distDir, "data/sources.json"), publicSources),
+    writeJson(join(config.distDir, "data/influencers.json"), publicInfluencers),
     writeJson(join(config.distDir, "data/actors.json"), publicActors),
     writeJson(
       join(config.distDir, "data/view.json"),
@@ -189,6 +200,7 @@ export async function exportStaticSite(db: Kysely<DatabaseSchema>, config: AppCo
     actors: publicActors,
     resources: publicResources,
     sources: publicSources,
+    influencers: publicInfluencers,
     scout: scout as PublicScoutInsight[],
     narratives: {
       horizon: { ...industryNarratives.horizon },

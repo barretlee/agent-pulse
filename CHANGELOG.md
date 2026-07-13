@@ -2,7 +2,7 @@
 
 所有值得用户感知的 Agent Pulse 变化都会记录在这里。版本遵循语义化版本，能力状态分为 planned、experimental 和 operational；只有拥有代码、测试或运行证据的能力才会进入 release。
 
-## [Unreleased]
+## [0.7.0] - 2026-07-13
 
 ### 产品体验重构
 
@@ -28,10 +28,10 @@
 - Web Scraper 在 HTML 卡片缺少可信日期时优先使用页面声明的 RSS/Atom；四个 arXiv 分类源改用官方 export Atom 查询，逐源复验均返回 50 条健康结果。
 - 来源审计后自动协调生命周期：连续 2 次异常的生产源降级，连续 5 次失败的来源隔离，隔离源连续 3 次健康后回到 shadow；激活统一要求 20 次健康检查和 7 天观察。
 - 来源雷达自动匹配 14 条已有一手源，并把 27 条没有一手 URL 的纯聚合线索归类为“身份信息不足”，真实待判定由 50 降至 9。
-- 星探生成器改为越过冷却事件继续扫描完整候选池，并按历史数量轮转机会类型；新建议只进入 inbox，不绕过公开门禁。
+- 星探生成器改为越过冷却事件继续扫描完整候选池，优先选择最近 90 天的高价值事件；达到总分、证据、置信度和新颖度门禁的建议直接上架，其余自动归档。
 - 后台来源按钮新增统一 readiness、中文阻塞原因、重复提交保护和操作后刷新；启用、隔离、单源拉取和观察模式使用同一服务端判定。
-- 移除自动公开 Event、自动公开 Scout 和自动合并事件；自动化只准备审核队列并处理可逆治理动作。
-- GitHub Actions 拆分为 CI、来源审计与协调、数据刷新、健康监控四条闭环，提供串行写入、最小权限、质量证据 artifact 和单一 incident issue。
+- ready Event 自动写入公开状态；占位内容、缺少一手证据、低置信度和无传播证据的高热度事件继续隔离，后台只展示审计结果而不提供人工发布按钮。
+- GitHub Actions 拆分为 CI、来源审计与协调、每日六次数据刷新、两小时质量守卫、健康监控和 Release 发布闭环；评测低于 60 分且超过冷却期时自动触发一次增量更新。
 - 2026-07-13 00:27 UTC 的真实审计快照为 260 个来源：139 healthy、24 degraded、54 failed、43 skipped；107 个来源处于隔离观察。评测如实保留原始加权 57 / 校准总分 50 与 80 分目标，不伪造 7 天观察或用户结果反馈。
 
 ### 项目传播与发布治理
@@ -40,6 +40,15 @@
 - 仓库 Changelog 与网站 Changelog 建立双写门禁：开发中变化在前台明确标记，不再把新能力追加到历史发布版本。
 - 来源审计每次更新后校验健康摘要 Issue 的开启状态、marker 与审计时间；系统监控持续检查审计成功记录和 Issue 新鲜度。
 - 发布流程要求 `npm run check`、静态构建、CI、Pages 和线上 HTTP/内容验证全部通过，才可宣称发布完成。
+- 新增版本一致性契约：`package.json`、仓库 Changelog 和网站 Changelog 必须包含同一版本；CI 成功后自动创建缺失的 GitHub Release。
+
+### 时间密度与专家覆盖
+
+- 最近 7 天发生或更新的事件在首页、趋势、研究、事件脉络和相关内容中统一高亮，高亮只表达时效，不替代证据强度。
+- 补齐 2026 年 4–6 月的一手发布与研究事件，使最近三个完整自然月均达到至少 6 个公开 Event；页面持续展示月度密度，防止重新退化为近期拥挤、早期稀疏。
+- 论文区域增加最近三天批次状态，明确区分已发布论文、arXiv 周末节奏和工作日等待下一批，不再以空月份或虚构论文掩盖采集空档。
+- 新增 12 位国内外核心 AI 专家身份矩阵；宝玉、李沐、Lilian Weng、Eugene Yan 等公开 RSS/Atom 进入统一 SourceAdapter，X、LinkedIn、微博、即刻的受限账户仅用于身份和发现。
+- “中国位置”更新为“本土进展”，“中国与全球位置”更新为“中国进展与全球坐标”。
 
 ## [0.6.0] - 2026-07-12
 
@@ -212,6 +221,7 @@
 [0.5.0]: https://github.com/barretlee/agent-pulse/compare/v0.4.0...v0.5.0
 [0.5.1]: https://github.com/barretlee/agent-pulse/compare/v0.5.0...v0.5.1
 [0.6.0]: https://github.com/barretlee/agent-pulse/compare/v0.5.1...v0.6.0
+[0.7.0]: https://github.com/barretlee/agent-pulse/compare/v0.6.0...v0.7.0
 [0.3.0]: https://github.com/barretlee/agent-pulse/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/barretlee/agent-pulse/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/barretlee/agent-pulse/releases/tag/v0.1.0

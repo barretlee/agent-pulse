@@ -25,7 +25,7 @@
       <div class="sidebar-foot"><span class="status-dot"></span><span>LOCAL ADMIN</span></div>
     </aside>
     <main class="admin-main">
-      <header class="admin-header"><div><p>AGENT PULSE / ADMIN</p><h1 id="pageTitle">指挥中心</h1></div><div class="auto-controls"><label class="auto-toggle"><input type="checkbox" id="autoModeToggle" checked /><span class="toggle-track"><span class="toggle-thumb"></span></span><span class="toggle-label">自动模式</span></label><span id="autoIndicator" class="auto-status running">自动运行中</span></div><div class="token-box"><input id="tokenInput" type="password" placeholder="ADMIN_TOKEN（开发环境可留空）" /><button type="button" class="token-submit" id="saveToken">连接</button></div></header>
+      <header class="admin-header"><div><p>AGENT PULSE / ADMIN</p><h1 id="pageTitle">指挥中心</h1></div><div class="auto-controls"><span id="autoIndicator" class="auto-status running">无人值守运行中</span></div><div class="token-box"><input id="tokenInput" type="password" placeholder="ADMIN_TOKEN（开发环境可留空）" /><button type="button" class="token-submit" id="saveToken">连接</button></div></header>
       <section class="tab-page active" data-page="dashboard">
         <div class="metric-grid" id="metricGrid"></div>
         <article class="panel funnel-panel">
@@ -34,7 +34,7 @@
           <div class="funnel-blockers" id="funnelBlockers"></div>
         </article>
         <div class="panel-grid">
-          <article class="panel"><div class="panel-head"><div><span>PIPELINE</span><h2>数据流水线</h2></div><div><span id="pipelineStatus" class="pill">READY</span><span id="autoPipelineIndicator" class="auto-indicator" hidden>已自动运行</span></div></div><div class="pipeline-actions"><button type="button" class="pipeline-button" data-action="collect">01<br /><strong>采集</strong><small>Collect sources</small></button><button type="button" class="pipeline-button" data-action="cluster">02<br /><strong>聚类</strong><small>Cluster & score</small></button><button type="button" class="pipeline-button" data-action="scout">03<br /><strong>星探</strong><small>Find opportunities</small></button><button type="button" class="pipeline-button" data-action="evaluate">04<br /><strong>评测</strong><small>Evaluate system</small></button><button type="button" class="pipeline-button" data-action="export">05<br /><strong>静态化</strong><small>Export site</small></button></div><div id="autoPipelineActions" class="auto-pipeline-actions"><button type="button" class="pipeline-button auto-pub" data-auto="auto-publish"><strong>整理发布候选</strong><small>Prepare review queue</small></button><button type="button" class="pipeline-button auto-pub" data-auto="auto-advance-scout"><strong>整理星探候选</strong><small>Rank inbox insights</small></button><button type="button" class="pipeline-button auto-pub" data-auto="auto-merge"><strong>识别合并候选</strong><small>Prepare merge review</small></button><button type="button" class="pipeline-button auto-pub" data-auto="auto-lifecycle"><strong>自动生命周期</strong><small>Degrade / quarantine</small></button></div><pre id="pipelineOutput">等待指令…</pre><div id="lastAutoActions" class="last-auto-actions" hidden></div></article>
+          <article class="panel"><div class="panel-head"><div><span>AUTONOMOUS PIPELINE</span><h2>数据流水线</h2><p>GitHub Actions 每 4 小时自动完成采集、聚类、来源治理、星探上架、评测、快照和站点发布。</p></div><div><span id="pipelineStatus" class="pill">SCHEDULED</span></div></div><pre id="pipelineOutput">无需人工推进；异常对象会自动隔离并保留审计记录。</pre><div id="lastAutoActions" class="last-auto-actions" hidden></div></article>
           <article class="panel"><div class="panel-head"><div><span>RECENT JOBS</span><h2>任务记录</h2></div></div><div id="jobList" class="job-list"></div></article>
         </div>
       </section>
@@ -50,7 +50,7 @@
           <fieldset class="status-filter" id="discoveryStatusFilter" aria-label="按匹配状态筛选">
             <button type="button" class="status-filter-button active" data-status="all">全部</button>
             <button type="button" class="status-filter-button" data-status="pending">待判定</button>
-            <button type="button" class="status-filter-button" data-status="candidate">候选待复核</button>
+            <button type="button" class="status-filter-button" data-status="candidate">候选验证中</button>
             <button type="button" class="status-filter-button" data-status="matched_source">已匹配一手源</button>
             <button type="button" class="status-filter-button" data-status="merged_signal">已并入信号</button>
             <button type="button" class="status-filter-button" data-status="insufficient_identity">身份信息不足</button>
@@ -60,7 +60,7 @@
         <div class="data-table discovery-table" id="discoveriesTable"></div>
         <div class="discovery-empty" id="discoveryEmpty" hidden>当前筛选下没有候选来源。</div>
       </section>
-      <section class="tab-page" data-page="scout"><div class="page-toolbar"><input class="table-search" data-search="scout" placeholder="搜索想法…" /><span>证据型机会只在人工接受后才能公开</span></div><div class="data-table" id="scoutTable"></div></section>
+      <section class="tab-page" data-page="scout"><div class="page-toolbar"><input class="table-search" data-search="scout" placeholder="搜索想法…" /><span>达到证据与可行性门禁后自动上架，未达标内容自动归档</span></div><div class="data-table" id="scoutTable"></div></section>
       <section class="tab-page" data-page="health">
         <div class="health-head">
           <div><span>SYSTEM HEALTH</span><h2>系统健康监控</h2><p>实时追踪所有数据源的生命周期状态、覆盖度缺口和自适应修复进展。</p></div>
@@ -91,8 +91,8 @@
       </section>
       <section class="tab-page" data-page="evaluation"><div class="evaluation-head"><div><span>SYSTEM SCORECARD</span><h2>系统能力评测</h2><p>只计算真实运行、证据和用户结果。目录数量、字段完整度、自评分与重复运行不能代替质量；样本不足维度硬封顶。</p><div id="evaluationCalibration" class="evaluation-calibration">尚未评测</div></div><div class="evaluation-score"><strong id="evaluationScore">—</strong><span id="evaluationStatus">尚未评测</span></div></div><div class="evaluation-grid" id="evaluationGrid"></div><div class="capability-map" id="capabilityMap"></div></section>
       <section class="tab-page" data-page="events">
-        <article class="merge-queue"><div class="panel-head"><div><span>CONVERGENCE QUEUE</span><h2>事件合并候选</h2><p>系统只提出高置信候选；点击进入证据详情，合并仍需编辑确认。</p></div><span class="pill" id="mergeCandidateCount">0 GROUPS</span></div><div id="mergeCandidateList" class="merge-candidate-list"></div></article>
-        <div class="page-toolbar"><input class="table-search" data-search="events" placeholder="搜索事件…" /><span>审核、编辑、置顶、发布或隐藏</span></div><div class="data-table" id="eventsTable"></div>
+        <article class="merge-queue"><div class="panel-head"><div><span>CONVERGENCE AUDIT</span><h2>事件收敛审计</h2><p>完全相同且无冲突的分支由系统处理；存在事实冲突的内容自动保持独立。</p></div><span class="pill" id="mergeCandidateCount">0 GROUPS</span></div><div id="mergeCandidateList" class="merge-candidate-list"></div></article>
+        <div class="page-toolbar"><input class="table-search" data-search="events" placeholder="搜索事件…" /><span>满足发布硬门禁后自动上架；阻塞原因持续可见</span></div><div class="data-table" id="eventsTable"></div>
       </section>
       <section class="tab-page" data-page="tracks"><div class="page-toolbar"><input class="table-search" data-search="tracks" placeholder="搜索主线…" /><span>控制颜色、顺序和叙事定义</span></div><div class="data-table" id="tracksTable"></div></section>
       <section class="tab-page" data-page="actors"><div class="page-toolbar"><input class="table-search" data-search="actors" placeholder="搜索角色…" /><span>校准国内外角色的上牌桌评分</span></div><div class="data-table" id="actorsTable"></div></section>
@@ -100,7 +100,6 @@
       <section class="tab-page" data-page="view"><div class="view-editor"><aside><span>VISUAL COMPOSER</span><h2>发布视图编排</h2><p>这里决定公开站点的区块顺序、默认主线、密度、主题和筛选阈值。保存后执行“静态化”发布预览。</p><label>视图名称<input id="viewName" /></label><label>描述<textarea id="viewDescription" rows="4"></textarea></label><button type="button" id="saveView" class="primary">保存视图</button></aside><div class="json-deck"><label>Filters JSON<textarea id="viewFilters"></textarea></label><label>Layout JSON<textarea id="viewLayout"></textarea></label><label>Theme JSON<textarea id="viewTheme"></textarea></label></div></div></section>
     </main>
 
-    <div class="modal" id="eventModal" hidden><div class="modal-card"><button class="modal-close" type="button">×</button><span>EVENT CURATION</span><h2>事件收敛与发布</h2><div class="event-readiness" id="eventReadiness">正在检查发布条件…</div><div class="event-evidence-admin" id="eventEvidenceAdmin"></div><form id="eventForm"><input type="hidden" name="id" /><label>标题<input name="title" required /></label><div class="form-grid compact"><label>公司 / 实体<input name="company" required /></label><label>事件分类<input name="category" required /></label></div><label>关键词（逗号分隔）<input name="keywords" /></label><label>一句话事实<textarea name="factSummary" rows="2"></textarea></label><label>核心摘要<textarea name="summary" rows="3"></textarea></label><div class="form-grid"><label>技术洞察<textarea name="technicalInsight" rows="5"></textarea></label><label>行业判断<textarea name="industryInsight" rows="5"></textarea></label><label>业务价值<textarea name="businessValue" rows="5"></textarea></label><label>未来观察<textarea name="futureOutlook" rows="5"></textarea></label></div><div class="score-edit"><label>可信<input name="confidenceScore" type="number" min="0" max="100" /></label><label>热度<input name="heatScore" type="number" min="0" max="100" /></label><label>影响<input name="impactScore" type="number" min="0" max="100" /></label><label>状态<select name="status"><option>draft</option><option>review</option><option>published</option><option>hidden</option></select></label><label class="check"><input name="featured" type="checkbox" /> 首页置顶</label></div><button class="primary" type="submit">保存并应用</button></form></div></div>
     <div class="toast" id="toast" hidden></div>
     <script type="module" src="./admin.js"></script>
   </body>

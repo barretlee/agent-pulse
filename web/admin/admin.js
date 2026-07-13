@@ -1,6 +1,5 @@
 const state = {
   token: sessionStorage.getItem("agent-pulse-admin-token") || "",
-  autoMode: sessionStorage.getItem("agent-pulse-auto-mode") !== "false",
   lastAutoActions: null,
   sources: [],
   events: [],
@@ -41,44 +40,10 @@ const titles = {
 };
 $("#tokenInput").value = state.token;
 
-// ─── Auto Mode ────────────────────────────────────────────────
-
-$("#autoModeToggle").checked = state.autoMode;
-renderAutoIndicator();
-
-$("#autoModeToggle").addEventListener("change", () => {
-  state.autoMode = $("#autoModeToggle").checked;
-  sessionStorage.setItem("agent-pulse-auto-mode", String(state.autoMode));
-  renderAutoIndicator();
-  loadAll();
-});
-
-function renderAutoIndicator() {
-  const indicator = $("#autoIndicator");
-  const autoActions = $("#autoPipelineActions");
-  const manualPipeline = document.querySelectorAll("[data-action]");
-  if (state.autoMode) {
-    indicator.className = "auto-status running";
-    indicator.textContent = "自动运行中";
-    if (autoActions) autoActions.hidden = false;
-    for (const btn of manualPipeline) {
-      btn.closest(".pipeline-actions")?.classList.add("with-auto");
-    }
-  } else {
-    indicator.className = "auto-status stopped";
-    indicator.textContent = "手动模式";
-    if (autoActions) autoActions.hidden = true;
-    for (const btn of manualPipeline) {
-      btn.closest(".pipeline-actions")?.classList.remove("with-auto");
-    }
-  }
-}
-
 async function _runAutoPipeline() {
   const indicator = $("#autoPipelineIndicator");
   const output = $("#pipelineOutput");
   const status = $("#pipelineStatus");
-  if (!state.autoMode) return;
   status.textContent = "AUTO";
   if (indicator) indicator.hidden = false;
   try {
@@ -125,24 +90,6 @@ function autoActionRow(label, ok, err) {
   );
   return row;
 }
-
-// ─── Auto Pipeline Buttons ────────────────────────────────────
-
-document.querySelectorAll("[data-auto]").forEach((button) => {
-  button.addEventListener("click", async () => {
-    const action = button.dataset.auto;
-    $("#pipelineStatus").textContent = "RUNNING";
-    try {
-      const result = await api(`/api/admin/pipeline/${action}`, { method: "POST", body: "{}" });
-      $("#pipelineOutput").textContent = JSON.stringify(result, null, 2);
-      $("#pipelineStatus").textContent = "DONE";
-      await loadAll();
-    } catch (error) {
-      $("#pipelineOutput").textContent = error.message;
-      $("#pipelineStatus").textContent = "FAILED";
-    }
-  });
-});
 
 async function api(path, options = {}) {
   const headers = { "content-type": "application/json", ...(options.headers || {}) };
@@ -227,7 +174,7 @@ function renderMergeCandidates() {
   const count = $("#mergeCandidateCount");
   if (!root || !count) return;
   const groups = state.mergeCandidates || [];
-  count.textContent = `${groups.length} GROUP${state.autoMode ? " · 自动模式" : ""}`;
+  count.textContent = `${groups.length} GROUP · 自动审计`;
   root.replaceChildren();
   groups.slice(0, 20).forEach((group) => {
     const card = node("article", "merge-candidate");
@@ -239,10 +186,9 @@ function renderMergeCandidates() {
     card.append(header);
     group.events.forEach((event) => {
       const row = node(
-        "button",
+        "div",
         event.id === group.targetEventId ? "merge-event target" : "merge-event",
       );
-      row.type = "button";
       row.append(
         node("span", "", event.id === group.targetEventId ? "建议主事件" : "候选分支"),
         node("strong", "", event.title),
@@ -252,42 +198,8 @@ function renderMergeCandidates() {
           `${event.status} · ${event.independentSources} 来源 · ${event.evidenceCount} 证据`,
         ),
       );
-      row.addEventListener("click", () => openEvent(event.id));
       card.append(row);
     });
-    const mergeable = group.events.filter(
-      (event) => event.id !== group.targetEventId && event.status !== "published",
-    );
-    if (mergeable.length && !state.autoMode) {
-      const action = node(
-        "button",
-        "row-action merge-confirm",
-        `合并 ${mergeable.length} 个 review 分支`,
-      );
-      action.type = "button";
-      action.addEventListener("click", async () => {
-        const approved = window.confirm(
-          `将 ${mergeable.length} 个 review 事件的证据、主线和角色合并到建议主事件。该操作会写入审计记录，确认继续？`,
-        );
-        if (!approved) return;
-        try {
-          const result = await api("/api/admin/events/merge", {
-            method: "POST",
-            body: JSON.stringify({
-              targetEventId: group.targetEventId,
-              sourceEventIds: mergeable.map((event) => event.id),
-              reason: group.reason,
-              confirmation: "merge-reviewed-events",
-            }),
-          });
-          toast(`已收敛 ${result.merged} 个事件分支`);
-          await loadAll();
-        } catch (error) {
-          toast(error.message, true);
-        }
-      });
-      card.append(action);
-    }
     root.append(card);
   });
   if (!groups.length) root.append(node("p", "cell-muted", "未发现高置信事件合并候选。"));
@@ -345,31 +257,13 @@ function renderFunnel(report) {
       blockers.append(item);
     });
   if (report.signals.aggregatorDebt > 0) {
-    const cleanup = node(
-      "button",
-      "funnel-cleanup",
-      `清理 ${report.signals.aggregatorDebt} 条未挂载聚合信号`,
+    blockers.append(
+      node(
+        "span",
+        "funnel-blocker",
+        `${report.signals.aggregatorDebt} 条未挂载聚合信号由定时任务自动清理`,
+      ),
     );
-    cleanup.type = "button";
-    cleanup.addEventListener("click", async () => {
-      if (
-        !window.confirm(
-          "只删除未进入任何事件证据链的聚合器事实信号；已挂载记录会保留待审。确认继续？",
-        )
-      )
-        return;
-      try {
-        const result = await api("/api/admin/pipeline/provenance-cleanup", {
-          method: "POST",
-          body: JSON.stringify({ confirmation: "purge-unattached-aggregator-signals" }),
-        });
-        toast(`已清理 ${result.action.removed} 条，保留 ${result.action.retainedForReview} 条待审`);
-        await loadAll();
-      } catch (error) {
-        toast(error.message, true);
-      }
-    });
-    blockers.append(cleanup);
   }
   const freshness = $("#funnelFreshness");
   freshness.textContent = `MULTI-SOURCE ${report.conversion.multiSourcePercent}%`;
@@ -450,11 +344,11 @@ function renderMetrics(data) {
   const labels = {
     sources: "信源",
     signals: "信号",
-    drafts: "待审",
+    drafts: "隔离队列",
     published: "已发布",
     failedJobs: "失败任务",
     degradedSources: "异常信源",
-    scoutInbox: "星探待审",
+    scoutInbox: "星探处理中",
   };
   const grid = $("#metricGrid");
   grid.replaceChildren();
@@ -549,7 +443,7 @@ function renderSources(filter = "") {
       row.append(actions);
       root.append(row);
     });
-  if (state.autoMode && state.sources.length) {
+  if (state.sources.length) {
     root.append(advanced, advancedSection);
   }
 }
@@ -651,7 +545,7 @@ function renderDiscoveryMetrics() {
   [
     ["total", "发现候选"],
     ["pending", "待判定"],
-    ["candidate", "候选待复核"],
+    ["candidate", "候选验证中"],
     ["matched_source", "已匹配一手源"],
     ["merged_signal", "已并入信号"],
     ["insufficient_identity", "身份信息不足"],
@@ -679,7 +573,7 @@ function discoveryStatusLabel(status) {
   return (
     {
       pending: "待判定",
-      candidate: "候选待复核",
+      candidate: "候选验证中",
       matched_source: "已匹配一手源",
       merged_signal: "已并入信号",
       insufficient_identity: "身份信息不足",
@@ -778,7 +672,7 @@ function sourceOperationReason(reason, operation = {}) {
     missing_check: "尚无来源检查记录",
     lifecycle_not_shadow: "只有观察期来源可以开启观察",
     aggregator_discovery_only: "聚合来源仅用于发现，不进入事实采集",
-    non_automated_source: "该来源需要人工或平台授权访问",
+    non_automated_source: "该来源受平台访问策略限制，系统保持隔离",
     empty_content: "最近检查没有可用内容",
     quality_below_60: "最近检查质量分低于 60",
     missing_freshness: "最近检查缺少内容新鲜度",
@@ -859,9 +753,6 @@ function formatOperationError(error) {
 function renderScout(filter = "") {
   const root = $("#scoutTable");
   root.replaceChildren();
-  const advanced = node("button", "advanced-toggle", "⚙ 高级操作");
-  const advancedSection = node("div", "advanced-section");
-  advanced.addEventListener("click", () => advancedSection.classList.toggle("visible"));
   state.scout
     .filter((item) => includes(item, filter))
     .forEach((insight) => {
@@ -876,37 +767,15 @@ function renderScout(filter = "") {
         node("strong", "", String(insight.total_score)),
         node("span", "cell-muted", insight.status),
       );
-      const actions = node("div", "row-actions");
-      const transitions =
-        {
-          inbox: [
-            ["considering", "细看"],
-            ["accepted", "接受"],
-            ["dismissed", "忽略"],
-          ],
-          considering: [
-            ["accepted", "接受"],
-            ["dismissed", "忽略"],
-          ],
-          accepted: [
-            ["published", "发布"],
-            ["archived", "归档"],
-          ],
-          published: [["archived", "下线"]],
-          dismissed: [["inbox", "重开"]],
-          archived: [["inbox", "重开"]],
-        }[insight.status] || [];
-      transitions.forEach(([status, label]) => {
-        const button = node("button", "row-action", label);
-        button.addEventListener("click", () => patch(`/api/admin/scout/${insight.id}`, { status }));
-        actions.append(button);
-      });
-      row.append(actions);
+      row.append(
+        node(
+          "span",
+          "cell-muted",
+          insight.status === "published" ? "已由质量门禁自动上架" : "未达门禁，自动归档",
+        ),
+      );
       root.append(row);
     });
-  if (!state.autoMode && state.scout.length) {
-    root.append(advanced, advancedSection);
-  }
 }
 function renderEvents(filter = "") {
   const root = $("#eventsTable");
@@ -925,9 +794,13 @@ function renderEvents(filter = "") {
         ),
         node("span", "cell-muted", event.status),
       );
-      const edit = node("button", "row-action", "编辑 / 发布");
-      edit.addEventListener("click", () => openEvent(event));
-      row.append(edit);
+      row.append(
+        node(
+          "span",
+          "cell-muted",
+          event.status === "published" ? "已自动发布" : "等待系统补齐门禁",
+        ),
+      );
       root.append(row);
     });
 }
@@ -1058,115 +931,6 @@ async function patch(path, body) {
     return false;
   }
 }
-async function openEvent(event) {
-  const form = $("#eventForm");
-  $("#eventModal").hidden = false;
-  $("#eventReadiness").textContent = "正在检查发布条件…";
-  $("#eventEvidenceAdmin").replaceChildren();
-  [
-    "id",
-    "title",
-    "company",
-    "category",
-    "factSummary",
-    "summary",
-    "technicalInsight",
-    "industryInsight",
-    "businessValue",
-    "futureOutlook",
-    "confidenceScore",
-    "heatScore",
-    "impactScore",
-    "status",
-  ].forEach((name) => {
-    const key =
-      {
-        factSummary: "fact_summary",
-        technicalInsight: "technical_insight",
-        industryInsight: "industry_insight",
-        businessValue: "business_value",
-        futureOutlook: "future_outlook",
-        confidenceScore: "confidence_score",
-        heatScore: "heat_score",
-        impactScore: "impact_score",
-      }[name] || name;
-    form.elements[name].value = event[key] ?? "";
-  });
-  form.elements.keywords.value = parseList(event.keywords_json).join(", ");
-  form.elements.featured.checked = event.featured === 1;
-  try {
-    const detail = await api(`/api/admin/events/${event.id}/detail`);
-    renderEventReadiness(detail.readiness, detail.evidence, detail.tracks);
-  } catch (error) {
-    $("#eventReadiness").textContent = `检查失败：${error.message}`;
-  }
-}
-
-function renderEventReadiness(readiness, evidence, tracks) {
-  const panel = $("#eventReadiness");
-  panel.className = `event-readiness ${readiness.status}`;
-  panel.replaceChildren();
-  panel.append(
-    node(
-      "strong",
-      "",
-      readiness.status === "ready" ? "满足发布硬门禁" : `尚有 ${readiness.blockers.length} 项阻塞`,
-    ),
-    node(
-      "span",
-      "",
-      `${readiness.evidenceLevel} · ${readiness.evidenceCount} 条证据 · ${readiness.independentSources} 个独立来源 · ${tracks.length} 条主线`,
-    ),
-  );
-  if (readiness.blockers.length) {
-    panel.append(node("small", "", readiness.blockers.join(" · ")));
-  }
-  const root = $("#eventEvidenceAdmin");
-  root.replaceChildren();
-  evidence.forEach((item) => {
-    const link = externalLink(item.url, item.title);
-    const row = node("div", "event-evidence-row");
-    row.append(
-      link || node("span", "", item.title),
-      node("small", "", `${item.source} · Tier ${item.tier} · ${item.role} · ${item.evidenceRole}`),
-    );
-    root.append(row);
-  });
-}
-$("#eventForm").addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const form = new FormData(event.currentTarget);
-  const id = form.get("id");
-  const body = {};
-  [
-    "title",
-    "company",
-    "category",
-    "factSummary",
-    "summary",
-    "technicalInsight",
-    "industryInsight",
-    "businessValue",
-    "futureOutlook",
-    "status",
-  ].forEach((key) => {
-    body[key] = form.get(key);
-  });
-  body.keywords = String(form.get("keywords") || "")
-    .split(",")
-    .map((item) => item.trim())
-    .filter(Boolean);
-  ["confidenceScore", "heatScore", "impactScore"].forEach((key) => {
-    body[key] = Number(form.get(key));
-  });
-  body.featured = event.currentTarget.elements.featured.checked;
-  const saved = await patch(`/api/admin/events/${id}`, body);
-  if (saved) $("#eventModal").hidden = true;
-});
-$(".modal-close").addEventListener("click", () => ($("#eventModal").hidden = true));
-$("#eventModal").addEventListener("click", (event) => {
-  if (event.target === $("#eventModal")) $("#eventModal").hidden = true;
-});
 $("#saveView").addEventListener("click", async () => {
   try {
     await patch(`/api/admin/view/${state.view.id}`, {
@@ -1180,21 +944,6 @@ $("#saveView").addEventListener("click", async () => {
   } catch (error) {
     toast(error.message, true);
   }
-});
-document.querySelectorAll("[data-action]").forEach((button) => {
-  button.addEventListener("click", async () => {
-    const action = button.dataset.action;
-    $("#pipelineStatus").textContent = "RUNNING";
-    try {
-      const result = await api(`/api/admin/pipeline/${action}`, { method: "POST", body: "{}" });
-      $("#pipelineOutput").textContent = JSON.stringify(result, null, 2);
-      $("#pipelineStatus").textContent = "DONE";
-      await loadAll();
-    } catch (error) {
-      $("#pipelineOutput").textContent = error.message;
-      $("#pipelineStatus").textContent = "FAILED";
-    }
-  });
 });
 $("#saveToken").addEventListener("click", () => {
   state.token = $("#tokenInput").value.trim();
@@ -1408,7 +1157,7 @@ async function applyHealthFixes() {
     if (res.ok) {
       const result = await res.json();
       toast(
-        `健康策略已执行：降级 ${result.degraded}，隔离 ${result.quarantined}；恢复和退役仍需人工确认`,
+        `健康策略已执行：降级 ${result.degraded}，隔离 ${result.quarantined}；恢复由连续健康检查自动推进`,
       );
       await loadMonitor();
     } else {
