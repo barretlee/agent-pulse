@@ -208,7 +208,7 @@ describe("SQLite application", () => {
     expect(home).not.toContain(">证据时间轴<");
     expect(home).not.toContain(">决策工具<");
     const timelinePage = await readFile(join(config.distDir, "timeline/index.html"), "utf8");
-    expect(timelinePage).toContain("一个事件，一条完整脉络");
+    expect(timelinePage).toContain("追踪每条主线，从信号到完整脉络");
     expect(timelinePage).toContain("最近进展");
     expect(timelinePage).toContain('id="event-drawer"');
     expect(timelinePage).toContain('aria-haspopup="dialog"');
