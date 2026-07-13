@@ -291,6 +291,8 @@ describe("SQLite application", () => {
     expect(coreScript).toContain("setupHomeDynamics");
     expect(coreScript).toContain("setupSignalBrowser");
     expect(coreScript).toContain("data-no-scroll-reveal");
+    expect(coreScript).toContain("navigator.vibrate");
+    expect(coreScript).toContain("trend-switcher");
     expect(coreScript).toContain("requestIdleCallback");
     expect(coreScript).toContain("stockLoaded");
     expect(coreScript).toContain("api.github.com/repos/");
