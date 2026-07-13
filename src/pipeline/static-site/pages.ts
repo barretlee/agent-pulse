@@ -270,7 +270,7 @@ function home(model: StaticSiteModel, locale: Locale): string {
     </section>
 
     <section class="today-section shell">
-      <header class="today-heading"><div><span class="section-kicker">${t("home.brief", locale)}</span><h2>${escapeHtml(t("home.briefTitle", locale))}</h2></div><p>${escapeHtml(t("home.briefDesc", locale))}</p></header>
+      <header class="today-heading"><div><span class="section-kicker">${t("home.brief", locale)}</span><h2>${escapeHtml(t("home.briefTitle", locale))}</h2></div>${t("home.briefDesc", locale) ? `<p>${escapeHtml(t("home.briefDesc", locale))}</p>` : ""}</header>
       ${today}
     </section>
 
@@ -303,7 +303,7 @@ function home(model: StaticSiteModel, locale: Locale): string {
     </section>
 
     <section class="section section-tint"><div class="shell">
-      ${sectionHead(locale === "en" ? "06 / GO DEEPER" : "06 / 继续深入", locale === "en" ? "Use the Detail You Need" : "按你的问题继续深入", locale === "en" ? "People, costs, and methodology are supporting context — not competing front-page modules." : "关键参与者、选型成本和判断方法是辅助信息，不再与今日核心变化争夺注意力。")}
+      ${sectionHead(locale === "en" ? "06 / GO DEEPER" : "06 / 继续深入", locale === "en" ? "Use the Detail You Need" : "按你的问题继续深入", "")}
       <div class="gateway-grid">
         ${gateway("users", t("home.gatewayActors", locale), t("home.gatewayActorsStat", locale).replace("{count}", String(model.actors.length)), t("home.gatewayActorsDesc", locale), "actors/", locale)}
         ${gateway("box", t("home.gatewayResources", locale), t("home.gatewayResourcesStat", locale).replace("{count}", String(model.resources.length)), t("home.gatewayResourcesDesc", locale), "resources/", locale)}
@@ -420,7 +420,6 @@ function timeline(model: StaticSiteModel, locale: Locale): string {
     .join("");
   return `<section class="page-hero compact shell">
       <span class="section-kicker">EVIDENCE TIMELINE</span><h1>${escapeHtml(t("timeline.heroTitle", locale))}</h1><p>${escapeHtml(t("timeline.heroDesc", locale))}</p>
-      ${pageStatus(t("timeline.statusEvents", locale).replace("{count}", String(events.length)), t("timeline.statusPrimary", locale).replace("{count}", String(events.filter(hasPrimaryEvidence).length)), locale === "en" ? "Newest development first" : "按最近进展倒序")}
     </section>
     <section class="timeline-shell shell" data-timeline>
       <div class="timeline-controls">
@@ -428,7 +427,7 @@ function timeline(model: StaticSiteModel, locale: Locale): string {
         <div class="chip-row" aria-label="${escapeHtml(t("timeline.searchLabel", locale))}"><button class="active" type="button" data-filter-track="all">${t("timeline.filterAll", locale)}</button><button type="button" data-filter-track="official">${t("timeline.filterPrimary", locale)}</button><button type="button" data-filter-track="research">${t("timeline.filterResearch", locale)}</button>${filters}</div>
         <span data-result-count>${t("timeline.nodes", locale).replace("{count}", String(events.length))}</span>
       </div>
-      <p class="timeline-filter-help">${escapeHtml(t("timeline.filterHelp", locale))}</p>
+      ${t("timeline.filterHelp", locale) ? `<p class="timeline-filter-help">${escapeHtml(t("timeline.filterHelp", locale))}</p>` : ""}
       <div class="timeline-chronology">${chronology.map((year) => timelineYearGroup(year, locale)).join("")}</div>
     </section>`;
 }
@@ -495,8 +494,16 @@ function eventPage(model: StaticSiteModel, event: EnrichedEvent, locale: Locale)
 }
 
 function scoutPage(model: StaticSiteModel, locale: Locale): string {
-  return `${toolHeader("sparkles", t("scout.heroTitle", locale), t("scout.heroDesc", locale), t("scout.statusHypotheses", locale).replace("{count}", String(model.scout.length)), t("scout.statusDisclaimer", locale), locale)}
-    <section class="section shell"><div class="tool-tabs">${toolTabs("scout", locale)}</div><div class="filter-toolbar"><button class="active" data-card-filter="all">${t("scout.filterAll", locale)}</button><button data-card-filter="venture">${t("scout.filterVenture", locale)}</button><button data-card-filter="media">${t("scout.filterMedia", locale)}</button><button data-card-filter="work">${t("scout.filterWork", locale)}</button><button data-card-filter="learning">${t("scout.filterLearning", locale)}</button><button data-card-filter="artifact">${t("scout.filterArtifact", locale)}</button><button data-card-filter="influence">${t("scout.filterInfluence", locale)}</button></div>
+  return `<section class="tool-hero shell">
+    <div>${icon("sparkles")}<span class="section-kicker">${locale === "en" ? "GO DEEPER" : "继续深入"}</span>
+      <div class="scout-hero-head">
+        <h1>${escapeHtml(t("scout.heroTitle", locale))}</h1>
+        <div class="tool-tabs">${toolTabs("scout", locale)}</div>
+      </div>
+      <p>${escapeHtml(t("scout.heroDesc", locale))}</p>
+    </div>
+  </section>
+  <section class="section shell scout-section"><div class="filter-toolbar"><button class="active" data-card-filter="all">${t("scout.filterAll", locale)}</button><button data-card-filter="venture">${t("scout.filterVenture", locale)}</button><button data-card-filter="media">${t("scout.filterMedia", locale)}</button><button data-card-filter="work">${t("scout.filterWork", locale)}</button><button data-card-filter="learning">${t("scout.filterLearning", locale)}</button><button data-card-filter="artifact">${t("scout.filterArtifact", locale)}</button><button data-card-filter="influence">${t("scout.filterInfluence", locale)}</button></div>
     <div class="scout-grid" data-filter-grid>${model.scout.map((insight) => scoutCard(insight, locale)).join("") || emptyState(t("scout.empty", locale), "")}</div></section>`;
 }
 
@@ -651,7 +658,7 @@ function pageStatus(left: string, middle: string, right: string): string {
 }
 
 function sectionHead(kicker: string, title: string, copy: string): string {
-  return `<header class="section-head"><div><span class="section-kicker">${escapeHtml(kicker)}</span><h2>${escapeHtml(title)}</h2></div><p>${escapeHtml(copy)}</p></header>`;
+  return `<header class="section-head"><div><span class="section-kicker">${escapeHtml(kicker)}</span><h2>${escapeHtml(title)}</h2></div>${copy ? `<p>${escapeHtml(copy)}</p>` : ""}</header>`;
 }
 
 function lens(

@@ -144,12 +144,12 @@ export function pageLayout(input: PageChrome): string {
   ).toString();
 
   return `<!doctype html>
-<html lang="${locale === "en" ? "en" : "zh-CN"}" data-theme="midnight">
+<html lang="${locale === "en" ? "en" : "zh-CN"}" data-theme="paper">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="${escapeHtml(input.description)}">
-  <meta name="theme-color" content="#080a0f">
+  <meta name="theme-color" content="#eeece5">
   <meta name="robots" content="${escapeHtml(robots)}">
   <meta property="og:type" content="website">
   <meta property="og:title" content="${escapeHtml(input.title)}">

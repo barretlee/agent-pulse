@@ -1,9 +1,9 @@
-const themes = ["midnight", "paper", "signal"];
+const themes = ["paper", "midnight", "signal"];
 const savedTheme = localStorage.getItem("agent-pulse-theme");
 if (themes.includes(savedTheme)) document.documentElement.dataset.theme = savedTheme;
 
 document.querySelector("[data-theme-toggle]")?.addEventListener("click", () => {
-  const current = document.documentElement.dataset.theme || "midnight";
+  const current = document.documentElement.dataset.theme || "paper";
   const next = themes[(themes.indexOf(current) + 1) % themes.length];
   document.documentElement.dataset.theme = next;
   localStorage.setItem("agent-pulse-theme", next);
@@ -412,8 +412,8 @@ function drawerEvidenceLabel(evidence) {
   const en = document.documentElement.lang === "en";
   if (primary && sources >= 2) return en ? "Official + corroborated" : "官方资料 + 多源佐证";
   if (primary) return en ? "Single official source" : "单一官方资料";
-  if (sources >= 2) return en ? "Multi-source, confirmation pending" : "多源二手待确认";
-  return en ? "Secondary evidence pending" : "二手证据待补强";
+  if (sources >= 2) return en ? "Multi-source reports" : "多源报道";
+  return en ? "Secondary report" : "二手报道";
 }
 
 function setupCardFilters() {

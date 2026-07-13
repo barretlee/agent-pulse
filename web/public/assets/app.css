@@ -320,6 +320,9 @@ summary:focus-visible {
   font-size: clamp(30px, 4vw, 44px);
   line-height: 1.05;
   letter-spacing: -0.045em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .section-head > p {
   margin: 0;
@@ -1825,6 +1828,22 @@ summary:focus-visible {
   border-color: var(--accent);
   background: var(--accent);
   color: #0a0712;
+}
+.scout-hero-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px 32px;
+  margin: 12px 0 18px;
+}
+.scout-hero-head h1 {
+  margin: 0;
+}
+.scout-hero-head .tool-tabs {
+  margin-bottom: 0;
+}
+.scout-section {
+  padding-block: 0;
 }
 .filter-toolbar {
   margin-bottom: 18px;

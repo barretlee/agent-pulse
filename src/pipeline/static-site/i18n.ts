@@ -29,7 +29,7 @@ const translations: Record<string, Record<Locale, string>> = {
     en: "10 Minutes to Better AI Judgment",
   },
   "brand.aria": { "zh-CN": "Agent Pulse 首页", en: "Agent Pulse Home" },
-  "brand.switchLang": { "zh-CN": "EN", en: "zh-CN" },
+  "brand.switchLang": { "zh-CN": "EN", en: "中文" },
 
   // ─── Skip link & helpers ───────────────────────────────────
   "ui.skipMain": { "zh-CN": "跳到主要内容", en: "Skip to main content" },
@@ -54,10 +54,6 @@ const translations: Record<string, Record<Locale, string>> = {
   // ─── Home ──────────────────────────────────────────────────
   "home.brief": { "zh-CN": "30-SECOND BRIEF", en: "30-SECOND BRIEF" },
   "home.briefTitle": { "zh-CN": "今天最值得关注的变化", en: "The Shift That Matters Most Today" },
-  "home.briefDesc": {
-    "zh-CN": "先看清发生了什么，再理解它改变了什么、影响谁，以及下一步该观察什么。",
-    en: "See what happened, what changed, who it affects, and what deserves watching next.",
-  },
   "home.today": { "zh-CN": "TODAY", en: "TODAY" },
   "home.unknownEntity": { "zh-CN": "主体未知", en: "Unknown" },
   "home.factChecked": { "zh-CN": "发生了什么", en: "What Happened" },
@@ -86,8 +82,8 @@ const translations: Record<string, Record<Locale, string>> = {
     en: "Understand the AI Industry and Form a View in 10 Minutes a Day",
   },
   "home.promiseDesc": {
-    "zh-CN": "不是追完所有新闻，而是找到真正改变技术、商业和竞争格局的事实，理解它为什么重要。",
-    en: "Not every headline. Only the facts that change technology, business, and competition — with an explanation of why they matter.",
+    "zh-CN": "聚焦真正改变技术、商业和竞争格局的事实，理解它为什么重要。",
+    en: "Focus on the facts that truly change technology, business, and competition — and understand why they matter.",
   },
   "home.journey30Title": { "zh-CN": "30 秒", en: "30 sec" },
   "home.journey30Desc": { "zh-CN": "知道最重要的变化", en: "Know the most important shift" },
@@ -99,18 +95,10 @@ const translations: Record<string, Record<Locale, string>> = {
   // Home — Strategic lines section
   "home.sectionLines": { "zh-CN": "04 / INDUSTRY SHIFTS", en: "04 / INDUSTRY SHIFTS" },
   "home.sectionLinesTitle": { "zh-CN": "行业正在向哪里变化", en: "Where the Industry Is Moving" },
-  "home.sectionLinesDesc": {
-    "zh-CN": "把零散事件放回长期趋势，看到当前判断、最近转折与下一验证信号。",
-    en: "Put individual events back into long-term shifts: current thesis, recent inflection, and next validation signal.",
-  },
 
   // Home — Recent evidence section
   "home.sectionEvidence": { "zh-CN": "02 / ALSO WORTH KNOWING", en: "02 / ALSO WORTH KNOWING" },
   "home.sectionEvidenceTitle": { "zh-CN": "今天还需要知道", en: "Also Worth Knowing Today" },
-  "home.sectionEvidenceDesc": {
-    "zh-CN": "用几分钟扫完其他高价值变化；每条都能继续追到完整事件和原始来源。",
-    en: "Scan the other high-value shifts in minutes, then follow each one to the full event and original sources.",
-  },
   "home.openTimeline": { "zh-CN": "查看所有事件的发展脉络", en: "Explore Every Event Story" },
 
   // Home — Research section
@@ -118,11 +106,6 @@ const translations: Record<string, Record<Locale, string>> = {
   "home.sectionResearchTitle": {
     "zh-CN": "本周值得读的技术论文",
     en: "Technical Papers Worth Reading",
-  },
-  "home.sectionResearchDesc": {
-    "zh-CN":
-      "不堆论文标题；只保留会改变评测、架构或决策方法的研究，并明确方法、影响与尚待验证之处。",
-    en: "No paper dump. Only research that changes evaluation, architecture, or decisions — with method, impact, and open questions made explicit.",
   },
   "home.researchPreprint": { "zh-CN": "研究预印本", en: "Research preprint" },
   "home.researchMethod": { "zh-CN": "核心方法与结果", en: "Method and result" },
@@ -140,10 +123,6 @@ const translations: Record<string, Record<Locale, string>> = {
   "home.sectionToolsTitle": {
     "zh-CN": "从理解变化，到形成判断",
     en: "Move from Understanding to Judgment",
-  },
-  "home.sectionToolsDesc": {
-    "zh-CN": "沿事件看过程、沿来源核验盲区，再把判断转成一个可验证的下一步。",
-    en: "Follow the event, inspect coverage gaps, then turn your view into one testable next step.",
   },
 
   // Home — Product section
@@ -238,17 +217,9 @@ const translations: Record<string, Record<Locale, string>> = {
     "zh-CN": "从 ChatGPT 时刻到 Agent 时代",
     en: "From the ChatGPT Moment to the Agent Era",
   },
-  "lines.arcDesc": {
-    "zh-CN": "沿能力、产品与公司状态回看每个阶段：哪些方向延续，哪些项目转向、被收购或停止。",
-    en: "Trace capabilities, products, and company transitions across each era — what endured, pivoted, was acquired, or ended.",
-  },
   "lines.howTitle": {
     "zh-CN": "同一事实，沿不同视角理解",
     en: "Same Facts, Different Lenses",
-  },
-  "lines.howDesc": {
-    "zh-CN": "技术变化会传导到产品、商业、资本与中国相对位置。",
-    en: "Technology changes cascade into products, business models, capital flows, and China's relative position.",
   },
   "lines.flowTech": { "zh-CN": "技术能力", en: "Technology" },
   "lines.flowProduct": { "zh-CN": "产品阈值", en: "Product Threshold" },
@@ -263,11 +234,7 @@ const translations: Record<string, Record<Locale, string>> = {
     en: "Phase summaries are analytical; specific facts are based on event evidence.",
   },
   "lines.evidenceSpine": { "zh-CN": "02 / EVIDENCE SPINE", en: "02 / EVIDENCE SPINE" },
-  "lines.evidenceSpineTitle": { "zh-CN": "证据如何累积", en: "How Evidence Accumulates" },
-  "lines.evidenceSpineDesc": {
-    "zh-CN": "{count} 个公开节点，优先展示一手事实。",
-    en: "{count} public nodes, prioritized by primary sources.",
-  },
+  "lines.evidenceSpineTitle": { "zh-CN": "关键证据节点", en: "Key Evidence Nodes" },
   "lines.lenses": { "zh-CN": "03 / DECISION LENSES", en: "03 / DECISION LENSES" },
   "lines.lensesTitle": { "zh-CN": "四种角色，四个问题", en: "Four Roles, Four Questions" },
   "lines.lensesDesc": {
@@ -376,11 +343,6 @@ const translations: Record<string, Record<Locale, string>> = {
   "timeline.filterAll": { "zh-CN": "全部变化", en: "All Changes" },
   "timeline.filterPrimary": { "zh-CN": "官方发布", en: "Official Releases" },
   "timeline.filterResearch": { "zh-CN": "论文与研究", en: "Papers & Research" },
-  "timeline.filterHelp": {
-    "zh-CN":
-      "“官方发布”只看公司、实验室、项目方或监管机构的原始公告；趋势按钮用于从不同决策问题理解同一事件。",
-    en: "Official Releases shows original announcements from companies, labs, projects, and regulators. Trend filters apply different decision lenses to the same events.",
-  },
   "timeline.nodes": { "zh-CN": "{count} 个事件", en: "{count} events" },
   "timeline.monthEvents": { "zh-CN": "{count} 个事件", en: "{count} events" },
   "timeline.drawerLabel": { "zh-CN": "事件详情抽屉", en: "Event detail drawer" },
@@ -731,15 +693,15 @@ const translations: Record<string, Record<Locale, string>> = {
   "notFound.timeline": { "zh-CN": "证据时间轴", en: "Evidence Timeline" },
 
   // ─── Evidence labels ───────────────────────────────────────
-  "evidence.primaryMulti": { "zh-CN": "一手 + 多源佐证", en: "Primary + Multi-source" },
-  "evidence.multiSecondary": { "zh-CN": "多源二手待确认", en: "Multi-source Secondary" },
-  "evidence.singlePrimary": { "zh-CN": "单一一手来源", en: "Single Primary Source" },
-  "evidence.secondary": { "zh-CN": "二手证据待补强", en: "Secondary Evidence" },
+  "evidence.primaryMulti": { "zh-CN": "官方资料 + 多源佐证", en: "Official + Corroborated" },
+  "evidence.multiSecondary": { "zh-CN": "多源报道", en: "Multi-source Reports" },
+  "evidence.singlePrimary": { "zh-CN": "单一官方资料", en: "Single Official Source" },
+  "evidence.secondary": { "zh-CN": "二手报道", en: "Secondary Report" },
   "evidence.pending": { "zh-CN": "证据待补", en: "Evidence Pending" },
 
   // ─── Evidence roles ────────────────────────────────────────
-  "role.primary": { "zh-CN": "一手", en: "Primary" },
-  "role.secondary": { "zh-CN": "二手", en: "Secondary" },
+  "role.primary": { "zh-CN": "官方资料", en: "Official" },
+  "role.secondary": { "zh-CN": "转载报道", en: "Secondary" },
   "role.amplification": { "zh-CN": "传播", en: "Amplification" },
 
   // ─── Score bands ───────────────────────────────────────────
@@ -791,6 +753,6 @@ const translations: Record<string, Record<Locale, string>> = {
 
 export function t(key: string, locale: Locale): string {
   const entry = translations[key];
-  if (!entry) return key;
-  return entry[locale] ?? entry["zh-CN"] ?? key;
+  if (!entry) return "";
+  return entry[locale] ?? entry["zh-CN"] ?? "";
 }
