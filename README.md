@@ -82,12 +82,13 @@ Verification snapshot captured at **2026-07-13 00:27 UTC**:
 
 | Measure | Verified state |
 | --- | ---: |
-| Monitored sources | 260 |
+| Sources in the current catalog | 266 |
+| Sources covered by that full audit | 260 |
 | Healthy in that full audit | 139 |
 | Isolated observation sources | 107 |
 | Production sources | 5 |
-| Published evidence-backed events | 50 |
-| Normalized direct signals in the repository snapshot | 1,959 |
+| Published evidence-backed events | 64 |
+| Normalized direct signals in the repository snapshot | 2,187 |
 
 See the machine-generated [source health report](data/reports/source-health.json), [data-source policy](docs/SOURCES.md), and [capability map](docs/CAPABILITIES.md).
 

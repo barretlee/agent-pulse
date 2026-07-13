@@ -8,7 +8,7 @@ export const capabilities = [
     status: "operational",
     maturity: 68,
     release: "0.2.0",
-    evidence: "258 sources classified by region, role, acquisition and maintenance state",
+    evidence: "266 sources classified by region, role, acquisition and maintenance state",
   },
   {
     slug: "upstream-discovery",
@@ -289,7 +289,7 @@ export const capabilities = [
     maturity: 66,
     release: "0.6.0",
     evidence:
-      "independent evidence workbench with track/search filters, persistent preview and 44 addressable event pages",
+      "year/month evidence timeline with track/search filters, a global evidence drawer and 64 addressable event pages",
   },
   {
     slug: "radar",
