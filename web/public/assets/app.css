@@ -212,6 +212,7 @@ summary:focus-visible {
   color: var(--muted);
   font-size: 12px;
   text-decoration: none;
+  transition: color 0.15s;
 }
 .desktop-nav a:hover,
 .desktop-nav a[aria-current="page"] {
@@ -263,6 +264,14 @@ summary:focus-visible {
   border-radius: 999px;
   background: var(--surface);
   text-decoration: none;
+  transition:
+    border-color 0.18s,
+    transform 0.18s ease;
+}
+.icon-button:hover,
+.github-star-button:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
 }
 .icon-button {
   width: 40px;
@@ -340,6 +349,11 @@ summary:focus-visible {
   border-radius: 11px;
   text-decoration: none;
   font-size: 12px;
+  transition:
+    transform 0.18s ease,
+    background 0.18s,
+    border-color 0.18s,
+    box-shadow 0.18s;
 }
 .button.primary {
   border-color: var(--accent);
@@ -353,6 +367,9 @@ summary:focus-visible {
 .button:hover {
   transform: translateY(-2px);
 }
+.button:active {
+  transform: scale(0.97);
+}
 .text-link {
   display: inline-flex;
   align-items: center;
@@ -362,6 +379,13 @@ summary:focus-visible {
   color: var(--accent);
   text-decoration: none;
   font-weight: 600;
+  transition:
+    gap 0.2s ease,
+    opacity 0.18s;
+}
+.text-link:hover {
+  gap: 13px;
+  opacity: 0.82;
 }
 .page-status {
   display: flex;
@@ -568,6 +592,13 @@ summary:focus-visible {
   border-top: 3px solid var(--track-color);
   border-radius: var(--radius-md);
   background: var(--surface);
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease;
+}
+.line-summary:hover {
+  border-color: color-mix(in srgb, var(--track-color, var(--accent)) 55%, var(--border));
+  transform: translateY(-2px);
 }
 .line-summary span {
   color: var(--muted);
@@ -614,6 +645,9 @@ summary:focus-visible {
   border-radius: 13px;
   background: var(--surface);
   text-decoration: none;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s;
 }
 .event-row:hover {
   border-color: var(--accent);
@@ -650,6 +684,13 @@ summary:focus-visible {
     color-mix(in srgb, var(--analysis) 9%, var(--surface)),
     var(--surface) 55%
   );
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease;
+}
+.research-card:hover {
+  border-color: color-mix(in srgb, var(--analysis) 55%, var(--border));
+  transform: translateY(-2px);
 }
 .research-card header {
   display: flex;
@@ -871,6 +912,15 @@ summary:focus-visible {
   border-radius: var(--radius-lg);
   background: var(--surface);
   text-decoration: none;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.line-directory-card:hover {
+  border-color: color-mix(in srgb, var(--track-color, var(--accent)) 55%, var(--border));
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
 }
 .line-directory-card > span {
   color: var(--fact);
@@ -908,6 +958,14 @@ summary:focus-visible {
   border-radius: 999px;
   color: var(--text);
   font-size: 12px;
+  transition:
+    background 0.18s,
+    border-color 0.18s;
+}
+.line-card-button:hover,
+.line-directory-card:hover .line-card-button {
+  background: color-mix(in srgb, var(--track-color, var(--accent)) 12%, transparent);
+  border-color: color-mix(in srgb, var(--track-color, var(--accent)) 65%, var(--border));
 }
 .line-card-button .icon {
   width: 14px;
@@ -942,6 +1000,14 @@ summary:focus-visible {
   border-radius: 999px;
   color: var(--muted);
   text-decoration: none;
+  transition:
+    color 0.15s,
+    border-color 0.15s,
+    background 0.15s;
+}
+.line-nav a:not([aria-current="page"]):hover {
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--track-color, var(--accent)) 50%, var(--border));
 }
 .line-nav a[aria-current="page"] {
   border-color: var(--track-color);
@@ -1079,10 +1145,14 @@ summary:focus-visible {
   border-radius: 10px;
   background: var(--surface-soft);
   text-decoration: none;
+  transition:
+    border-color 0.18s,
+    transform 0.18s;
 }
 .era-projects a:hover,
 .era-projects a:focus-visible {
   border-color: var(--accent);
+  transform: translateX(2px);
 }
 .era-projects small {
   grid-column: 1 / -1;
@@ -1199,12 +1269,40 @@ summary:focus-visible {
 .chip-row button,
 .filter-toolbar button {
   flex: none;
+  position: relative;
+  overflow: hidden;
   min-height: 40px;
   padding: 7px 11px;
   border: 1px solid var(--border);
   border-radius: 999px;
   background: transparent;
   color: var(--muted);
+  transition:
+    color 0.2s,
+    border-color 0.2s;
+}
+.chip-row button::before,
+.filter-toolbar button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  clip-path: circle(0% at 50% 50%);
+  transition: clip-path 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.chip-row button:not(.active):hover::before,
+.filter-toolbar button:not(.active):hover::before {
+  clip-path: circle(120% at 50% 50%);
+}
+.chip-row button:not(.active):hover,
+.filter-toolbar button:not(.active):hover {
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+}
+.chip-row button.active::before,
+.filter-toolbar button.active::before {
+  display: none;
 }
 .chip-row button.active,
 .filter-toolbar button.active {
@@ -1352,6 +1450,9 @@ summary:focus-visible {
   text-align: left;
   content-visibility: auto;
   contain-intrinsic-size: auto 190px;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s;
 }
 .timeline-card:hover,
 .timeline-card.active {
@@ -1567,10 +1668,14 @@ summary:focus-visible {
   border-radius: 11px;
   background: var(--surface-soft);
   text-decoration: none;
+  transition:
+    border-color 0.18s,
+    transform 0.18s;
 }
 .drawer-evidence-list a:hover,
 .drawer-evidence-list a:focus-visible {
   border-color: var(--fact);
+  transform: translateX(2px);
 }
 .drawer-evidence-list span {
   color: var(--muted);
@@ -1592,6 +1697,15 @@ summary:focus-visible {
   border: 1px solid var(--border);
   border-radius: 50%;
   background: var(--surface-2);
+  transition:
+    background 0.18s,
+    border-color 0.18s,
+    transform 0.18s;
+}
+.preview-close:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface-2));
+  transform: scale(1.08);
 }
 .preview-backdrop {
   position: fixed;
@@ -1750,6 +1864,13 @@ summary:focus-visible {
   border: 1px solid var(--border);
   border-radius: 10px;
   text-decoration: none;
+  transition:
+    border-color 0.18s,
+    transform 0.18s;
+}
+.evidence-link:hover {
+  border-color: var(--accent);
+  transform: translateX(3px);
 }
 .evidence-link + .evidence-link {
   margin-top: 6px;
@@ -1782,6 +1903,13 @@ summary:focus-visible {
   border-radius: 13px;
   background: var(--surface);
   text-decoration: none;
+  transition:
+    border-color 0.18s ease,
+    transform 0.18s ease;
+}
+.related-grid > a:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
 }
 .related-grid span {
   color: var(--fact);
@@ -1823,11 +1951,20 @@ summary:focus-visible {
   border-radius: 999px;
   color: var(--muted);
   text-decoration: none;
+  transition:
+    color 0.18s,
+    background 0.18s,
+    border-color 0.18s;
 }
 .tool-tabs a[aria-current="page"] {
   border-color: var(--accent);
   background: var(--accent);
-  color: #0a0712;
+  color: #fff;
+}
+.tool-tabs a:not([aria-current="page"]):hover {
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
 }
 .tool-hero-head {
   display: flex;
@@ -2236,6 +2373,10 @@ summary:focus-visible {
   padding: 24px;
   list-style: none;
   cursor: pointer;
+  transition: background 0.18s;
+}
+.release-node summary:hover {
+  background: color-mix(in srgb, var(--accent) 5%, var(--surface));
 }
 .release-node summary::-webkit-details-marker {
   display: none;
@@ -2334,6 +2475,10 @@ summary:focus-visible {
   min-height: 68px;
   padding: 11px 15px;
   border-bottom: 1px solid var(--border-soft);
+  transition: background 0.15s;
+}
+.source-table article:hover {
+  background: color-mix(in srgb, var(--accent) 4%, var(--surface-soft));
 }
 .source-table article:last-child {
   border: 0;
@@ -2706,6 +2851,13 @@ summary:focus-visible {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: var(--surface);
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease;
+}
+.influencer-card:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  transform: translateY(-2px);
 }
 
 .influencer-card header,
@@ -2742,6 +2894,13 @@ summary:focus-visible {
   background: var(--surface-soft);
   color: var(--text);
   text-decoration: none;
+  transition:
+    background 0.18s,
+    transform 0.18s;
+}
+.influencer-profile:hover {
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface-soft));
+  transform: translateX(2px);
 }
 
 .influencer-profile.automatic small {
@@ -3443,7 +3602,29 @@ summary:focus-visible {
   .timeline-preview,
   .button,
   .event-row,
-  .timeline-card {
+  .timeline-card,
+  .chip-row button,
+  .filter-toolbar button,
+  .chip-row button::before,
+  .filter-toolbar button::before,
+  .tool-tabs a,
+  .line-nav a,
+  .line-summary,
+  .line-directory-card,
+  .line-card-button,
+  .research-card,
+  .evidence-link,
+  .related-grid > a,
+  .drawer-evidence-list a,
+  .influencer-card,
+  .influencer-profile,
+  .source-table article,
+  .release-node summary,
+  .era-projects a,
+  .icon-button,
+  .github-star-button,
+  .preview-close,
+  .text-link {
     transition: none;
   }
   .timeline-preview {
