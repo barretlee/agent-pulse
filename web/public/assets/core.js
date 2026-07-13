@@ -484,6 +484,8 @@ function setupStockWidgets() {
       noTimeScale: false,
     });
     script.text = config;
+    // TradingView's mini-symbol-overview script reads its own text content for config.
+    // SRI is not applicable here because TradingView serves this as a dynamic endpoint.
     script.src =
       "https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js";
     widgetContainer.append(widgetEl, script);
