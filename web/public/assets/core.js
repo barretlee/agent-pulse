@@ -398,10 +398,8 @@ function setupTrendModules() {
       .querySelector('.trend-switcher [aria-current="page"]')
       ?.scrollIntoView({ behavior: "instant", block: "nearest", inline: "center" });
   });
-  root.querySelectorAll(".trend-tab").forEach((tab) => {
-    tab.addEventListener("click", () => {
-      navigator.vibrate?.(30);
-    });
+  root.querySelector(".trend-switcher")?.addEventListener("click", (event) => {
+    if (event.target?.closest(".trend-tab")) navigator.vibrate?.(30);
   });
 }
 
