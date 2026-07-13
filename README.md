@@ -78,13 +78,13 @@ Aggregators can suggest candidates or propagation heat, but cannot become the so
 
 The repository is not a mockup. It contains the source catalog, collectors, evidence model, quality gates, review workflow, static renderer, source-health automation, and GitHub Pages delivery path used by the live product.
 
-Latest verified snapshot, completed on **2026-07-13**:
+Verification snapshot captured at **2026-07-13 00:27 UTC**:
 
 | Measure | Verified state |
 | --- | ---: |
 | Monitored sources | 260 |
-| Healthy in the latest full audit | 138 |
-| Isolated observation sources | 106 |
+| Healthy in that full audit | 139 |
+| Isolated observation sources | 107 |
 | Production sources | 5 |
 | Published evidence-backed events | 50 |
 | Normalized direct signals in the repository snapshot | 1,959 |
