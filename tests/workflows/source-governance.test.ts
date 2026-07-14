@@ -72,10 +72,10 @@ describe("GitHub source governance workflows", () => {
       "npm run ops:reconcile",
       "npm run observe:sources -- --confirm",
       "npm run activate:auto",
-      "npm run ai:enrich -- --require-success",
+      "npm run --silent ai:enrich -- --require-success",
       "npm run scout:generate -- 12",
       "npm run auto:publish",
-      "npm run evaluate:system",
+      "npm run --silent evaluate:system",
       "npm run --silent public:fingerprint",
       "npm run db:snapshot -- write",
       "gh workflow run pages.yml --ref main",
@@ -87,10 +87,13 @@ describe("GitHub source governance workflows", () => {
     expect(refresh).toContain("Dispatch Pages deployment after the daily refresh");
     expect(refresh).toContain(["DEEPSEEK_API_KEY: $", "{{ secrets.DEEPSEEK_API_KEY }}"].join(""));
     expect(refresh.indexOf("npm run collect")).toBeLessThan(
-      refresh.indexOf("npm run ai:enrich -- --require-success"),
+      refresh.indexOf("npm run --silent ai:enrich -- --require-success"),
     );
-    expect(refresh.indexOf("npm run ai:enrich -- --require-success")).toBeLessThan(
+    expect(refresh.indexOf("npm run --silent ai:enrich -- --require-success")).toBeLessThan(
       refresh.indexOf("npm run auto:publish"),
+    );
+    expect(refresh).toContain(
+      'JSON.parse(require("node:fs").readFileSync(process.argv[1], "utf8"))',
     );
     expect(refresh).toContain(['status="', "$", '{PIPESTATUS[0]}"'].join(""));
     expect(refresh).toContain("AI Event enrichment unavailable");

@@ -57,6 +57,8 @@ AI enrichment 仍使用 `--require-success` 生成真实非零状态，但 workf
 
 `weekly-status.json` 只包含 `status`、`attempted`、`published`、`errorCode`，不包含模型正文。artifact 使用 `if: always()` 和 `if-no-files-found: ignore`，因此它不能反向阻断数据主链。
 
+三个 `.json` artifact 在上传前必须能被 `JSON.parse` 直接读取。CLI 通过 `npm run --silent` 执行，禁止把 npm banner 混入机器证据；AI enrichment 输出解析失败按可选 AI 失败隔离，系统评测输出解析失败则作为主链质量错误终止运行。
+
 ## 5. Monitor 口径
 
 ```text
@@ -75,4 +77,3 @@ failedPercent   = (quarantined + retired) / effective
 - 回滚 workflow 顺序不会回滚 snapshot schema；恢复旧 workflow 即可。
 - 禁用 AI 时确定性 collect、snapshot、push 和 Pages 仍可运行。
 - 若 snapshot privacy validation、commit/rebase/push 失败，主链必须失败，禁止把未回流数据描述为成功。
-

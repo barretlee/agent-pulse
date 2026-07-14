@@ -13,7 +13,7 @@
 - enrichment 非零状态被转换为 warning，而不是提前终止 job；
 - `snapshot write < validate < git push < Pages dispatch < weekly render`；
 - weekly failure 写安全状态且不进入 Issue upsert；
-- quality evidence 使用 `if: always()`；
+- quality evidence 使用 `if: always()`，三个 `.json` 文件都能被 `JSON.parse` 直接读取；
 - CI 的 lint、typecheck、test、export、build 分步执行；
 - data writers 继续共享 `agent-pulse-repository-data-main` 串行锁且没有 force push。
 
@@ -34,8 +34,18 @@ git diff --check
 3. 手动触发 `data-refresh.yml`，`mode=incremental`；
 4. Data Refresh 成功；
 5. 若数据变化，`github-actions[bot]` 产生新的 snapshot commit；若无变化，日志明确 `No material data changes`；
-6. quality artifact 包含已有 JSON 证据；
+6. quality artifact 包含可直接解析的 JSON 证据；
 7. Pages workflow 成功；
 8. `data/snapshot/v1.json` 的 `generatedAt`/运行数据与公开 DTO 形成一致闭环；
 9. 公开站 HTTP 200，目标 JSON 可读取。
 
+## 5. 首轮真实验收证据
+
+- PR CI：[#19 / CI 29302649266](https://github.com/barretlee/agent-pulse/actions/runs/29302649266)
+- main CI：[29302699915](https://github.com/barretlee/agent-pulse/actions/runs/29302699915)
+- 增量回流：[Data Refresh 29302751824](https://github.com/barretlee/agent-pulse/actions/runs/29302751824)
+- snapshot commit：[9508f8a](https://github.com/barretlee/agent-pulse/commit/9508f8a4be99c3117a945c73d9c48a720580ccf4)
+- 回流后 Pages：[29302968728](https://github.com/barretlee/agent-pulse/actions/runs/29302968728)
+- AI 周报：[Issue #13](https://github.com/barretlee/agent-pulse/issues/13)
+
+首轮 artifact 暴露了 npm banner 混入 `.json` 的次级问题，因此机器证据解析验收保持未完成，待修复后的 Actions 运行验证后再关闭 TASKS。

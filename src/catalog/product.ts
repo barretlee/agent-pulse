@@ -27,7 +27,7 @@ export const capabilities = [
     maturity: 72,
     release: "0.7.0",
     evidence:
-      "daily data refresh and Pages deployment, weekly source audit, serialized writers and monotonic snapshot merge",
+      "daily data refresh and Pages deployment, serialized monotonic snapshot writes, isolated optional AI stages and parse-validated quality artifacts",
   },
   {
     slug: "ai-event-convergence",

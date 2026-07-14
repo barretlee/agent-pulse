@@ -1,6 +1,6 @@
 # GitHub Actions 增量回流与 AI 失败隔离
 
-- 状态：本地验证完成，待 GitHub 闭环
+- 状态：增量回流与 Pages 已真实验证，待机器证据 JSON 闭环
 - 日期：2026-07-14
 - 目标版本：Unreleased
 - 前置规格：`2026-07-14-deepseek-ai-convergence`
