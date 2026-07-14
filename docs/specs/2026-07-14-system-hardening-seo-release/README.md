@@ -8,4 +8,4 @@
 - `TEST.md`：测试与线上验收
 - `TASKS.md`：实施清单
 
-状态：ready-for-release
+状态：implemented
