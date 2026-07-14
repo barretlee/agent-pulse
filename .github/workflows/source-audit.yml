@@ -68,6 +68,9 @@ jobs:
           git show origin/main:data/snapshot/v1.json > "$RUNNER_TEMP/remote-snapshot.json"
           npm run db:snapshot -- merge --file="$RUNNER_TEMP/remote-snapshot.json"
 
+      - name: Re-apply source reconciliation after remote merge
+        run: npm run ops:reconcile
+
       - name: Export converged source state and detect a material public change
         id: public
         shell: bash

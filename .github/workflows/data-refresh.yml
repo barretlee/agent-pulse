@@ -151,6 +151,9 @@ jobs:
           git show origin/main:data/narratives/stage-promotions.json > data/narratives/stage-promotions.json
           npm run db:snapshot -- merge --file="$RUNNER_TEMP/remote-snapshot.json"
 
+      - name: Re-apply source reconciliation after remote merge
+        run: npm run ops:reconcile
+
       - name: Assess a major narrative stage promotion with DeepSeek V4 Pro
         id: stage_proposal
         env:

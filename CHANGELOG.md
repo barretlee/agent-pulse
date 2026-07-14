@@ -15,6 +15,7 @@
 ### 开发中
 
 - Data Refresh 的直接研究源 warning 不再预设失败来源仍处于 shadow，而是准确说明本次未采集、生命周期保持不变且整批继续，避免把 quarantined 等运行态错误写进 Actions 证据。
+- Source Audit 与 Data Refresh 在合并远端快照后再次执行来源对账，避免旧快照覆盖已满足连续健康门槛的 `quarantined -> shadow` 恢复结果。
 
 ## [0.11.1] - 2026-07-14
 

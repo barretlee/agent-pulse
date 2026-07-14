@@ -5,6 +5,7 @@
 - [x] 批量读取 Event evidence、track 和 actor，移除静态导出 N+1 路径。
 - [x] 实现公开站完整性验证器与机器可读报告。
 - [x] 将验证器接入 CI、Data Refresh、Source Audit 与 Pages。
+- [x] 在远端快照 merge 后重跑来源对账，并用工作流顺序契约保护生命周期恢复。
 - [x] 修复 JSON-LD 安全序列化并补齐 Event / Breadcrumb / Organization / Dataset 语义。
 - [x] 让 Timeline Event 详情链接可抓取，并补齐主要页面独立 description。
 - [x] 清理已确认无消费者的变量与重复逻辑，保持小 diff。

@@ -25,11 +25,23 @@ describe("GitHub source governance workflows", () => {
     expect(audit.indexOf("npm run db:snapshot -- merge")).toBeLessThan(
       audit.indexOf("npm run db:snapshot -- write"),
     );
+    expect(audit.lastIndexOf("npm run ops:reconcile")).toBeGreaterThan(
+      audit.indexOf("npm run db:snapshot -- merge"),
+    );
+    expect(audit.lastIndexOf("npm run ops:reconcile")).toBeLessThan(
+      audit.lastIndexOf("npm run export"),
+    );
     expect(refresh.indexOf("git fetch origin main")).toBeLessThan(
       refresh.indexOf("npm run db:snapshot -- merge"),
     );
     expect(refresh.indexOf("npm run db:snapshot -- merge")).toBeLessThan(
       refresh.indexOf("npm run db:snapshot -- write"),
+    );
+    expect(refresh.lastIndexOf("npm run ops:reconcile")).toBeGreaterThan(
+      refresh.indexOf("npm run db:snapshot -- merge"),
+    );
+    expect(refresh.lastIndexOf("npm run ops:reconcile")).toBeLessThan(
+      refresh.lastIndexOf("npm run export"),
     );
     expect(audit).not.toContain("git push --force");
     expect(refresh).not.toContain("git push --force");

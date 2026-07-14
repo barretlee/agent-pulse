@@ -74,8 +74,11 @@ JSON-LD 使用脚本上下文安全序列化：保留合法 JSON，只转义 `<`
 - Pages：上传 artifact 前验证；不完整构建不得部署。
 - Release：仍只在 main CI 成功且版本契约通过后创建 GitHub Release。
 
+远端快照 merge 后必须再次执行来源对账，再进行最终 export 与 snapshot write。这样 merge 保留的历史检查可以驱动 `quarantined -> shadow` 的确定性恢复，旧快照中的生命周期不会覆盖本轮已满足恢复门槛的状态。
+
 ## 回滚
 
 - 代码与规格通过单一版本提交回滚。
 - 快照继续使用仓库 merge 语义，不以 `.gitignore` 或覆盖远端快照解决冲突。
+- 来源生命周期恢复在远端快照 merge 后重算，不依赖 merge 前的临时数据库状态。
 - 完整性门禁本身不修改数据；误判时可以先修正规则并重新运行，不允许绕过后发布。

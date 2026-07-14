@@ -545,6 +545,7 @@ export const releases = [
     capabilities: [],
     changes: [
       "直接研究源采集失败时，Actions warning 只陈述本次未采集、生命周期不变与批次继续，不再把实际 quarantined 状态误写成 shadow",
+      "Source Audit 与 Data Refresh 在远端快照 merge 后重新执行来源对账，防止旧生命周期覆盖已满足连续健康门槛的隔离来源恢复结果",
     ],
   },
   {
