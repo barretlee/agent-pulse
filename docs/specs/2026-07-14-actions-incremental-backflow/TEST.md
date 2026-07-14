@@ -7,6 +7,7 @@
 - 第二次仍非法时抛出安全错误码，不返回 Markdown。
 - 不符合停止条件但其余合法的卡片继续使用确定性安全兜底。
 - Monitor 在 `active < degraded` 时仍返回非负百分比；空有效来源返回 0。
+- Monitor 告警把生产覆盖表述为 `active`，把最近审计成功率表述为 `healthy`，不复用同一字段或文案。
 
 ## 2. Workflow 契约
 

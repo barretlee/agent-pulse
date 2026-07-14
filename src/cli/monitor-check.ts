@@ -39,7 +39,7 @@ interface CheckDetail {
 
 interface HealthCheckDetail extends CheckDetail {
   totalSources: number;
-  healthyPercent: number;
+  activePercent: number;
   degradedPercent: number;
   failedPercent: number;
   avgHealthScore: number;
@@ -173,7 +173,7 @@ async function checkSourceHealth(
         needsAttentionCount: report.sourcesNeedingAttention.length,
       },
       totalSources: report.totalSources,
-      healthyPercent: activePercent,
+      activePercent,
       degradedPercent,
       failedPercent,
       avgHealthScore: report.avgHealthScore,
@@ -239,7 +239,7 @@ async function main(): Promise<never> {
   if (sourceHealth.status !== "ok") {
     const level = sourceHealth.status === "critical" ? "Critical" : "Warning";
     issues.push(
-      `${level}: source health degraded (${sourceHealth.healthyPercent}% healthy, avg score ${sourceHealth.avgHealthScore})`,
+      `${level}: production source coverage is low (${sourceHealth.activePercent}% active, avg observed score ${sourceHealth.avgHealthScore})`,
     );
     recommendations.push("Run `npm run sources:audit -- --concurrency=4` for a full audit.");
     recommendations.push("Review quarantined sources and repair failing adapters.");
@@ -285,7 +285,7 @@ main().catch((error) => {
         message: "Monitor script error",
         detail: {},
         totalSources: 0,
-        healthyPercent: 0,
+        activePercent: 0,
         degradedPercent: 0,
         failedPercent: 0,
         avgHealthScore: 0,

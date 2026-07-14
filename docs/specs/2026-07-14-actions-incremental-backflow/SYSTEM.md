@@ -69,6 +69,7 @@ failedPercent   = (quarantined + retired) / effective
 ```
 
 三项均 clamp 到 0–100；`effective=0` 时全部为 0。`active` 与 `degraded` 是互斥生命周期，禁止相减。
+Monitor JSON 与告警文案必须使用 `activePercent` / `active` 表达生产生命周期覆盖；真实审计成功率单独使用 `auditHealthyPercent` / `healthy`，禁止混用。
 
 ## 6. 安全与回滚
 

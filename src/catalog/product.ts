@@ -114,7 +114,7 @@ export const capabilities = [
     maturity: 70,
     release: "0.2.0",
     evidence:
-      "append-only checks for access, fetch, parse, schema, volume, freshness, duplicates, quality, proxy, repair and retention with admin history",
+      "append-only source checks plus separate production active coverage and latest-audit healthy-rate monitoring",
   },
   {
     slug: "source-audit",
