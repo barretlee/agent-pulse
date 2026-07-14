@@ -95,7 +95,9 @@ describe("GitHub source governance workflows", () => {
     expect(refresh).toContain("Observe direct research feeds in shadow");
     expect(refresh).toContain('npm run collect -- --source="$source"');
     expect(refresh).toContain("microsoft-research google-research");
-    expect(refresh).toContain("remains in shadow and does not block the batch");
+    expect(refresh).toContain(
+      "was not collected; its lifecycle state is unchanged and the batch will continue",
+    );
     expect(refresh.indexOf("npm run --silent research:impact -- --skip-seed")).toBeLessThan(
       refresh.indexOf("npm run --silent ai:enrich -- --require-success"),
     );

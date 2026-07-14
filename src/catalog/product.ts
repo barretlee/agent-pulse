@@ -541,16 +541,19 @@ export const releases = [
     version: "unreleased",
     date: "",
     name: "Next Evidence Iteration",
-    summary: "后续变化将在验证完成后记录。",
+    summary: "修正自动化运行证据措辞，继续保持来源生命周期可审计。",
     capabilities: [],
-    changes: [],
+    changes: [
+      "直接研究源采集失败时，Actions warning 只陈述本次未采集、生命周期不变与批次继续，不再把实际 quarantined 状态误写成 shadow",
+    ],
   },
   {
     status: "released",
     version: "0.11.1",
     date: "2026-07-14",
     name: "Audited Research Continuity",
-    summary: "持续改善研究质量门禁、直接信源覆盖与移动端阅读体验。",
+    summary:
+      "少一点噪声，多一点能行动的判断：研究先经过直接信源与影响审计，AI 再在证据门禁后参与整理，Timeline 与移动阅读也更顺手。",
     capabilities: [
       "年龄感知研究质量门禁",
       "限期审计的直接信源影响路径",
