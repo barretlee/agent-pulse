@@ -1,4 +1,7 @@
+import { capitalHistoryEvents } from "./capital-history-2023-2025.js";
 import { ecosystemHistoryEvents } from "./ecosystem-history-2026-07.js";
+import { researchHistory2022To2025 } from "./research-history-2022-2025.js";
+import { researchHistory2026 } from "./research-history-2026.js";
 import { vendorHistoryEvents } from "./vendor-history-2026-07.js";
 
 export interface CuratedEventSeed {
@@ -37,7 +40,7 @@ export const historicalEvents = [
     technical: "405B 模型、FP8 推理和合成数据/蒸馏工具链，证明开放生态也能组织超大规模训练与部署。",
     industry: "模型竞争从单一 API 变成闭源能力、开放权重和云分发三种路线并存。",
     future: "观察开放模型在真实企业工作负载中的使用量、衍生模型质量和推理成本。",
-    business: "To D 团队获得更强的私有化和模型定制底座；模型厂商必须用产品和服务维持闭源溢价。",
+    business: "To D 团队获得更强的私有化和模型定制基础；模型厂商必须用产品和服务维持闭源溢价。",
     category: "model-release",
     company: "Meta",
     keywords: ["Llama 3.1", "开放权重", "405B", "蒸馏"],
@@ -95,7 +98,7 @@ export const historicalEvents = [
     technical: "统一模型家族降低了从端侧到云端、从通用到代码/数学任务的迁移成本。",
     industry: "阿里把模型、云 API 与开源社区连接起来，强化国内开发者分发和海外影响力。",
     future: "观察海外开发者采用、端侧部署、企业微调和与国际前沿模型的差距变化。",
-    business: "国内 To D 团队获得低门槛模型底座，云厂商可通过托管、数据与工具链承接商业价值。",
+    business: "国内 To D 团队获得门槛更低的基础模型，云厂商可通过托管、数据和工具链承接商业价值。",
     category: "model-release",
     company: "Alibaba / Qwen",
     keywords: ["Qwen2.5", "开放模型", "中国创新", "模型矩阵"],
@@ -155,7 +158,7 @@ export const historicalEvents = [
     technical: "原生多模态输入输出、工具调用和低延迟推理让实时 Agent 成为产品主线。",
     industry: "拥有浏览器、移动操作系统和搜索入口的平台获得结构性分发优势。",
     future: "观察原型向稳定产品转化的速度，以及跨产品权限和用户信任。",
-    business: "独立 Agent 产品必须拥有 Google 难以复制的行业流程、数据或交付闭环。",
+    business: "独立 Agent 产品必须拥有 Google 难以复制的行业流程、数据或完整交付能力。",
     category: "model-release",
     company: "Google DeepMind",
     keywords: ["Gemini 2.0", "Project Astra", "Mariner", "多模态 Agent"],
@@ -212,7 +215,8 @@ export const historicalEvents = [
     fact: "OpenAI 发布 Operator 研究预览，模型可以在浏览器中点击、输入并完成多步骤任务。",
     summary:
       "ChatGPT 的产品边界从回答问题扩展到代替用户执行，消费级 Agent 开始验证真实交易与服务流程。",
-    technical: "Computer-Using Agent 将视觉、推理和交互动作放进闭环，但仍需要频繁的人类确认。",
+    technical:
+      "Computer-Using Agent 已能连续完成视觉识别、推理和交互动作，但仍需要频繁的人类确认。",
     industry: "浏览器成为 Agent 的通用执行层，电商、旅行和本地服务平台需要重新考虑机器用户。",
     future: "观察支付/登录场景、反自动化策略、成功率和责任边界。",
     business: "To C Agent 的核心指标应从使用时长转为完成任务数、节省时间和交易转化。",
@@ -369,7 +373,7 @@ export const historicalEvents = [
     technical: "模型原生工具选择把规划、执行和检查纳入统一推理过程。",
     industry: "Agent 能力逐渐内建进旗舰模型，纯编排层产品面临价值压缩。",
     future: "观察工具选择准确性、错误恢复、长任务成本和安全控制。",
-    business: "应用公司的壁垒需要从调用链转向数据、权限、评测和业务闭环。",
+    business: "应用公司的竞争力需要建立在专有数据、权限体系、评测和完整业务流程上。",
     category: "reasoning",
     company: "OpenAI",
     keywords: ["o3", "o4-mini", "工具使用", "Agent"],
@@ -408,7 +412,8 @@ export const historicalEvents = [
     technical: "隔离环境、仓库上下文、并行执行和可审查变更是可靠编码 Agent 的关键系统能力。",
     industry: "GitHub、IDE、终端和云 Agent 开始争夺软件交付的控制面。",
     future: "观察 PR 合并率、运行成本、安全边界和团队协作模式。",
-    business: "软件团队需要把 Agent 纳入权限、评审、CI 和产能度量，而不只是购买个人席位。",
+    business:
+      "软件团队采用 Agent 时，需要同步建立权限、评审、CI 和产能度量，购买个人席位只是第一步。",
     category: "coding-agent",
     company: "OpenAI",
     keywords: ["Codex", "云端 Agent", "异步编码", "软件工程"],
@@ -480,11 +485,12 @@ export const historicalEvents = [
     slug: "chatgpt-agent-research-to-action",
     title: "ChatGPT Agent 发布：研究、浏览与行动合并为统一模式",
     fact: "OpenAI 发布 ChatGPT Agent，将 Operator 的操作、Deep Research 的研究和对话能力整合。",
-    summary: "消费级 AI 产品从多个实验入口收敛为目标驱动的通用任务执行模式。",
+    summary: "消费级 AI 产品开始从多个实验入口转向目标驱动的通用任务执行模式。",
     technical: "视觉浏览器、文本浏览器、终端、连接器和人工确认共同组成多工具 Agent runtime。",
     industry: "模型、产品入口和执行环境进一步合并，独立通用 Agent 的生存空间缩小。",
     future: "观察高频任务、成功率、交易安全和订阅留存。",
-    business: "To C 团队应围绕结果、信任和垂直闭环，而非复制通用聊天与浏览能力。",
+    business:
+      "To C 团队应围绕结果、信任和完整垂直场景建立优势，复制通用聊天与浏览能力很难形成差异。",
     category: "agent-product",
     company: "OpenAI",
     keywords: ["ChatGPT Agent", "Operator", "Deep Research", "任务执行"],
@@ -522,7 +528,7 @@ export const historicalEvents = [
     technical: "SDK、运行环境、权限和监控把 Agent 纳入可编程的软件交付流水线。",
     industry: "编码 Agent 的竞争开始从模型能力转向工作流覆盖、团队治理和生态嵌入。",
     future: "观察企业席位、实际代码产出、SDK 生态和安全事故率。",
-    business: "软件组织需要重新定义开发者产能、评审责任和 Agent 使用政策。",
+    business: "软件组织需要调整开发者产能的衡量方式，并明确评审责任和 Agent 使用政策。",
     category: "coding-agent",
     company: "OpenAI",
     keywords: ["Codex", "GA", "SDK", "团队协作"],
@@ -554,11 +560,11 @@ export const historicalEvents = [
   }),
   event({
     slug: "claude-opus-4-7-agent-work",
-    title: "Claude Opus 4.7 发布：前沿能力继续向复杂工作与 Agent 收敛",
+    title: "Claude Opus 4.7 发布：前沿能力继续聚焦复杂工作与 Agent",
     fact: "Anthropic 发布 Claude Opus 4.7，重点提升代码、Agent、视觉和多步骤任务表现。",
     summary: "模型升级的价值越来越以完成复杂工作来衡量，而不是单一知识或生成 benchmark。",
     technical: "长任务规划、工具使用、视觉理解和一致性成为统一能力包。",
-    industry: "Anthropic 继续围绕 Claude Code、Cowork 和企业工作构建模型—产品闭环。",
+    industry: "Anthropic 继续把模型能力接入 Claude Code、Cowork 和企业工作场景。",
     future: "观察真实任务完成率、企业收入、推理成本和安全边界。",
     business: "To B 竞争需要同时拥有模型、执行环境、权限和行业工作流。",
     category: "model-release",
@@ -573,7 +579,7 @@ export const historicalEvents = [
   }),
   event({
     slug: "gpt-5-5-real-work",
-    title: "GPT-5.5 发布：模型升级围绕端到端真实工作重新定义",
+    title: "GPT-5.5 发布：模型升级开始按端到端工作结果衡量",
     fact: "OpenAI 发布 GPT-5.5，重点提升编码、研究、数据分析、文档和跨工具操作。",
     summary: "前沿竞争从回答质量继续转向能否理解模糊目标、跨工具执行并检查结果。",
     technical: "Agentic coding、computer use、科学研究和长时执行被统一到旗舰模型。",
@@ -617,7 +623,7 @@ export const historicalEvents = [
     summary:
       "长上下文能力长期被“上下文窗口有多长”主导，但窗口可容纳信息不等于模型能在复杂约束下可靠找到并组合证据。该研究把长度与任务难度拆开控制，为企业文档、研究和 Agent 评测提供更接近真实工作的压力测试思路。",
     technical:
-      "论文通过谓词结构控制检索条件、组合关系与推理复杂度，并以两类生成流水线构造可重复的数据。核心贡献不是再增加一个平均分，而是提供难度轴，使团队能观察模型在上下文长度相同、约束复杂度不同条件下的退化曲线。",
+      "论文通过谓词结构控制检索条件、组合关系和推理复杂度，并以两类生成流程构造可重复的数据。它提供了一条难度轴，使团队能观察模型在上下文长度相同、约束复杂度不同条件下的退化曲线，信息量高于单一平均分。",
     industry:
       "模型厂商仅公布长上下文窗口和单一 benchmark 分数将更难支持采购判断；应用团队需要围绕自己的文档结构、约束数量和证据组合方式建立分层评测。",
     future:
@@ -639,9 +645,9 @@ export const historicalEvents = [
     title: "Compete Then Collaborate：多智能体推理不再默认“越合作越好”",
     fact: "2026 年 7 月 9 日提交的预印本 Compete Then Collaborate 提出先让 Agent 独立竞争、再选择性协作的推理框架，用于降低过早共识和错误传播。",
     summary:
-      "多智能体系统常把更多讨论轮次当成质量来源，但 Agent 过早共享中间结论也可能放大同一种错误。该研究将独立探索与后续协作分阶段，提示系统设计应关注观点多样性、选择机制与协作时机，而不只是增加 Agent 数量。",
+      "多智能体系统常用更多讨论轮次提高质量，但 Agent 过早共享中间结论也可能放大同一种错误。该研究将独立探索与后续协作分阶段，提示系统设计需要同时关注观点多样性、选择机制、协作时机和 Agent 数量。",
     technical:
-      "框架先保留多个独立解题轨迹，再根据候选质量和差异选择进入协作的方案，从结构上减少早期信息污染。技术判断重点应放在选择器是否可靠、额外推理成本、不同任务上的收益稳定性，以及失败案例是否真正互补。",
+      "框架先保留多个独立解题轨迹，再根据候选质量和差异选择进入协作的方案，从结构上减少早期信息污染。技术判断重点应放在选择器是否可靠、额外推理成本、不同任务上的收益稳定性，以及失败案例能否互补。",
     industry:
       "Agent 平台的竞争将从编排更多角色转向管理推理多样性和协作预算；企业不应把角色数量、消息数量或工作流复杂度直接当成更高可靠性的证据。",
     future:
@@ -669,7 +675,7 @@ export const historicalEvents = [
     industry:
       "合成用户研究、市场模拟和多 Agent 社会实验需要新的数据质量规范；未经覆盖度与偏差审计的 Persona 池不能替代真实访谈或被包装成市场证据。",
     future:
-      "预印本结论仍需在更多语言、地区与垂直人群中复现，并检验角色多样性指标能否预测下游决策质量，而不只是文本表面差异。",
+      "预印本结论仍需在更多语言、地区和垂直人群中复现，并检验角色多样性指标能否预测下游决策质量，避免指标只反映文本表面差异。",
     business:
       "使用合成 Persona 做早期探索时，应保留真实样本校准集，披露模型与采样方法，并把去重率、覆盖缺口和与真实用户的偏差纳入决策置信度。",
     category: "research",
@@ -693,7 +699,7 @@ export const historicalEvents = [
     industry:
       "视觉 Agent、文档理解和质检产品不能只引用通用多模态分数；采购和上线门槛需要明确业务中不可接受的盲区，并对这些类别单独验收。",
     future:
-      "该预印本样本规模有限，需扩展到真实世界分布、更多语言与视频任务，并验证模型更新后盲区是否迁移而非真正消失。",
+      "该预印本样本规模有限，需扩展到真实世界分布、更多语言和视频任务，并验证模型更新后盲区是消失了，还是转移到了其他任务。",
     business:
       "在医疗、制造和文档审核场景，应建立盲区清单、人工接管规则与类别级回归集，把“何时不能信模型”作为部署决策的一部分。",
     category: "research",
@@ -737,7 +743,7 @@ export const historicalEvents = [
     summary:
       "当前数据 Agent 擅长生成查询、图表和相关性分析，但业务决策需要区分观察、干预与反事实。该研究把因果结构和拒答能力纳入评测，使“能产出分析”与“能支持行动决策”之间的差距变得可见。",
     technical:
-      "基准围绕结构因果模型构造关联、干预和反事实问题，并检查模型在不可识别或信息不足时是否能够 abstain。核心价值是同时测推理正确性与认识边界，而不是只看最终答案格式或代码是否可运行。",
+      "基准围绕结构因果模型构造关联、干预和反事实问题，并检查模型在不可识别或信息不足时是否能够 abstain。它同时测试推理正确性和模型能否识别信息边界，最终答案格式或代码可运行性只覆盖部分能力。",
     industry:
       "企业数据 Copilot 若不能识别因果假设和证据边界，可能把相关性包装成策略建议；数据 Agent 的验收需要增加因果层级、假设披露和拒答率。",
     future:
@@ -756,6 +762,9 @@ export const historicalEvents = [
   }),
   ...vendorHistoryEvents,
   ...ecosystemHistoryEvents,
+  ...capitalHistoryEvents,
+  ...researchHistory2022To2025,
+  ...researchHistory2026,
 ] as const satisfies readonly CuratedEventSeed[];
 
 export const industryNarratives = {
@@ -978,7 +987,8 @@ export const industryNarratives = {
           period: "2026—今天",
           label: "可验证真实能力",
           summary: "能力评价转向长任务、科学、具身、多模态和部署环境中的可复现表现。",
-          interpretation: "前沿差距越来越来自系统可靠性、数据闭环和评测设计，而不只是模型规模。",
+          interpretation:
+            "前沿差距越来越取决于系统可靠性、持续数据反馈和评测设计，模型规模只是其中一个因素。",
           chinaPosition:
             "不同团队在开放推理、端侧、视频和具身模型形成优势，仍需更多跨环境可比证据。",
           nextSignal: "关注独立复现、生产失败分布、长期记忆污染和单位有效任务成本。",
@@ -989,7 +999,7 @@ export const industryNarratives = {
           role: "ceo",
           question: "能力进步会改变哪个经营控制点？",
           answer:
-            "控制点正从采购某个模型，迁移到掌握任务数据、评测集、工具权限和持续反馈闭环。模型会快速替换，组织自己的验收标准和工作流上下文更难复制。",
+            "控制点正从采购某个模型，迁移到掌握任务数据、评测集、工具权限和持续反馈。模型会快速替换，组织自己的验收标准和工作流上下文更难复制。",
           implications: [
             "统一模型采购应改成按任务分层路由。",
             "高风险流程必须保留可回放证据与人工接管。",
@@ -1015,7 +1025,7 @@ export const industryNarratives = {
             "基础模型溢价仍存在，但可持续价值更可能沉淀在独有数据、可靠执行、推理基础设施和能证明结果改善的垂直系统。单纯包装最新模型的窗口持续缩短。",
           implications: [
             "模型领先期缩短会压缩纯 API 转售毛利。",
-            "评测、推理优化和数据闭环成为新的尽调重点。",
+            "评测、推理优化和持续数据反馈成为新的尽调重点。",
           ],
           actions: [
             "把收入增长拆成模型红利、工作流锁定和数据网络效应。",
@@ -1040,7 +1050,7 @@ export const industryNarratives = {
             "同一业务需要快速模型与深度推理模型协作。",
             "长上下文不能替代检索、记忆清理和最小权限。",
           ],
-          actions: ["建立版本化评测集与回归门禁。", "记录每次工具调用、权限决策、重试和人工接管。"],
+          actions: ["建立版本化评测集和回归检查。", "记录每次工具调用、权限决策、重试和人工接管。"],
           watch: [
             "长任务中的错误累积和状态污染。",
             "推理预算上升后延迟、吞吐和失败恢复的交换关系。",
@@ -1064,7 +1074,7 @@ export const industryNarratives = {
             "把一个完整任务拆成可观测的计划、执行和验收节点。",
             "为高风险动作提供预览、确认、撤销和证据回链。",
           ],
-          watch: ["7/30 日任务复用率与委派深度。", "用户修正后系统是否真正减少同类错误。"],
+          watch: ["7/30 日任务复用率与委派深度。", "用户修正后，同类错误是否持续减少。"],
           evidenceSlugs: [
             "claude-computer-use",
             "gemini-3-5-frontier-action",
@@ -1076,9 +1086,9 @@ export const industryNarratives = {
     {
       slug: "agi-progress",
       thesis:
-        "Agent 的关键变化不是更像人聊天，而是模型开始连接工具、维护任务状态，并承担跨软件的完整工作。",
+        "Agent 的关键变化是模型开始连接工具、维护任务状态，并承担跨软件的完整工作。聊天体验只是外在表现。",
       now: "编码、研究、浏览器操作和企业流程已经出现可重复的有限自治，软件入口正在从功能菜单转向任务委派。",
-      next: "需要关注端到端完成率、记忆、权限、错误恢复、人工接管，以及 Agent 是否真正改变软件的交付和收费方式。",
+      next: "需要关注端到端完成率、记忆、权限、错误恢复、人工接管，以及 Agent 是否已经改变软件的交付和收费方式。",
       stages: [
         {
           start: "2022-11-01",
@@ -1125,7 +1135,7 @@ export const industryNarratives = {
           end: "2025-06-30",
           period: "2025 Q2",
           label: "编码 Agent",
-          summary: "Codex、Claude Code 与长任务模型把仓库理解、执行和验证组成工程闭环。",
+          summary: "Codex、Claude Code 和长任务模型开始连续完成仓库理解、执行和结果验证。",
           interpretation: "编码成为首个能用测试与 diff 验收结果的高价值 Agent 市场。",
           chinaPosition: "开放模型和本地工具链提供成本优势，但团队级采用、生态和分发证据仍不足。",
           nextSignal: "Agent 是否能稳定完成跨文件任务并减少 review 与返工总时间。",
@@ -1156,7 +1166,7 @@ export const industryNarratives = {
           role: "ceo",
           question: "Agent 会重写哪类组织边界？",
           answer:
-            "最先变化的是可数字验收、跨系统搬运信息且等待时间长的流程。组织优势不在部署更多 Bot，而在重新定义责任、审批和异常升级。",
+            "可数字验收、需要跨系统搬运信息且等待时间长的流程会最先变化。组织需要明确新的责任、审批和异常升级方式，Bot 数量本身无法形成优势。",
           implications: ["部分软件席位会变成任务预算。", "管理跨度可能扩大，但失败责任会更集中。"],
           actions: [
             "选一个跨部门流程建立人工与 Agent 对照组。",
@@ -1269,7 +1279,7 @@ export const industryNarratives = {
           period: "2024 H2",
           label: "企业与治理门槛",
           summary: "推理能力、计算机使用和 AI Act 同时提高可做任务与交付责任。",
-          interpretation: "企业购买的不只是能力，也包括治理、权限、审计和长期服务。",
+          interpretation: "企业采购同时评估模型能力、治理、权限、审计和长期服务。",
           chinaPosition: "消费入口扩张快，企业付费、合规交付和全球服务能力仍需更多证据。",
           nextSignal: "部署能否从试点进入重复采购，并形成可审计 ROI。",
         },
@@ -1280,7 +1290,7 @@ export const industryNarratives = {
           label: "Agent 产品",
           summary: "研究、浏览、编码和开发平台出现可按任务验收的 Agent 产品。",
           interpretation: "定价从 token 和功能席位向任务额度、团队计划和结果价值移动。",
-          chinaPosition: "模型价格竞争激烈，应用闭环与全球分发仍在形成。",
+          chinaPosition: "模型价格竞争激烈，完整应用流程和全球分发能力仍在形成。",
           nextSignal: "Agent 使用是否提升留存、扩张收入和组织级标准化。",
         },
         {
@@ -1319,7 +1329,7 @@ export const industryNarratives = {
           role: "investor",
           question: "收入质量怎样与 AI 热度分开？",
           answer:
-            "重点不是 ARR 标签，而是付费任务是否高频、是否嵌入核心流程、模型成本能否被规模摊薄，以及续费是否来自真实结果而非补贴。",
+            "评估重点应放在付费任务是否高频、是否嵌入核心流程、模型成本能否被规模摊薄，以及续费是否来自真实结果。ARR 标签和补贴都可能掩盖实际采用情况。",
           implications: [
             "席位增长可能掩盖低激活和高推理成本。",
             "服务收入过高可能说明产品尚未标准化。",
@@ -1488,7 +1498,7 @@ export const industryNarratives = {
           implications: ["降价会加速功能同质化。", "平台并购可能改变 API、配额和路线图。"],
           actions: [
             "把成本下降投入更深任务或更好验证。",
-            "为供应商变更设计用户可感知的质量回归门禁。",
+            "为供应商变更设计用户可感知的质量回归检查。",
           ],
           watch: ["模型降价是否改善留存和毛利。", "并购后产品承诺与接口稳定性。"],
           evidenceSlugs: [
@@ -1502,9 +1512,9 @@ export const industryNarratives = {
     {
       slug: "global-innovation",
       thesis:
-        "全球 AI 创新不是单向排名：中国的开放模型、工程效率、应用分发与本土算力，正在与美国平台能力、欧洲治理和全球开源生态相互塑造。",
+        "全球 AI 创新由多条路线共同推动：中国的开放模型、工程效率、应用分发和本土算力，与美国的平台能力、欧洲治理和全球开源生态相互影响。",
       now: "中国团队已在开放推理、模型效率、视频生成和应用规模上形成独立影响，差异更多来自生态、算力、市场与分发路径。",
-      next: "观察跨区域开发者采用、全球收入、开放生态贡献、国产算力闭环和产品长期留存。",
+      next: "观察跨区域开发者采用、全球收入、开放生态贡献、国产算力的端到端验证和产品长期留存。",
       stages: [
         {
           start: "2022-08-01",
@@ -1562,7 +1572,7 @@ export const industryNarratives = {
           period: "2025 Q2—Q4",
           label: "Agent 与开放生态",
           summary: "Qwen3、MiniMax M1、Kimi K2 等模型转向混合推理、长上下文和 Agent。",
-          interpretation: "竞争从模型发布进入工具兼容、全球分发和应用闭环。",
+          interpretation: "竞争已经从模型发布扩展到工具兼容、全球分发和完整应用流程。",
           chinaPosition: "开放模型供给保持活跃，企业采用、国际服务和商业收入成为新门槛。",
           nextSignal: "观察全球 API 使用、开源贡献、企业案例和区域合规。",
         },
@@ -1570,11 +1580,11 @@ export const industryNarratives = {
           start: "2026-01-01",
           end: "9999-12-31",
           period: "2026—今天",
-          label: "全球采用与产业闭环",
+          label: "全球采用与产业落地",
           summary: "各区域围绕真实工作、具身、科学、算力和治理形成不同组合优势。",
           interpretation: "领先不应由单一榜单定义，而要比较能力、成本、生态、收入和供应链韧性。",
           chinaPosition: "竞争进入产品留存、企业采用、全球分发与国产算力协同。",
-          nextSignal: "用同维度证据比较开发者份额、全球收入、生产部署和算力闭环。",
+          nextSignal: "用同维度证据比较开发者份额、全球收入、生产部署和国产算力的端到端表现。",
         },
       ],
       lenses: [
@@ -1605,7 +1615,10 @@ export const industryNarratives = {
             "应分别比较能力、成本、开放生态、分发、收入和供应链。中国团队的效率与开放影响力可以领先，但全球企业收入和分发仍可能受限。",
           implications: ["技术领先与商业领先可能分离。", "区域政策和云生态会改变可实现市场。"],
           actions: ["建立同维度区域 scorecard。", "拆分国内收入、海外收入、开发者采用和生态贡献。"],
-          watch: ["海外留存与付费，而非下载量。", "国产算力适配是否形成完整生产闭环。"],
+          watch: [
+            "海外留存与付费是否同步增长，避免只看下载量。",
+            "国产算力适配能否通过完整生产验证。",
+          ],
           evidenceSlugs: [
             "qwen-3-hybrid-thinking",
             "minimax-m1-long-context-reasoning",
@@ -1644,7 +1657,7 @@ export const industryNarratives = {
     },
     {
       slug: "model-economics",
-      thesis: "单位 token 价格仍在下降，但真正重要的成本单位正在变成一次可靠完成的任务。",
+      thesis: "单位 token 价格仍在下降，企业评估成本时开始转向“一次任务可靠完成需要多少钱”。",
       now: "MoE、FP8、推理预算和模型路由共同决定成本曲线。",
       next: "采购需要比较成功率、重试、延迟、人工接管和总拥有成本。",
       stages: [
@@ -1734,7 +1747,7 @@ export const industryNarratives = {
           role: "ceo",
           question: "应该用什么单位管理 AI 成本？",
           answer:
-            "用一次被业务接受的结果，而不是 token 或单次调用。成本应包含模型、工具、重试、人工复核、失败损失和治理。",
+            "用一次被业务接受的结果作为成本单位。计算时应包含模型、工具、重试、人工复核、失败损失和治理成本，不能只看 token 或调用次数。",
           implications: ["低单价可能被低成功率抵消。", "不同任务应配置不同质量与预算上限。"],
           actions: [
             "为核心任务建立 cost-per-accepted-outcome。",

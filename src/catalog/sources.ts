@@ -2,6 +2,7 @@ import {
   type SourceProposalCatalogEntry,
   SourceProposalCatalogSchema,
 } from "../domain/source-proposal.js";
+import { capitalEvidenceSources20260714 } from "./capital-evidence-sources-2026-07.js";
 import { ecosystemEvidenceSources20260714 } from "./ecosystem-evidence-sources-2026-07.js";
 import { sourceExpansionWave20260713 } from "./source-expansion-2026-07.js";
 import sourceProposalRows from "./source-proposals.json" with { type: "json" };
@@ -2314,18 +2315,6 @@ const rows: SourceSeed[] = [
     "investment,market,product",
   ],
   [
-    "sequoia-ai",
-    "Sequoia Capital AI",
-    "https://www.sequoiacap.com/articles/",
-    "US",
-    "capital-business",
-    2,
-    "expert",
-    "manual",
-    undefined,
-    "investment,market",
-  ],
-  [
     "bessemer-ai",
     "Bessemer Venture Partners AI",
     "https://www.bvp.com/atlas",
@@ -2336,18 +2325,6 @@ const rows: SourceSeed[] = [
     "manual",
     undefined,
     "investment,cloud,enterprise",
-  ],
-  [
-    "menlo-ai",
-    "Menlo Ventures AI",
-    "https://menlovc.com/perspective/",
-    "US",
-    "capital-business",
-    2,
-    "expert",
-    "html",
-    undefined,
-    "investment,enterprise,consumer",
   ],
   [
     "nfx",
@@ -3692,6 +3669,7 @@ export const sourceCatalog: CatalogSource[] = [
   ...builtInSources,
   ...supplementalOfficialSources,
   ...sourceExpansionWave20260713,
+  ...capitalEvidenceSources20260714,
   ...vendorEvidenceSources20260714,
   ...ecosystemEvidenceSources20260714,
   ...proposalSources,

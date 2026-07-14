@@ -209,7 +209,7 @@ export function generateEvolutionPlan(
     priority: "wishlist",
     estimatedEffort: "XL",
     impactArea: "forecasting",
-    rationale: "预测能力是认知系统区别于聚合器的核心差异。",
+    rationale: "加入可核验的预测，帮助读者从事件摘要进一步判断后续变化。",
     successMetric: "预测准确率 >= 60% (top-5 predictions)",
     dependencies: [],
   });
@@ -223,7 +223,7 @@ export function generateEvolutionPlan(
     priority: "next",
     estimatedEffort: "L",
     impactArea: "clustering",
-    rationale: "AI 行业是全球性的，跨语言聚类是全球化认知系统的基础。",
+    rationale: "AI 行业跨越多个地区和语言，相关事件需要跨语言归并和核验。",
     successMetric: "跨语言事件聚合召回率 >= 70%",
     dependencies: [],
   });

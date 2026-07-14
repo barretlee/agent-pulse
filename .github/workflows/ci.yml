@@ -29,5 +29,15 @@ jobs:
         run: npm test
       - name: Export static site
         run: npm run export
+      - name: Validate public content across every main tab
+        run: npm run --silent public:validate -- --output="$RUNNER_TEMP/public-integrity.json"
+      - name: Upload public integrity evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: public-integrity-${{ github.run_id }}
+          path: ${{ runner.temp }}/public-integrity.json
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Build
         run: npm run build

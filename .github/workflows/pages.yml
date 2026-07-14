@@ -50,6 +50,16 @@ jobs:
           echo "GITHUB_METADATA_FETCHED_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_ENV"
       - name: Export static site from restored data
         run: npm run export -- --skip-seed
+      - name: Validate public content across every main tab
+        run: npm run --silent public:validate -- --output="$RUNNER_TEMP/public-integrity.json"
+      - name: Upload public integrity evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: pages-public-integrity-${{ github.run_id }}
+          path: ${{ runner.temp }}/public-integrity.json
+          if-no-files-found: ignore
+          retention-days: 7
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:

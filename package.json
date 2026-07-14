@@ -1,6 +1,6 @@
 {
   "name": "agent-pulse",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "private": false,
   "description": "A curated AI industry intelligence timeline — signal, not noise.",
   "author": "Barret Lee <barret.china@gmail.com>",
@@ -35,6 +35,7 @@
     "sources:health:issue": "tsx src/cli/render-source-health-issue.ts",
     "weekly:issue": "tsx src/cli/render-weekly-brief.ts",
     "public:fingerprint": "tsx src/cli/public-content-fingerprint.ts",
+    "public:validate": "tsx src/cli/validate-public-site.ts",
     "repair:provenance": "tsx src/cli/repair-provenance.ts",
     "repair:activations": "tsx src/cli/repair-activations.ts",
     "repair:review-noise": "tsx src/cli/repair-review-noise.ts",
@@ -47,13 +48,15 @@
     "evolve": "tsx src/cli/evolve.ts",
     "monitor": "tsx src/cli/monitor-cli.ts",
     "monitor:check": "tsx src/cli/monitor-check.ts",
+    "monitor:decide": "tsx src/cli/monitor-alert-decision.ts",
+    "research:impact": "tsx src/cli/research-impact.ts",
     "release:check": "tsx src/cli/release-notes.ts --check",
     "release:notes": "tsx src/cli/release-notes.ts",
     "export": "tsx src/cli/export.ts",
     "auto:publish": "tsx src/cli/auto-publish.ts",
     "ai:enrich": "tsx src/cli/enrich-events.ts",
     "narrative:stage": "tsx src/cli/promote-narrative-stage.ts",
-    "check": "npm run lint && npm run typecheck && npm test && npm run export"
+    "check": "npm run lint && npm run typecheck && npm test && npm run export && npm run public:validate"
   },
   "keywords": [
     "ai-news",
@@ -65,7 +68,7 @@
   "license": "MIT",
   "dependencies": {
     "@fastify/cors": "^11.1.0",
-    "@fastify/static": "^8.3.0",
+    "@fastify/static": "^10.1.0",
     "better-sqlite3": "^12.4.1",
     "fast-xml-parser": "^5.3.3",
     "fastify": "^5.6.2",

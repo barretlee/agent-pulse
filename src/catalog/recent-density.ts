@@ -29,11 +29,11 @@ export const recentDensityEvents = [
   }),
   event({
     slug: "gemini-robotics-er-1-6-embodied-reasoning",
-    title: "Gemini Robotics-ER 1.6：具身模型把推理能力带入真实任务闭环",
+    title: "Gemini Robotics-ER 1.6：具身模型开始执行完整真实任务",
     fact: "Google DeepMind 于 2026 年 4 月 13 日发布 Gemini Robotics-ER 1.6，面向真实机器人任务强化具身推理。",
-    summary: "机器人竞争正从单项动作演示转向视觉理解、任务规划、执行反馈和失败恢复组成的闭环。",
+    summary: "机器人竞争正从单项动作演示转向包含视觉理解、任务规划、执行反馈和失败恢复的完整任务。",
     technical:
-      "真正的技术分界在跨环境泛化、动作可执行性、长任务稳定性与安全停止，而非语言解释是否流畅。",
+      "判断技术水平需要看跨环境泛化、动作可执行性、长任务稳定性和安全停止，语言解释是否流畅只能说明其中一部分。",
     industry:
       "具身基础模型将抬高数据、仿真、评测和硬件适配平台的价值，并加快模型厂商与机器人公司的协作。",
     future: "观察跨本体复现、真实任务完成率、人工接管次数和长时运行中的累积误差。",
@@ -117,7 +117,7 @@ export const recentDensityEvents = [
     fact: "Google DeepMind 于 2026 年 5 月 17 日发布 Google Antigravity 2.0，继续扩展面向 Agent 的开发体验。",
     summary: "编码工具正在围绕长期任务、仓库理解、执行反馈和多步骤交付重构，而不是只优化补全速度。",
     technical:
-      "关键能力包括上下文压缩、计划可追踪、测试闭环、权限隔离与长任务恢复，需要按端到端结果评测。",
+      "关键能力包括上下文压缩、计划可追踪、测试验证、权限隔离和长任务恢复，需要按端到端结果评测。",
     industry: "IDE、模型厂商和代码托管平台的边界继续重叠，开发者分发与工作流锁定的重要性上升。",
     future: "观察复杂仓库完成率、变更规模、回滚成本、代码审查负担和企业采用。",
     business: "研发团队应以小步集成和自动测试约束 Agent，避免用一次性大改动制造不可审查风险。",
@@ -140,7 +140,8 @@ export const recentDensityEvents = [
       "需要同时评估时延、打断处理、模态对齐、工具调用与隐私边界，单一视觉或语音分数不足以代表体验。",
     industry: "统一多模态入口可能重塑搜索、助手、客服和创作产品，也提高设备与云端协同的重要性。",
     future: "观察实时交互延迟、跨语言表现、复杂场景稳定性和第三方应用接入。",
-    business: "产品团队应从必须同时使用两种以上模态的高价值流程切入，而不是为多模态而多模态。",
+    business:
+      "产品团队应优先选择必须同时使用两种以上模态、且结果可衡量的业务流程。单纯增加输入类型很难产生价值。",
     category: "model-release",
     company: "Google DeepMind",
     keywords: ["Gemini Omni", "多模态", "实时交互", "语音"],
@@ -155,13 +156,13 @@ export const recentDensityEvents = [
     slug: "google-io-2026-ai-platform-bundle",
     title: "Google I/O 2026：AI 从单点功能变成横跨产品与开发栈的平台层",
     fact: "Google 于 2026 年 5 月 20 日汇总 I/O 2026 的 100 项发布、演示与产品更新。",
-    summary:
-      "密集发布本身不是一个事实节点；真正变化是模型、消费产品、Cloud 与开发工具开始共享同一 AI 平台能力。",
+    summary: "多项发布共同说明，模型、消费产品、Cloud 和开发工具开始共享同一套 AI 平台能力。",
     technical:
       "平台化要求统一模型接口、身份权限、上下文和观测能力，否则产品数量只会放大集成复杂度。",
     industry:
       "Google 的优势从单模型能力扩展到分发与基础设施组合，独立应用需要更明确的垂直数据与工作流壁垒。",
-    future: "观察发布功能的真实可用时间、跨产品采用、开发者留存和重复能力的收敛。",
+    future:
+      "观察这些功能何时可稳定使用、能否被多个产品采用、开发者是否持续使用，以及重复能力是否逐步合并。",
     business: "采购者应按工作流选择已稳定可用的能力，避免把发布清单等同于当前生产能力。",
     category: "industry",
     company: "Google",
@@ -219,7 +220,7 @@ export const recentDensityEvents = [
     title: "Claude Fable 5 进入 Microsoft Foundry：模型分发继续平台化",
     fact: "Microsoft 于 2026 年 6 月 9 日宣布 Claude Fable 5 在 Microsoft Foundry 可用，面向自主 Agent 场景。",
     summary: "企业模型采购从单一厂商 API 转向云平台内的多模型治理、身份、数据和观测统一。",
-    technical: "真正的集成价值在权限、网络、评测、路由和日志治理；仅能调用模型不等于生产就绪。",
+    technical: "集成价值取决于权限、网络、评测、路由和日志治理。能够调用模型只是生产部署的起点。",
     industry:
       "Anthropic 获得更广企业分发，Microsoft 则强化模型中立平台定位，多模型竞争进入云控制面。",
     future: "观察区域可用性、企业采用、路由策略、成本差异和 Foundry 内的治理深度。",
@@ -241,7 +242,7 @@ export const recentDensityEvents = [
     fact: "OpenAI 于 2026 年 6 月 11 日宣布收购 Ona。",
     summary:
       "并购信号表明模型公司正在吸收关键工程团队与工作流能力，以缩短从模型到可交付 Agent 的距离。",
-    technical: "整合价值取决于仓库级上下文、长任务执行、验证闭环和开发者体验能否进入统一产品。",
+    technical: "整合价值取决于仓库级上下文、长任务执行、结果验证和开发者体验能否进入统一产品。",
     industry:
       "AI Coding 市场的竞争会继续从模型调用转向完整工程系统，独立工具面临平台并购与功能内置压力。",
     future: "观察团队与产品整合、能力上线、企业迁移和原有客户/开源生态的处理。",
@@ -266,7 +267,7 @@ export const recentDensityEvents = [
       "模拟方法必须处理环境代表性、对抗行为、长程反馈和评价器偏差，并证明能预测真实部署失败。",
     industry: "模型发布与企业采购都需要更接近实际工作流的预发布验证，评测平台和红队能力价值上升。",
     future: "观察模拟结果与真实事故的相关性、外部复现、覆盖范围和对发布决策的实际影响。",
-    business: "高风险应用应建立影子部署与场景模拟，把失败类型和停止条件纳入上线门禁。",
+    business: "高风险应用应建立影子部署和场景模拟，并在上线检查中明确失败类型和停止条件。",
     category: "research",
     company: "OpenAI",
     keywords: ["部署模拟", "模型行为", "安全评测", "红队"],

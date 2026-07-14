@@ -26,17 +26,17 @@ const node = (tag, className, text) => {
   return el;
 };
 const titles = {
-  dashboard: "指挥中心",
-  sources: "信源矩阵",
-  discoveries: "来源雷达",
-  scout: "星探驾驶舱",
+  dashboard: "运行概览",
+  sources: "来源管理",
+  discoveries: "来源发现",
+  scout: "行动建议",
   health: "系统健康",
   evaluation: "评测中心",
   events: "事件与发布",
-  tracks: "主线编排",
-  actors: "角色雷达",
+  tracks: "趋势管理",
+  actors: "角色管理",
   resources: "模型资源",
-  view: "视觉与视图",
+  view: "页面设置",
 };
 $("#tokenInput").value = state.token;
 
@@ -218,7 +218,7 @@ function renderFunnel(report) {
       `${report.signals.backlog} 条待处理 · ${report.signals.deferred} 条延后`,
     ],
     ["事件", report.events.total, `${report.events.multiSource} 个多源事件`],
-    ["内容就绪", report.events.ready, `${report.events.blocked} 个仍被门禁阻止`],
+    ["内容就绪", report.events.ready, `${report.events.blocked} 个未通过发布检查`],
     ["已发布", report.events.published, `事件发布率 ${report.conversion.eventToPublishedPercent}%`],
   ];
   flow.replaceChildren();
@@ -243,6 +243,7 @@ function renderFunnel(report) {
     missing_primary_evidence: "缺官方原始资料",
     low_confidence: "低置信",
     unsupported_heat: "热度证据不足",
+    thin_research_analysis: "研究分析过短",
   };
   blockers.replaceChildren();
   Object.entries(report.blockerCounts)
@@ -342,13 +343,13 @@ function renderEvaluation() {
 }
 function renderMetrics(data) {
   const labels = {
-    sources: "信源",
+    sources: "来源",
     signals: "信号",
     drafts: "隔离队列",
     published: "已发布",
     failedJobs: "失败任务",
     degradedSources: "异常信源",
-    scoutInbox: "星探处理中",
+    scoutInbox: "行动建议处理中",
   };
   const grid = $("#metricGrid");
   grid.replaceChildren();
@@ -771,7 +772,9 @@ function renderScout(filter = "") {
         node(
           "span",
           "cell-muted",
-          insight.status === "published" ? "已由质量门禁自动上架" : "未达门禁，自动归档",
+          insight.status === "published"
+            ? "已通过质量检查并自动发布"
+            : "未通过质量检查，已自动归档",
         ),
       );
       root.append(row);
@@ -798,7 +801,7 @@ function renderEvents(filter = "") {
         node(
           "span",
           "cell-muted",
-          event.status === "published" ? "已自动发布" : "等待系统补齐门禁",
+          event.status === "published" ? "已自动发布" : "仍有发布检查未通过",
         ),
       );
       root.append(row);
@@ -1082,11 +1085,14 @@ function renderCoverageMap(report) {
   if (!map) return;
   map.innerHTML = report.coverageGaps
     .map((gap) => {
-      const pct = Math.min(100, Math.round((gap.current / Math.max(1, gap.target)) * 100));
+      const pct = Math.max(
+        0,
+        Math.min(100, Math.round((gap.current / Math.max(1, gap.target)) * 100)),
+      );
       const barCls =
         gap.severity === "critical" ? "critical" : gap.severity === "warning" ? "warning" : "ok";
       return `<div class="coverage-row">
-        <span class="cov-label">${gap.label}</span>
+        <span class="cov-label">${escHtml(gap.label)}</span>
         <div class="cov-bar-wrap"><div class="cov-bar ${barCls}" style="width:${pct}%"></div></div>
         <span class="cov-count">有效 ${gap.current} · 目录 ${gap.catalogCurrent ?? 0} · 目标 ${gap.target}</span>
       </div>`;
@@ -1115,8 +1121,8 @@ function renderAttentionList(report) {
     .map(
       (s) => `<div class="attention-item">
         <span class="att-icon">${icons[s.lifecycle] ?? "?"}</span>
-        <span class="att-slug">${s.slug}</span>
-        <span class="att-lifecycle ${s.lifecycle}">${s.lifecycle}</span>
+        <span class="att-slug">${escHtml(s.slug)}</span>
+        <span class="att-lifecycle ${escAttr(s.lifecycle)}">${escHtml(s.lifecycle)}</span>
         <span class="att-health">HP:${s.healthScore}</span>
         ${s.checkStatus ? `<span class="att-lifecycle ${s.checkStatus}">${escHtml(s.checkStatus)}</span>` : ""}
         ${s.itemCount !== null ? `<span class="att-health">${s.itemCount} items · Q${s.qualityScore ?? 0}</span>` : ""}

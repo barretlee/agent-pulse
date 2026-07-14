@@ -12,7 +12,7 @@ export const vendorHistoryEvents = [
     technical:
       "Grok-1 是 314B 参数的 Mixture-of-Experts 基础模型，每次处理激活约 25% 权重；官方说明该检查点未经对话微调，训练栈基于 JAX 与 Rust。",
     industry:
-      "新实验室通过大模型权重开放迅速建立开发者认知，但原始基础模型的可用性与后续商业模型的能力并不等价。",
+      "新实验室通过开放大模型权重快速获得开发者关注，但早期基础模型的可用性不能代表后续商业模型的能力。",
     future:
       "观察 xAI 是否继续开放后续模型、社区能否形成高质量推理与微调工具，以及开放路线与 Grok 商业产品之间是否保持连接。",
     business:
@@ -60,7 +60,7 @@ export const vendorHistoryEvents = [
     technical:
       "官方披露 Grok 3 使用 Colossus 集群训练，支持 1M 上下文；Think 版本通过强化学习学习回溯、验证和多路径求解，并可按任务投入更长推理时间。",
     industry:
-      "前沿模型竞争进一步收敛到预训练规模、推理时计算与工具使用三者协同，单一静态 benchmark 更难解释真实任务能力。",
+      "前沿模型的竞争开始同时考验预训练规模、推理时计算和工具使用，单一静态 benchmark 更难解释真实任务能力。",
     future: "观察 API 的稳定性、DeepSearch 引用质量、工具调用成功率和不同推理预算下的成本曲线。",
     business:
       "采购方需要按真实任务比较 Grok 3 的成功率、延迟和搜索证据质量，而不是直接采用厂商发布时的峰值分数。",
@@ -126,7 +126,7 @@ export const vendorHistoryEvents = [
     title: "GLM-4.5 开源：智谱把推理、代码与 Agent 合并为统一模型",
     fact: "智谱于 2025 年 7 月发布 GLM-4.5 与 GLM-4.5-Air，并同时提供 API 和开放权重。",
     summary:
-      "GLM-4.5 标志智谱从通用对话模型转向面向 Agent 的统一底座，并以开放权重、国内外 API 与主流编码 Agent 兼容扩大开发者覆盖。",
+      "GLM-4.5 标志智谱从通用对话模型转向面向 Agent 的统一基础模型，并通过开放权重、国内外 API 和主流编码 Agent 兼容扩大开发者覆盖。",
     technical:
       "GLM-4.5 为 355B 总参数、32B 激活参数的 MoE，Air 版本为 106B/12B；两者支持 thinking 与 non-thinking 模式、128K 上下文和原生函数调用。",
     industry:
@@ -200,7 +200,7 @@ export const vendorHistoryEvents = [
     technical:
       "GLM-4.6V 在 128K 上下文中加入原生多模态 Function Calling，支持把图片、截图和文档页作为工具输入，并解释工具返回的视觉结果。",
     industry:
-      "视觉 Agent 的竞争焦点从识别准确率转向界面理解、动作规划和工具闭环，轻量版本也扩大了本地部署和低延迟场景。",
+      "视觉 Agent 的竞争焦点从识别准确率转向界面理解、动作规划和工具执行结果，轻量版本也扩大了本地部署和低延迟场景。",
     future: "观察 GUI 操作成功率、视觉提示注入防护、文档长链任务和 9B 版本在端侧的真实吞吐。",
     business: "适合先在可回滚的文档和后台流程试点，涉及支付、删除或外部发布时仍需明确人工确认。",
     category: "multimodal",
@@ -241,7 +241,7 @@ export const vendorHistoryEvents = [
     title: "xAI 完成 200 亿美元 Series E：模型竞争继续绑定资本与算力规模",
     fact: "xAI 于 2026 年 1 月宣布完成 200 亿美元 Series E，并披露 Colossus I 与 II 的扩张进展。",
     summary:
-      "巨额融资把 Grok 的模型路线与数据中心、GPU 供应和企业扩张绑定在一起，xAI 的竞争不只是模型发布速度，也是持续承担训练和推理资本开支的能力。",
+      "巨额融资把 Grok 的模型路线与数据中心、GPU 供应和企业扩张绑定在一起。xAI 既要保持模型发布速度，也要持续承担训练和推理的资本开支。",
     technical:
       "官方将 Grok 4 系列的大规模强化学习与 Colossus 基础设施列为核心进展，并称集群规模达到超过一百万个 H100 等效 GPU。",
     industry:
@@ -271,7 +271,7 @@ export const vendorHistoryEvents = [
       "中国开放模型在规模、许可与 Agent 工程目标上继续逼近全球前沿，同时推动国产芯片、推理框架和编码工具适配。",
     future: "观察真实长时任务的完成率、MIT 生态采用、非 NVIDIA 部署效率和 API 高并发稳定性。",
     business:
-      "企业应优先选择能形成测试—修复—交付闭环的工程任务做验证，并按小时级成功结果而非代码生成量评估价值。",
+      "企业应优先选择能完整覆盖测试、修复和交付的工程任务，并按小时级成功结果评估价值，代码生成量只能作为辅助指标。",
     category: "model-release",
     company: "智谱 AI / Z.ai",
     keywords: ["智谱", "Zhipu", "Z.ai", "GLM", "GLM-5", "Agentic Engineering"],
@@ -310,7 +310,7 @@ export const vendorHistoryEvents = [
     title: "GLM-5.1 发布：智谱把 Agent 目标推进到 8 小时持续执行",
     fact: "智谱官方 Release Notes 于 2026 年 4 月记录 GLM-5.1 发布，定位为长时任务旗舰模型。",
     summary:
-      "智谱开始用持续执行时长、闭环优化和工程交付定义模型升级，而不只是比较单轮答案；8 小时目标也把状态漂移、错误累积和安全边界推到产品核心。",
+      "智谱开始用持续执行时长、反复优化和工程交付衡量模型升级。8 小时目标也让状态漂移、错误累积和安全边界成为产品重点。",
     technical:
       "官方文档列出 200K 上下文、128K 最大输出、函数调用、MCP 与多档思考模式，并称模型可在单任务上持续执行最长 8 小时。",
     industry:
@@ -403,11 +403,11 @@ export const vendorHistoryEvents = [
     title: "Grok 4.5 发布：xAI 将代码、Agent 与 Office 工作合并为旗舰模型",
     fact: "xAI 于 2026 年 7 月发布 Grok 4.5，并通过 API、Grok Build、Cursor 与 Office 插件提供使用。",
     summary:
-      "Grok 4.5 的变化不只是模型分数，而是同一模型同时进入编码 Agent、开发者 API、办公文档和第三方工具，xAI 开始构建跨工作入口的统一执行层。",
+      "Grok 4.5 同时进入编码 Agent、开发者 API、办公文档和第三方工具。相比单项模型分数，这种跨入口部署更能说明 xAI 正在建设统一执行层。",
     technical:
       "官方披露模型面向软件工程和长时 Agent rollout 训练，提供可配置推理强度、500K 上下文，并强调 token 效率与快速推理服务。",
     industry:
-      "前沿模型公司把训练、模型、Agent runtime 与分发产品进一步一体化，应用层需要证明专有流程、数据和交付闭环。",
+      "前沿模型公司正把训练、模型、Agent runtime 和分发产品进一步整合，应用层需要证明其专有流程、数据和完整交付能力。",
     future:
       "观察独立编码评测、Office 任务真实成功率、EU 可用性、API 稳定性和每个完成任务的总成本。",
     business:

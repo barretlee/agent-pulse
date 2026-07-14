@@ -5,6 +5,12 @@ on:
     # Monday 08:17 Asia/Shanghai, after the weekly refresh and Pages deployment.
     - cron: "17 0 * * 1"
   workflow_dispatch:
+    inputs:
+      allow_notification:
+        description: Allow this manual run to update the monitor incident after all gates pass
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   actions: read
@@ -79,15 +85,59 @@ jobs:
           echo "status=$status" >> "$GITHUB_OUTPUT"
           jq . "$RUNNER_TEMP/monitor.json"
 
+      - name: Read the current monitor incident
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh issue list --state open --label 'monitor:critical' --limit 1 --json number,updatedAt,body,url > "$RUNNER_TEMP/monitor-incident.json"
+          jq -e 'type == "array"' "$RUNNER_TEMP/monitor-incident.json" >/dev/null
+
+      - name: Decide whether this run deserves a notification
+        id: decision
+        env:
+          ALLOW_NOTIFICATION: ${{ inputs.allow_notification || 'false' }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          DEEPSEEK_MODEL: deepseek-v4-flash
+        shell: bash
+        run: |
+          set -euo pipefail
+          args=(--report "$RUNNER_TEMP/monitor.json" --incident "$RUNNER_TEMP/monitor-incident.json")
+          if [[ -n "${DEEPSEEK_API_KEY:-}" ]]; then
+            args+=(--ai)
+          fi
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" && "$ALLOW_NOTIFICATION" != "true" ]]; then
+            args+=(--dry-run)
+          fi
+          npm run --silent monitor:decide -- "${args[@]}" > "$RUNNER_TEMP/monitor-decision.json"
+          jq -e '.decision and (.notify | type == "boolean") and .fingerprint and .reasonCode' "$RUNNER_TEMP/monitor-decision.json" >/dev/null
+          echo "notify=$(jq -r '.notify' "$RUNNER_TEMP/monitor-decision.json")" >> "$GITHUB_OUTPUT"
+          echo "fingerprint=$(jq -r '.fingerprint' "$RUNNER_TEMP/monitor-decision.json")" >> "$GITHUB_OUTPUT"
+          jq . "$RUNNER_TEMP/monitor-decision.json"
+          {
+            echo '### Monitor alert decision'
+            echo
+            echo "- Decision: $(jq -r '.decision' "$RUNNER_TEMP/monitor-decision.json")"
+            echo "- Notification: $(jq -r '.notify' "$RUNNER_TEMP/monitor-decision.json")"
+            echo "- Source: $(jq -r '.decisionSource' "$RUNNER_TEMP/monitor-decision.json")"
+            echo "- Reason: $(jq -r '.reasonCode' "$RUNNER_TEMP/monitor-decision.json")"
+            echo "- Fingerprint: $(jq -r '.fingerprint' "$RUNNER_TEMP/monitor-decision.json")"
+            echo "- Rationale: $(jq -r '.rationale | gsub("[\\r\\n]"; " ")' "$RUNNER_TEMP/monitor-decision.json")"
+          } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Upload monitor evidence
+        if: always()
         uses: actions/upload-artifact@v7
         with:
           name: monitor-${{ github.run_id }}
-          path: ${{ runner.temp }}/monitor.json
+          path: |
+            ${{ runner.temp }}/monitor.json
+            ${{ runner.temp }}/monitor-decision.json
           retention-days: 7
 
       - name: Update the single monitor incident
-        if: steps.monitor.outputs.status == 'critical'
+        if: steps.decision.outputs.notify == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
@@ -95,23 +145,28 @@ jobs:
           set -euo pipefail
           report="$RUNNER_TEMP/monitor.json"
           body="$RUNNER_TEMP/monitor-issue.md"
+          decision="$RUNNER_TEMP/monitor-decision.json"
           {
-            echo '<!-- agent-pulse-monitor:v1 -->'
+            echo "<!-- agent-pulse-monitor:v2 fingerprint=$(jq -r '.fingerprint' "$decision") -->"
             echo '# Agent Pulse 自动监控告警'
             echo
             echo "- 时间：$(jq -r '.timestamp' "$report")"
             echo "- 系统分：$(jq -r '.systemScore' "$report") / 100"
             echo "- 状态：$(jq -r '.status' "$report")"
+            echo "- 告警门禁：$(jq -r '.decisionSource' "$decision") · $(jq -r '.reasonCode' "$decision")"
             echo
             echo '## 问题'
             jq -r '.issues[]? | "- " + .' "$report"
             echo
+            echo '## 本次告警判断'
+            echo "$(jq -r '.rationale' "$decision")"
+            echo
             echo '## 建议动作'
-            jq -r '.recommendations[]? | "- " + .' "$report"
+            echo "- $(jq -r '.suggestedAction' "$decision")"
             echo
             echo "[查看本次 Actions 运行](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
           } > "$body"
-          gh label create "monitor:critical" --color d73a4a --description "Automated critical monitor incident" --force
+          gh label create "monitor:critical" --color d73a4a --description "AI-gated critical monitor incident" --force
           issue="$(gh issue list --state open --label 'monitor:critical' --limit 1 --json number --jq '.[0].number // empty')"
           if [[ -n "$issue" ]]; then
             gh issue edit "$issue" --body-file "$body"

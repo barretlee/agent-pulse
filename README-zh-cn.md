@@ -8,7 +8,7 @@
 
 <h1 align="center">Agent Pulse</h1>
 
-> **Agent Pulse 是一个面向投资人、CEO、创业者和技术负责人的 AI 行业认知与决策系统：它把分散的官方发布、论文、资本动作、政策变化与社区信号，收敛为可验证的关键事件、趋势判断和下一步行动。**
+> **给需要做判断的人，而不只是追新闻的人。** Agent Pulse 把官方发布、论文、资本动作、政策变化与公开传播信号，收敛为可追溯的 Event、持续演进的行业判断，以及明确的下一验证信号。
 
 <p align="center">
   <a href="https://barretlee.github.io/agent-pulse/"><strong>打开 Agent Pulse</strong></a>
@@ -25,32 +25,30 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/code%20license-MIT-2dd4a8?style=flat-square" alt="MIT 代码许可证" /></a>
 </p>
 
-## 为什么值得 Star
+## 从信号到判断
 
-AI 行业从来不缺新闻、链接和观点。真正稀缺的是：快速知道什么发生了实质变化，理解它为什么重要，把它放进行业长期演进中，并形成自己的下一步判断。
+AI 行业从来不缺新闻、链接和观点。对投资负责人、CEO、创业者、业务负责人和技术负责人来说，真正稀缺的是可靠回答三个问题：
 
-Agent Pulse 希望解决的正是这件事：
+1. **什么发生了实质变化？** 不是每次发布都值得更新判断。
+2. **为什么重要？** 事实只有连接到长期行业变化和受影响角色，才具备决策价值。
+3. **什么会改变当前判断？** 每个可持续的判断都需要下一信号、反向信号或失效条件。
 
-- **关键变化：**只有热点、重要产品更新或技术迭代改变证据时，才更新判断；
-- **证据脉络：**连接一手来源、背景、受影响角色与反向信号；
-- **每周复盘：**汇总什么发生了变化、哪些判断保持不变、下一步观察什么；
-- **持续监测：**跟踪模型研究、Agent、产品商业、基础设施、资本与全球创新，但不为更新频率制造内容。
+Agent Pulse 围绕这个闭环工作：广泛观察、选择性发布、保留证据脉络，并且只在证据变化时更新判断。
 
-如果你也希望有一个开放、证据优先的 AI 行业认知产品，欢迎 [Star Agent Pulse](https://github.com/barretlee/agent-pulse)。Star 会帮助更多投资人、创业者和技术负责人发现它，也是支持公开版本持续维护最直接的信号。
+如果你也希望这样的公开情报基础设施持续存在，欢迎 [Star Agent Pulse](https://github.com/barretlee/agent-pulse)。Star 会帮助更多决策者和建设者发现它，也是支持开放版本持续维护最直接的信号。
 
-## 你能获得什么
+## 直接体验产品
 
-| 产品体验 | 它帮助你回答的问题 |
-| --- | --- |
-| **关键变化** | 什么新证据足以更新当前判断？ |
-| **战略主线** | 这是一次孤立发布，还是行业趋势的延续或转折？ |
-| **证据时间轴** | 事情最初如何出现，后来发生了什么，哪些说法已被验证？ |
-| **来源动态** | 411 个信源在形成 Event 之前，正在发布和积累哪些观察？ |
-| **研究前沿** | 哪些论文正在改变能力、评测、成本或产品方向？ |
-| **全球创新版图** | 不同地区与开放生态各自创造了什么，影响如何扩散？ |
-| **星探机会** | 现在值得验证什么产品、创业、内容或组织内部实验？ |
+| 产品界面 | 它帮助你回答的问题 | 当前边界 |
+| --- | --- | --- |
+| [**关键变化**](https://barretlee.github.io/agent-pulse/) | 什么新证据足以重新审视当前判断？ | 公开判断绑定证据，按事件变化而不是内容配额更新。 |
+| [**六个趋势视角**](https://barretlee.github.io/agent-pulse/lines/) | 这是一次孤立发布，还是能力、产品、基础设施、资本或全球格局变化的一部分？ | 各视角共享 Event 证据，不复制事实。 |
+| [**证据时间轴**](https://barretlee.github.io/agent-pulse/timeline/) | 事情最初如何出现，后来发生了什么，哪些一手来源支持它？ | 每个已公开 Event 都回链公开证据。 |
+| [**来源动态**](https://barretlee.github.io/agent-pulse/signals/) | 目录信源在收敛为 Event 之前，正在发布哪些信号？ | 这里只是 allowlist 观察层，不等于已核验事实。 |
+| [**覆盖与来源**](https://barretlee.github.io/agent-pulse/sources/) | 哪些领域覆盖较强、较弱、已激活、隔离观察或受限？ | 目录收录、有效观测和生产晋级分开表达。 |
+| [**星探精灵**](https://barretlee.github.io/agent-pulse/scout/) | 哪些产品、研究、内容或组织实验可能值得验证？ | Scout 仍是 experimental，只输出证据型假设，不输出事实或投资结论。 |
 
-[立即体验 Agent Pulse →](https://barretlee.github.io/agent-pulse/)
+[从最新关键变化开始 →](https://barretlee.github.io/agent-pulse/)
 
 ## 它不是另一个新闻聚合器
 
@@ -77,21 +75,21 @@ Agent Pulse 希望解决的正是这件事：
 
 ## 真实运行，也诚实展示边界
 
-这个仓库不是产品 Mockup。它包含线上产品真实使用的信源目录、采集器、证据模型、自动质量门禁、静态渲染、信源健康自动化和 GitHub Pages 发布链路。
+这个仓库不是产品 Mockup。它包含线上产品真实使用的信源目录、采集器、证据模型、自动质量门禁、静态渲染、信源健康自动化和 GitHub Pages 发布链路；同时刻意区分四种状态：**已收录、已观测、已激活、已发布**。
 
 GitHub Actions 每天刷新一次公开数据并重新部署静态站；来源审计、健康监控和质量守卫保持周更。`weekly-brief` Issue 只在周日或显式手动触发、且本周至少有一个公开 Event 通过门禁时创建或更新，因此每日保鲜不会制造每日或空白 Issue。
 
-以下验证快照采集于 **2026-07-13 16:33 UTC**：
+仓库证据核验于 **2026-07-14**。下表信源健康数据来自 **2026-07-13 16:59 UTC** 完成的全量审计，内容数量来自版本化仓库快照。
 
 | 指标 | 验证状态 |
 | --- | ---: |
 | 当前目录信源 | 411 |
 | 该次全量审计覆盖信源 | 411 |
-| 该次全量审计 healthy | 261 |
-| 隔离观察信源 | 192 |
-| 生产信源 | 5 |
+| healthy / degraded / failed / skipped | 259 / 28 / 71 / 53 |
+| 可访问 endpoint / 实际返回内容 | 397 / 270 |
+| active 生产信源 | 5 |
 | 已公开的证据型事件 | 109 |
-| 仓库快照中的规范化一手信号 | 4,386 |
+| 仓库快照中的规范化 Signal | 4,417 |
 
 完整数据可以查看机器生成的[信源健康报告](data/reports/source-health.json)、[数据源与评分原则](docs/SOURCES.md)和[能力图谱](docs/CAPABILITIES.md)。
 
@@ -143,6 +141,7 @@ npm run dev
 
 ```bash
 npm run collect               # 采集、去重、聚类与评分
+npm run ai:enrich             # 显式启用后收敛符合条件的 review Event
 npm run sources:audit         # 非破坏性全量信源审计
 npm run weekly:issue          # 渲染当前公开周报
 npm run ops:reconcile         # 协调信源健康与来源雷达状态
@@ -152,6 +151,8 @@ npm run check                 # lint、typecheck、测试与静态导出
 ```
 
 本地开发可以不设置 `ADMIN_TOKEN`。所有非开发环境都必须使用高强度 token，并把 Control Room 放在私有访问控制之后。
+
+AI 辅助 Event 收敛和周报草拟仍是 **experimental，本地默认关闭**。只把 `DEEPSEEK_API_KEY` 放入已忽略的本地 `.env` 或 GitHub Actions Secret，并通过 `AI_ENRICHMENT_ENABLED=true` 显式启用；`.env.example` 不应出现真实凭据。模型只接收裁剪后的规范化 Evidence 或公开静态 DTO，Schema、证据、readiness 与发布门禁仍由确定性程序执行。
 
 ## 参与贡献
 

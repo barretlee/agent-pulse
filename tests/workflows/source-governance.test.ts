@@ -35,6 +35,8 @@ describe("GitHub source governance workflows", () => {
     expect(refresh).not.toContain("git push --force");
     expect(audit).toContain("npm run observe:sources -- --confirm");
     expect(audit).toContain("gh workflow run pages.yml --ref main");
+    expect(audit).toContain("public:validate");
+    expect(refresh).toContain("public:validate");
     expect(audit).toContain("agent-pulse-source-health-summary:v1");
     expect(audit).toContain("gh issue edit");
     expect(audit).toContain("gh issue create");
@@ -72,6 +74,7 @@ describe("GitHub source governance workflows", () => {
       "npm run ops:reconcile",
       "npm run observe:sources -- --confirm",
       "npm run activate:auto",
+      "npm run --silent research:impact -- --skip-seed",
       "npm run --silent ai:enrich -- --require-success",
       "npm run scout:generate -- 12",
       "npm run auto:publish",
@@ -87,6 +90,9 @@ describe("GitHub source governance workflows", () => {
     expect(refresh).toContain("Dispatch Pages deployment after the daily refresh");
     expect(refresh).toContain(["DEEPSEEK_API_KEY: $", "{{ secrets.DEEPSEEK_API_KEY }}"].join(""));
     expect(refresh.indexOf("npm run collect")).toBeLessThan(
+      refresh.indexOf("npm run --silent research:impact -- --skip-seed"),
+    );
+    expect(refresh.indexOf("npm run --silent research:impact -- --skip-seed")).toBeLessThan(
       refresh.indexOf("npm run --silent ai:enrich -- --require-success"),
     );
     expect(refresh.indexOf("npm run --silent ai:enrich -- --require-success")).toBeLessThan(
@@ -131,6 +137,7 @@ describe("GitHub source governance workflows", () => {
     );
     expect(refresh).toContain("if: always()");
     expect(refresh).toContain("if-no-files-found: ignore");
+    expect(refresh).toContain("data/reports/research-impact.json");
     expect(refresh).not.toContain(
       "steps.commit.outputs.changed == 'true' && steps.public.outputs.changed == 'true'",
     );
@@ -155,10 +162,17 @@ describe("GitHub source governance workflows", () => {
       "run: npm run export",
       "name: Build",
       "run: npm run build",
+      "name: Validate public content across every main tab",
+      "run: npm run --silent public:validate",
     ]) {
       expect(ci).toContain(step);
     }
     expect(ci).not.toContain("run: npm run check");
+    const pages = await workflow("pages.yml");
+    expect(pages).toContain("public:validate");
+    expect(pages.indexOf("public:validate")).toBeLessThan(
+      pages.indexOf("actions/upload-pages-artifact"),
+    );
   });
 
   it("runs weekly guards and dispatches one cooled-down refresh when quality is below 60", async () => {
@@ -169,6 +183,11 @@ describe("GitHub source governance workflows", () => {
     expect(guard).toContain('cron: "47 0 * * 1"');
     expect(monitor).toContain('cron: "17 0 * * 1"');
     expect(monitor).toContain("9 * 24 * 60 * 60 * 1000");
+    expect(monitor).toContain("allow_notification:");
+    expect(monitor).toContain("monitor:decide");
+    expect(monitor).toContain("monitor-decision.json");
+    expect(monitor).toContain("steps.decision.outputs.notify == 'true'");
+    expect(monitor).toContain("agent-pulse-monitor:v2 fingerprint=");
     expect(guard).toContain("QUALITY_FLOOR: 60");
     expect(guard).toContain("REFRESH_COOLDOWN_HOURS: 120");
     expect(guard).toContain("gh run list --workflow data-refresh.yml");

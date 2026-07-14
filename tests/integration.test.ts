@@ -1,7 +1,9 @@
 import { mkdtemp, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { afterEach, describe, expect, it } from "vitest";
+import { gzipSync } from "node:zlib";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { capitalHistoryEvents } from "../src/catalog/capital-history-2023-2025.js";
 import { earlyHistoryEvents } from "../src/catalog/early-history.js";
 import { ecosystemHistoryEvents } from "../src/catalog/ecosystem-history-2026-07.js";
 import { historicalEvents } from "../src/catalog/history.js";
@@ -14,6 +16,7 @@ import { migrateToLatest } from "../src/db/migrate.js";
 import { Repository } from "../src/db/repository.js";
 import { seedDatabase } from "../src/db/seed.js";
 import { exportStaticSite } from "../src/pipeline/export.js";
+import { validatePublicSite } from "../src/pipeline/public-site-integrity.js";
 import { buildApp } from "../src/server/app.js";
 
 const databases: ReturnType<typeof createDatabase>[] = [];
@@ -98,19 +101,29 @@ describe("SQLite application", () => {
         .where("external_id", "=", "deepseek-v3-efficient-frontier")
         .executeTakeFirstOrThrow(),
     ).toEqual({ title: "DeepSeek-V3 开源：训练效率成为全球模型竞争的新变量" });
+    const perEventEvidence = vi.spyOn(Repository.prototype, "toPublicEvent");
+    const perEventTracks = vi.spyOn(Repository.prototype, "eventTracks");
+    const perEventActors = vi.spyOn(Repository.prototype, "eventActors");
+    const batchedRelations = vi.spyOn(Repository.prototype, "publicEventRelations");
     const result = await exportStaticSite(db, config);
+    expect(perEventEvidence).not.toHaveBeenCalled();
+    expect(perEventTracks).not.toHaveBeenCalled();
+    expect(perEventActors).not.toHaveBeenCalled();
+    expect(batchedRelations).toHaveBeenCalledTimes(1);
+    vi.restoreAllMocks();
     expect(result).toMatchObject({
       events: earlyHistoryEvents.length + historicalEvents.length + recentDensityEvents.length + 6,
       tracks: 10,
       sources: sourceCatalog.length,
       signals: expect.any(Number),
-      version: "0.10.0",
+      version: "0.11.0",
     });
     const timeline = await readFile(join(config.distDir, "data/timeline.json"), "utf8");
     expect(timeline).not.toContain("ADMIN_TOKEN");
     expect(timeline).not.toContain("/Users/");
     expect(timeline).not.toContain('\n  "schemaVersion"');
-    expect(Buffer.byteLength(timeline)).toBeLessThan(350_000);
+    expect(Buffer.byteLength(timeline)).toBeLessThan(1_300_000);
+    expect(gzipSync(timeline).byteLength).toBeLessThan(300_000);
     expect(JSON.parse(timeline).events[0]).not.toHaveProperty("manual_override");
     const scout = JSON.parse(await readFile(join(config.distDir, "data/scout.json"), "utf8"));
     expect(scout.insights).toHaveLength(1);
@@ -119,8 +132,9 @@ describe("SQLite application", () => {
     const product = JSON.parse(await readFile(join(config.distDir, "data/product.json"), "utf8"));
     expect(product.roadmap).toHaveLength(5);
     expect(product.releases[0]).toMatchObject({ version: "unreleased", status: "unreleased" });
-    expect(product.releases[1]).toMatchObject({ version: "0.10.0", status: "released" });
-    expect(product.releases[2]).toMatchObject({ version: "0.9.0", status: "released" });
+    expect(product.releases[1]).toMatchObject({ version: "0.11.0", status: "released" });
+    expect(product.releases[2]).toMatchObject({ version: "0.10.0", status: "released" });
+    expect(product.releases[3]).toMatchObject({ version: "0.9.0", status: "released" });
     expect(product.sourceCoverage.total).toBeGreaterThanOrEqual(100);
     expect(product.sourceCoverage.observing).toBe(0);
     expect(product.evaluation).toMatchObject({
@@ -178,7 +192,7 @@ describe("SQLite application", () => {
       },
     );
     const staticPages = [
-      ["index.html", "重要证据驱动的 AI 行业判断 · Agent Pulse"],
+      ["index.html", "AI 行业关键变化与证据 · Agent Pulse"],
       ["lines/index.html", "趋势判断 · Agent Pulse"],
       ["industry-evolution/index.html", "行业演化 · Agent Pulse"],
       ["lines/tech-evolution/index.html", "模型能力与研究 · Agent Pulse"],
@@ -198,6 +212,7 @@ describe("SQLite application", () => {
       expect(html, path).toContain(`<title>${title}</title>`);
       expect(html, path).toContain('rel="canonical"');
       expect(html, path).toContain("data-event-drawer");
+      expect(html, path).toContain("data-back-to-top");
       expect(html, path).not.toContain("__PREFIX__");
       expect(html, path).not.toContain("/Users/");
     }
@@ -205,6 +220,7 @@ describe("SQLite application", () => {
     expect(englishActors).toContain('href="../../assets/icons.svg#sun"');
     expect(englishActors).not.toContain('href="../assets/icons.svg#sun"');
     expect(englishActors).toContain('data-timeline-src="../../data/timeline.json"');
+    expect(englishActors).toContain('aria-label="Back to top"');
     const changelog = await readFile(join(config.distDir, "changelog/index.html"), "utf8");
     expect(changelog).toContain('id="v0-7-0"');
     expect(changelog).toContain('id="v0-10-0"');
@@ -218,7 +234,7 @@ describe("SQLite application", () => {
     expect(englishChangelog).toContain("LATEST RELEASE");
     const css = await readFile(join(config.distDir, "assets/app.css"), "utf8");
     const home = await readFile(join(config.distDir, "index.html"), "utf8");
-    expect(Buffer.byteLength(css)).toBeLessThan(90_000);
+    expect(Buffer.byteLength(css)).toBeLessThan(98_000);
     expect(home.indexOf('src="./assets/core.js"')).toBeLessThan(home.indexOf("</head>"));
     expect(home.match(/src="\.\/assets\/core\.js"/g)).toHaveLength(1);
     expect(home).toContain("GPT-5.6");
@@ -239,15 +255,20 @@ describe("SQLite application", () => {
     expect(home).not.toContain("data-random-signal-list");
     expect(home).toContain("data-random-trend-next");
     expect(home).toContain("换一个");
-    expect(home).toContain("下一信号");
+    expect(home).toContain("接下来观察");
     expect(home).toContain("独立信源");
     expect(home).not.toContain('class="signal-object"');
     expect(home).not.toContain('class="signal-orb"');
     expect(home).not.toContain('class="home-hero-path"');
     expect(home).not.toContain('class="signal-wave"');
     expect(home).toContain('class="footer-links"');
+    expect(home).toContain('class="footer-contacts"');
+    expect(home).toContain('href="mailto:barret.china@gmail.com"');
+    expect(home).toContain('class="footer-snapshot"');
+    expect(home).toContain("/commits/main/");
     expect(home).toContain('class="shell footer-meta"');
     expect(home).toContain('class="footer-lang"');
+    expect(home).toContain('aria-label="回到顶部"');
     expect(home).toContain('class="footer-lang" href="./en/" aria-label="语言">EN</a>');
     expect(home).not.toContain("EN · English");
     expect(home.match(/<header class="topbar">[\s\S]*?<\/header>/)?.[0]).not.toContain(
@@ -267,9 +288,7 @@ describe("SQLite application", () => {
     expect(home).toContain("data-github-star-button");
     expect(home).toContain("data-github-star-count");
     expect(home).toContain('data-event-link="blind-spots-bench-vision-language"');
-    expect(home.indexOf("最新趋势判断")).toBeLessThan(
-      home.indexOf("别追每条新闻。<em>看清变化的方向。</em>"),
-    );
+    expect(home.indexOf("最新趋势判断")).toBeGreaterThan(home.indexOf("看清 AI 行业的关键变化"));
     expect(home).not.toContain("形成判断");
     expect(home).not.toContain("继续深入");
     expect(home).not.toContain('href="./product/"');
@@ -279,10 +298,19 @@ describe("SQLite application", () => {
     expect(home).not.toContain(">证据时间轴<");
     expect(home).not.toContain(">决策工具<");
     const timelinePage = await readFile(join(config.distDir, "timeline/index.html"), "utf8");
+    const coreSource = await readFile(join(config.rootDir, "web/public/assets/core.js"), "utf8");
     const coreScript = await readFile(join(config.distDir, "assets/core.js"), "utf8");
+    const timelineScript = await readFile(join(config.distDir, "assets/timeline.js"), "utf8");
     const siteStyles = await readFile(join(config.distDir, "assets/app.css"), "utf8");
     expect(Buffer.byteLength(coreScript)).toBeLessThan(28_000);
-    expect(coreScript).toMatch(/inline\s*:\s*["']center/);
+    expect(Buffer.byteLength(timelineScript)).toBeLessThan(8_000);
+    expect(coreScript).toContain('import("./timeline.js")');
+    expect(timelineScript).toContain("scrollTo");
+    expect(timelineScript).toContain('"smooth"');
+    expect(timelineScript).toContain("data-timeline-month-template");
+    expect(timelineScript).toContain("data-research-group");
+    expect(timelineScript).toContain("jumpToMonth");
+    expect(timelineScript).toContain('params.set("date"');
     expect(coreScript).toContain("setupGithubStarCount");
     expect(coreScript).toContain('cache:"no-store"');
     expect(coreScript).toContain("githubStarsSource=source");
@@ -290,15 +318,31 @@ describe("SQLite application", () => {
     expect(coreScript).not.toContain('count.textContent?.trim()!=="—")return');
     expect(coreScript).toContain("setupHomeDynamics");
     expect(coreScript).toContain("setupSignalBrowser");
+    expect(coreScript).toContain("setupBackToTop");
+    expect(coreScript).toContain("setupMobileListPagination");
+    expect(coreScript).toContain('matchMedia("(max-width: 820px)")');
+    expect(coreScript).toContain("requestAnimationFrame");
+    expect(coreScript).toContain("window.scrollTo");
     expect(coreScript).toContain("data-no-scroll-reveal");
     expect(coreScript).toContain("navigator.vibrate");
     expect(coreScript).toContain("trend-switcher");
+    expect(coreScript).toContain("high-confidence");
+    expect(coreScript).toContain("research");
     expect(coreScript).toContain("requestIdleCallback");
     expect(coreScript).toContain("stockLoaded");
     expect(coreScript).toContain("api.github.com/repos/");
+    expect(coreScript).toContain(".scrollTop=0");
+    expect(coreScript).toContain('"Official source"');
+    expect(coreScript).not.toContain("Single official source");
+    expect(coreSource).toMatch(
+      /if \(evidence\.length > 1\) \{[\s\S]*?drawer-story[\s\S]*?buildDrawerJourney/,
+    );
     expect(siteStyles).not.toContain("#17191f");
     expect(siteStyles).toMatch(/\[data-theme=(?:"paper"|paper)\] \.site-footer/);
     expect(siteStyles).toMatch(/\.tool-tabs\{[^}]*overflow-x:auto;[^}]*overflow-y:hidden/);
+    expect(siteStyles).toContain("overscroll-behavior-y:contain");
+    expect(siteStyles).toContain(".back-to-top");
+    expect(siteStyles).toContain("[data-mobile-list-extra]");
     expect(timelinePage).toContain('class="hero-motion hero-motion-timeline"');
     expect(timelinePage).toContain("事件脉络");
     expect(timelinePage).toContain("最近进展");
@@ -307,18 +351,33 @@ describe("SQLite application", () => {
     expect(timelinePage).toContain('data-timeline-year="2026"');
     expect(timelinePage).toContain('data-timeline-year="2022"');
     expect(timelinePage).toContain("data-timeline-current-month");
+    expect(timelinePage).toContain("data-timeline-year-select");
+    expect(timelinePage).toContain("data-timeline-month-select");
     expect(timelinePage).toContain('data-timeline-label="7月"');
     expect(timelinePage).toContain('data-event="chatgpt-research-preview"');
     expect(timelinePage).toContain('data-filter-track="official"');
     expect(timelinePage).toContain('data-filter-track="research"');
     expect(timelinePage).toContain('data-research="true"');
     expect(timelinePage).not.toMatch(/data-category="(?:research|paper)" data-research="false"/);
-    expect(timelinePage).toContain('data-research-day="2026-07-09"');
-    expect(timelinePage).toContain("当天收录 6 篇研究");
+    const researchGroups = [...timelinePage.matchAll(/本月精选 (\d+) 篇高影响研究/g)];
+    expect(researchGroups.length).toBeGreaterThan(0);
+    for (const group of researchGroups) {
+      expect(Number(group[1])).toBeGreaterThan(0);
+      expect(Number(group[1])).toBeLessThanOrEqual(6);
+    }
+    expect(timelinePage).toMatch(/本月精选 \d+ 篇高影响研究/);
+    expect(timelinePage).not.toMatch(/research-month-group[^>]*data-month-extra/);
+    expect(timelinePage).not.toContain("data-research-day");
+    expect(timelinePage).not.toContain("同日论文组");
+    expect(timelinePage).toContain("data-timeline-month-toggle");
+    expect(timelinePage).toContain('data-month-extra="true"');
     expect(timelinePage).not.toContain("近三月密度");
     expect(timelinePage).not.toContain("论文批次状态");
     expect(timelinePage).toContain('data-recent="true"');
     for (const event of [...vendorHistoryEvents, ...ecosystemHistoryEvents]) {
+      expect(timelinePage, event.slug).toContain(`data-event="${event.slug}"`);
+    }
+    for (const event of capitalHistoryEvents) {
       expect(timelinePage, event.slug).toContain(`data-event="${event.slug}"`);
     }
     const timelineSearchIndex = [...timelinePage.matchAll(/data-search="([^"]*)"/g)]
@@ -356,7 +415,10 @@ describe("SQLite application", () => {
       "overthinking-secret-leakage-reasoning-models",
       "causalds-causal-data-science-agents",
     ]) {
-      expect(timelinePage).toContain(`data-event="${slug}"`);
+      expect(timelinePage).not.toContain(`data-event="${slug}"`);
+      expect(await readFile(join(config.distDir, `events/${slug}/index.html`), "utf8")).toContain(
+        "研究预印本",
+      );
     }
     const linesPage = await readFile(join(config.distDir, "lines/index.html"), "utf8");
     expect(linesPage).toContain('class="hero-motion hero-motion-lines"');
@@ -374,7 +436,7 @@ describe("SQLite application", () => {
     expect(linesPage).toContain('class="footer-subscriptions"');
     expect(linesPage).not.toContain('class="subscription-panel"');
     expect(linesPage).not.toContain("中国追赶");
-    expect(linesPage).not.toContain("理解框架");
+    expect(linesPage).not.toContain("<h2>理解框架</h2>");
     expect(linesPage).toContain('href="../industry-evolution/"');
     const evolutionPage = await readFile(
       join(config.distDir, "industry-evolution/index.html"),
@@ -407,7 +469,7 @@ describe("SQLite application", () => {
     expect(trendDetailPage).toContain("展开轨迹");
     expect(trendDetailPage).toContain('class="module-expand-toggle section-module-toggle"');
     expect(trendDetailPage).toContain("展开完整判断");
-    expect(trendDetailPage).toContain("展开阶段证据");
+    expect(trendDetailPage).toMatch(/查看全部 \d+ 条证据/);
     expect((trendDetailPage.match(/class="phase-sequence-index"/g) ?? []).length).toBeGreaterThan(
       8,
     );
@@ -420,7 +482,7 @@ describe("SQLite application", () => {
     expect(actionTabs).not.toContain("判断方法");
     const productPage = await readFile(join(config.distDir, "product/index.html"), "utf8");
     expect(productPage).toContain("核对事实");
-    expect(productPage).toContain("区分判断");
+    expect(productPage).toContain("标明内容性质");
     expect(productPage).toContain("持续校准");
     expect(productPage).not.toContain("STATE 1");
     const sourcesPage = await readFile(join(config.distDir, "sources/index.html"), "utf8");
@@ -429,7 +491,13 @@ describe("SQLite application", () => {
     expect(signalsPage).not.toContain("来源观察 ≠ 已核实事实");
     expect(signalsPage).toContain('class="hero-motion hero-motion-signals"');
     expect(signalsPage).toContain('class="signal-stream"');
+    expect(signalsPage).toContain('<a class="signal-observation-card');
+    expect(signalsPage).toContain('class="signal-tag category"');
+    expect(signalsPage).toContain('class="signal-source-name"');
+    expect(signalsPage).toContain('class="signal-source-action"');
+    expect(signalsPage).not.toContain('<article class="signal-observation-card"');
     expect(signalsPage).toContain("data-signal-browser");
+    expect(signalsPage).toContain('data-mobile-page-size="12"');
     expect(signalsPage).toContain("data-signals-src");
     expect(signalsPage).toContain('class="signal-region-control"');
     expect(signalsPage).toContain('data-signal-region aria-label="按地域筛选"');
@@ -442,6 +510,7 @@ describe("SQLite application", () => {
     expect(timelinePage).toContain("inert");
     expect(timelinePage).not.toContain("data-event-panel");
     expect(sourcesPage).toContain("覆盖与缺口");
+    expect(sourcesPage).toContain('data-mobile-limit="12"');
     for (const domain of ["Claude Code", "OpenAI / Codex", "Lovable", "MCP", "A2A"]) {
       expect(sourcesPage).toContain(domain);
     }
@@ -459,7 +528,7 @@ describe("SQLite application", () => {
       "utf8",
     );
     expect(researchEventPage).toContain("研究预印本：方法和结果尚待独立复现");
-    expect(researchEventPage).toContain("核心贡献不是再增加一个平均分");
+    expect(researchEventPage).toContain("它提供了一条难度轴");
     const vendorEventPage = await readFile(
       join(config.distDir, "events", "seed-2-general-agent-models", "index.html"),
       "utf8",
@@ -471,7 +540,18 @@ describe("SQLite application", () => {
     expect(github).toMatchObject({
       repositoryUrl: "https://github.com/barretlee/agent-pulse",
       stars: null,
-      latestRelease: "v0.10.0",
+      latestRelease: "v0.11.0",
+    });
+    const integrity = await validatePublicSite(config.distDir, "2026-07-14T00:00:00.000Z");
+    expect(integrity.issues).toEqual([]);
+    expect(integrity).toMatchObject({
+      ok: true,
+      counts: {
+        events: result.events,
+        signals: result.signals,
+        scout: result.scout,
+        sources: result.sources,
+      },
     });
   });
 
@@ -487,6 +567,14 @@ describe("SQLite application", () => {
     await seedDatabase(db);
     await exportStaticSite(db, config);
     const app = await buildApp(db, config);
+    const health = await app.inject({ method: "GET", url: "/api/health" });
+    expect(health.headers).toMatchObject({
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "DENY",
+      "referrer-policy": "strict-origin-when-cross-origin",
+      "permissions-policy": "camera=(), microphone=(), geolocation=()",
+    });
+    expect(health.headers["content-security-policy"]).toContain("default-src 'self'");
     const unauthorized = await app.inject({ method: "GET", url: "/api/admin/dashboard" });
     expect(unauthorized.statusCode).toBe(401);
     const authorized = await app.inject({

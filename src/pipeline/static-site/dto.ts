@@ -1,4 +1,5 @@
 import type { PublicEvent } from "../../domain/types.js";
+import type { ResearchImpactAssessment } from "../research-impact.js";
 
 export interface PublicTrack {
   slug: string;
@@ -34,6 +35,7 @@ export interface EventActor {
 export interface EnrichedEvent extends PublicEvent {
   tracks: EventTrack[];
   actors: EventActor[];
+  researchImpact?: ResearchImpactAssessment | null;
 }
 
 export interface PublicActor {

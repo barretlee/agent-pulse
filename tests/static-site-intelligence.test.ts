@@ -10,6 +10,7 @@ import type {
   EnrichedEvent,
   NarrativeStage,
   PublicSource,
+  StaticSiteModel,
 } from "../src/pipeline/static-site/dto.js";
 import {
   analyzeTechnologyCoverage,
@@ -18,13 +19,17 @@ import {
   evidenceForNarrativeStage,
   groupEventsByYearMonth,
   groupTimelineMonthItems,
+  isHighImpactTimelineResearch,
   isRecentEvent,
+  isTimelineResearchEvent,
   latestNarrativeStageDevelopmentAt,
   recentMonthlyDensity,
   recentResearchBatches,
   sortEventsByLatestDevelopment,
   summarizeSourcePortfolio,
+  timelineEventsForPresentation,
 } from "../src/pipeline/static-site/intelligence.js";
+import { renderTimeline } from "../src/pipeline/static-site/pages.js";
 
 describe("static-site intelligence consumption model", () => {
   it("sorts one event per card by its latest evidence update", () => {
@@ -98,37 +103,117 @@ describe("static-site intelligence consumption model", () => {
     expect(chronology[0]?.months[0]?.events.map((item) => item.slug)).toEqual(["july"]);
   });
 
-  it("aggregates four or more research events from the same day without losing events", () => {
-    const research = ["paper-1", "paper-2", "paper-3", "paper-4"].map((slug) => ({
-      ...event(slug, "2026-07-09T08:00:00Z", []),
-      category: "research",
-    }));
+  it("aggregates high-impact research from the whole month without losing events", () => {
+    const research = [
+      researchEvent("paper-1", "2026-07-01T08:00:00Z"),
+      researchEvent("paper-2", "2026-07-09T08:00:00Z"),
+      researchEvent("paper-3", "2026-07-21T08:00:00Z"),
+      researchEvent("paper-4", "2026-07-29T08:00:00Z"),
+    ];
     const product = event("product", "2026-07-09T07:00:00Z", []);
     const firstResearch = research[0];
     if (!firstResearch) throw new Error("research fixture missing");
-
     const items = groupTimelineMonthItems([firstResearch, product, ...research.slice(1)]);
 
     expect(items).toHaveLength(2);
-    expect(items[0]).toMatchObject({
-      kind: "research-day",
-      key: "2026-07-09",
+    expect(items[0]).toEqual({ kind: "event", event: product });
+    expect(items[1]).toMatchObject({
+      kind: "research-month",
+      key: "2026-07",
       events: expect.arrayContaining(research),
     });
-    expect(items[1]).toEqual({ kind: "event", event: product });
   });
 
-  it("keeps smaller research days as individual event cards", () => {
-    const research = ["paper-1", "paper-2", "paper-3"].map((slug) => ({
-      ...event(slug, "2026-07-09T08:00:00Z", []),
-      category: "paper",
+  it("caps a monthly research group at the 6 highest-weight papers", () => {
+    const research = Array.from({ length: 15 }, (_, index) => ({
+      ...researchEvent(`paper-${index}`, "2026-07-09T08:00:00Z"),
+      impactScore: 75 + index / 2,
     }));
+    const group = groupTimelineMonthItems(research).find((item) => item.kind === "research-month");
 
-    expect(groupTimelineMonthItems(research).map((item) => item.kind)).toEqual([
-      "event",
-      "event",
-      "event",
+    expect(group?.events).toHaveLength(6);
+    expect(group?.events[0]?.slug).toBe("paper-14");
+    expect(group?.events.map((item) => item.slug)).not.toContain("paper-0");
+  });
+
+  it("keeps low-impact papers out of the timeline without changing their event", () => {
+    const paper = {
+      ...researchEvent("thin-paper", "2026-07-09T08:00:00Z"),
+      impactScore: 55,
+      valueScore: 58,
+    };
+    const product = event("product", "2026-07-09T07:00:00Z", []);
+
+    expect(isTimelineResearchEvent(paper)).toBe(true);
+    expect(isHighImpactTimelineResearch(paper)).toBe(false);
+    expect(timelineEventsForPresentation([paper, product])).toEqual([product]);
+    expect(groupTimelineMonthItems([paper, product])).toEqual([{ kind: "event", event: product }]);
+  });
+
+  it("recognizes arXiv papers with specific categories and ranks confidence before language", () => {
+    const arxivPaper = researchEvent("arxiv-paper", "2026-07-09T08:00:00Z");
+    arxivPaper.category = "benchmark";
+    const chinese = { ...event("中文事件", "2026-07-09T08:00:00Z", []), title: "中文事件" };
+    const english = {
+      ...event("English event", "2026-07-09T08:00:00Z", []),
+      confidenceScore: 91,
+    };
+    const highImpactButLowerConfidence = {
+      ...english,
+      slug: "high-impact-lower-confidence",
+      impactScore: 100,
+      valueScore: 100,
+      confidenceScore: 90,
+      heatScore: 90,
+    };
+
+    expect(isTimelineResearchEvent(arxivPaper)).toBe(true);
+    const regularSlugs = (items: ReturnType<typeof groupTimelineMonthItems>) =>
+      items.filter((item) => item.kind === "event").map((item) => item.event.slug);
+    expect(regularSlugs(groupTimelineMonthItems([english, chinese]))).toEqual([
+      "English event",
+      "中文事件",
     ]);
+    expect(regularSlugs(groupTimelineMonthItems([english, highImpactButLowerConfidence]))).toEqual([
+      "English event",
+      "high-impact-lower-confidence",
+    ]);
+  });
+
+  it("does not count the monthly research group against six visible regular events", () => {
+    const regular = Array.from({ length: 7 }, (_, index) =>
+      event(`regular-${index}`, `2026-07-${String(index + 1).padStart(2, "0")}T08:00:00Z`, []),
+    );
+    const model = {
+      events: [...regular, researchEvent("paper", "2026-07-15T08:00:00Z")],
+      tracks: [],
+    } as unknown as StaticSiteModel;
+    const page = renderTimeline(model, "zh-CN");
+
+    expect(page).toContain('data-research-month="2026-07"');
+    expect(page.match(/data-month-extra="true"/g)).toHaveLength(1);
+    expect(page).toContain('data-timeline-item-count="7"');
+  });
+
+  it("lazy-mounts month groups only after the public Event total exceeds 500", () => {
+    const manyEvents = Array.from({ length: 501 }, (_, index) => {
+      const month = 11 - (index % 12);
+      return event(
+        `event-${index}`,
+        new Date(Date.UTC(2026, month, 1 + (index % 20), 8)).toISOString(),
+        [],
+      );
+    });
+    const model = { events: manyEvents, tracks: [] } as unknown as StaticSiteModel;
+    const lazyPage = renderTimeline(model, "zh-CN");
+    const regularPage = renderTimeline({ ...model, events: manyEvents.slice(0, 500) }, "zh-CN");
+
+    expect(lazyPage).toContain('data-timeline-lazy="true"');
+    expect(lazyPage.match(/data-timeline-month-template/g)).toHaveLength(6);
+    expect(lazyPage).toContain("data-timeline-month-toggle");
+    expect(lazyPage).toContain('data-month-extra="true"');
+    expect(regularPage).toContain('data-timeline-lazy="false"');
+    expect(regularPage).not.toContain("data-timeline-month-template");
   });
 
   it("highlights only events from the previous seven days", () => {
@@ -333,6 +418,40 @@ function event(
     evidence: evidenceItems,
     tracks: [],
     actors: [],
+  };
+}
+
+function researchEvent(slug: string, happenedAt: string): EnrichedEvent {
+  const primary = evidence("Research preprint", "primary", happenedAt);
+  primary.url = `https://arxiv.org/abs/${slug}`;
+  return {
+    ...event(slug, happenedAt, [primary]),
+    category: "research-paper",
+    confidenceScore: 88,
+    impactScore: 84,
+    valueScore: 82,
+    technicalInsight:
+      "The paper defines a reproducible method, comparison baseline, evaluation protocol, and measurable result that changes a technical capability boundary.",
+    industryInsight:
+      "The result can change product architecture, evaluation practice, and the competitive position of teams building in this domain.",
+    futureOutlook:
+      "Watch independent reproduction, deployment cost, failure cases, and whether the result transfers to real production workloads.",
+    researchImpact: {
+      eventSlug: slug,
+      arxivId: "2607.00001",
+      paperTitle: slug,
+      openAlexId: "https://openalex.org/W1",
+      citedByCount: 240,
+      recentCitations: 90,
+      titleMatchScore: 1,
+      topicRelevant: true,
+      publicationDate: happenedAt.slice(0, 10),
+      publicationDateDeltaDays: 0,
+      qualified: true,
+      route: "established-field-impact",
+      reasons: ["test_fixture"],
+      evidenceUrls: ["https://openalex.org/W1"],
+    },
   };
 }
 

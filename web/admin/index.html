@@ -3,46 +3,46 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Agent Pulse Control Room</title>
+    <title>Agent Pulse Admin</title>
     <link rel="stylesheet" href="./admin.css" />
   </head>
   <body>
     <aside class="sidebar">
-      <div class="admin-brand"><span class="admin-logo">AP</span><div><strong>CONTROL ROOM</strong><small>Agent Pulse OS</small></div></div>
+      <div class="admin-brand"><span class="admin-logo">AP</span><div><strong>ADMIN</strong><small>LOCAL TOOLS</small></div></div>
       <nav id="adminNav">
-        <button type="button" class="active" data-tab="dashboard">◫ <span>指挥中心</span></button>
-        <button type="button" data-tab="sources">⌁ <span>信源矩阵</span></button>
-        <button type="button" data-tab="discoveries">⌖ <span>来源雷达</span></button>
-        <button type="button" data-tab="scout">✦ <span>星探驾驶舱</span></button>
+        <button type="button" class="active" data-tab="dashboard">◫ <span>运行概览</span></button>
+        <button type="button" data-tab="sources">⌁ <span>来源管理</span></button>
+        <button type="button" data-tab="discoveries">⌖ <span>来源发现</span></button>
+        <button type="button" data-tab="scout">✦ <span>行动建议</span></button>
         <button type="button" data-tab="health">♡ <span>系统健康</span></button>
         <button type="button" data-tab="evaluation">◎ <span>评测中心</span></button>
         <button type="button" data-tab="events">◉ <span>事件与发布</span></button>
-        <button type="button" data-tab="tracks">≋ <span>主线编排</span></button>
-        <button type="button" data-tab="actors">⌬ <span>角色雷达</span></button>
+        <button type="button" data-tab="tracks">≋ <span>趋势管理</span></button>
+        <button type="button" data-tab="actors">⌬ <span>角色管理</span></button>
         <button type="button" data-tab="resources">◇ <span>模型资源</span></button>
-        <button type="button" data-tab="view">✣ <span>视觉与视图</span></button>
+        <button type="button" data-tab="view">✣ <span>页面设置</span></button>
       </nav>
       <div class="sidebar-foot"><span class="status-dot"></span><span>LOCAL ADMIN</span></div>
     </aside>
     <main class="admin-main">
-      <header class="admin-header"><div><p>AGENT PULSE / ADMIN</p><h1 id="pageTitle">指挥中心</h1></div><div class="auto-controls"><span id="autoIndicator" class="auto-status running">无人值守运行中</span></div><div class="token-box"><input id="tokenInput" type="password" placeholder="ADMIN_TOKEN（开发环境可留空）" /><button type="button" class="token-submit" id="saveToken">连接</button></div></header>
+      <header class="admin-header"><div><p>AGENT PULSE / ADMIN</p><h1 id="pageTitle">运行概览</h1></div><div class="auto-controls"><span id="autoIndicator" class="auto-status running">自动任务运行中</span></div><div class="token-box"><input id="tokenInput" type="password" placeholder="ADMIN_TOKEN（开发环境可留空）" /><button type="button" class="token-submit" id="saveToken">连接</button></div></header>
       <section class="tab-page active" data-page="dashboard">
         <div class="metric-grid" id="metricGrid"></div>
         <article class="panel funnel-panel">
-          <div class="panel-head"><div><span>DATA FUNNEL</span><h2>从信号到可发布认知</h2><p>自动流水线处理事件发布、星探晋级、合并和生命周期管理。</p></div><span id="funnelFreshness" class="pill">LOADING</span></div>
+          <div class="panel-head"><div><span>DATA FUNNEL</span><h2>从原始信号到公开事件</h2><p>查看信号如何经过检查、合并和状态管理，最终成为可发布事件。</p></div><span id="funnelFreshness" class="pill">LOADING</span></div>
           <div class="funnel-flow" id="funnelFlow"></div>
           <div class="funnel-blockers" id="funnelBlockers"></div>
         </article>
         <div class="panel-grid">
-          <article class="panel"><div class="panel-head"><div><span>AUTONOMOUS PIPELINE</span><h2>数据流水线</h2><p>GitHub Actions 每 4 小时自动完成采集、聚类、来源治理、星探上架、评测、快照和站点发布。</p></div><div><span id="pipelineStatus" class="pill">SCHEDULED</span></div></div><pre id="pipelineOutput">无需人工推进；异常对象会自动隔离并保留审计记录。</pre><div id="lastAutoActions" class="last-auto-actions" hidden></div></article>
+          <article class="panel"><div class="panel-head"><div><span>AUTOMATED PIPELINE</span><h2>数据流水线</h2><p>GitHub Actions 按计划执行采集、聚类、来源检查、行动建议、评测、快照和站点发布。</p></div><div><span id="pipelineStatus" class="pill">SCHEDULED</span></div></div><pre id="pipelineOutput">任务会自动执行；异常数据将被隔离，并保留检查记录。</pre><div id="lastAutoActions" class="last-auto-actions" hidden></div></article>
           <article class="panel"><div class="panel-head"><div><span>RECENT JOBS</span><h2>任务记录</h2></div></div><div id="jobList" class="job-list"></div></article>
         </div>
       </section>
-      <section class="tab-page" data-page="sources"><div class="page-toolbar"><input class="table-search" data-search="sources" placeholder="搜索信源…" /><span>控制启停、层级、权威分和采集配置</span></div><div class="data-table" id="sourcesTable"></div></section>
+      <section class="tab-page" data-page="sources"><div class="page-toolbar"><input class="table-search" data-search="sources" placeholder="搜索来源…" /><span>管理启停状态、验证层级、权威分和采集配置</span></div><div class="data-table" id="sourcesTable"></div></section>
       <section class="tab-page" data-page="discoveries">
         <div class="discovery-hero">
-          <div><span>SOURCE DISCOVERY RADAR</span><h2>来源雷达</h2><p>从聚合器和扩散信号中发现原始域名、作者与待接入来源，再回链和匹配一手源。</p></div>
-          <aside><strong>边界</strong><p>聚合内容只是发现线索，不是事实证据；只有回链并校验一手源后，才能进入事件证据链。</p></aside>
+          <div><span>SOURCE DISCOVERY</span><h2>来源发现</h2><p>从聚合内容和传播信号中发现原始域名、作者和候选来源，再匹配相应的一手资料。</p></div>
+          <aside><strong>使用范围</strong><p>聚合内容只用于发现线索，不能作为事实证据。匹配并核验一手资料后，内容才能用于事件证据。</p></aside>
         </div>
         <div class="discovery-metrics" id="discoveryMetrics"></div>
         <div class="page-toolbar discovery-toolbar">
@@ -60,13 +60,13 @@
         <div class="data-table discovery-table" id="discoveriesTable"></div>
         <div class="discovery-empty" id="discoveryEmpty" hidden>当前筛选下没有候选来源。</div>
       </section>
-      <section class="tab-page" data-page="scout"><div class="page-toolbar"><input class="table-search" data-search="scout" placeholder="搜索想法…" /><span>达到证据与可行性门禁后自动上架，未达标内容自动归档</span></div><div class="data-table" id="scoutTable"></div></section>
+      <section class="tab-page" data-page="scout"><div class="page-toolbar"><input class="table-search" data-search="scout" placeholder="搜索建议…" /><span>通过证据和可行性检查的建议会自动发布，其余内容会归档</span></div><div class="data-table" id="scoutTable"></div></section>
       <section class="tab-page" data-page="health">
         <div class="health-head">
-          <div><span>SYSTEM HEALTH</span><h2>系统健康监控</h2><p>实时追踪所有数据源的生命周期状态、覆盖度缺口和自适应修复进展。</p></div>
+          <div><span>SYSTEM HEALTH</span><h2>系统健康</h2><p>查看所有数据源最近的运行状态、覆盖缺口和自动处理结果。</p></div>
           <div class="health-actions" id="healthActions">
             <button type="button" class="primary" id="refreshHealth">⟳ 刷新报告</button>
-            <button type="button" id="applyHealth">⚡ 自适应修复</button>
+            <button type="button" id="applyHealth">⚡ 执行健康策略</button>
           </div>
         </div>
         <div class="health-metric-grid" id="healthMetrics"></div>
@@ -91,13 +91,13 @@
       </section>
       <section class="tab-page" data-page="evaluation"><div class="evaluation-head"><div><span>SYSTEM SCORECARD</span><h2>系统能力评测</h2><p>只计算真实运行、证据和用户结果。目录数量、字段完整度、自评分与重复运行不能代替质量；样本不足维度硬封顶。</p><div id="evaluationCalibration" class="evaluation-calibration">尚未评测</div></div><div class="evaluation-score"><strong id="evaluationScore">—</strong><span id="evaluationStatus">尚未评测</span></div></div><div class="evaluation-grid" id="evaluationGrid"></div><div class="capability-map" id="capabilityMap"></div></section>
       <section class="tab-page" data-page="events">
-        <article class="merge-queue"><div class="panel-head"><div><span>CONVERGENCE AUDIT</span><h2>事件收敛审计</h2><p>完全相同且无冲突的分支由系统处理；存在事实冲突的内容自动保持独立。</p></div><span class="pill" id="mergeCandidateCount">0 GROUPS</span></div><div id="mergeCandidateList" class="merge-candidate-list"></div></article>
-        <div class="page-toolbar"><input class="table-search" data-search="events" placeholder="搜索事件…" /><span>满足发布硬门禁后自动上架；阻塞原因持续可见</span></div><div class="data-table" id="eventsTable"></div>
+        <article class="merge-queue"><div class="panel-head"><div><span>MERGE REVIEW</span><h2>重复事件检查</h2><p>内容相同且没有冲突的事件可以合并；事实有冲突时会分别保留。</p></div><span class="pill" id="mergeCandidateCount">0 GROUPS</span></div><div id="mergeCandidateList" class="merge-candidate-list"></div></article>
+        <div class="page-toolbar"><input class="table-search" data-search="events" placeholder="搜索事件…" /><span>通过全部发布检查后自动上线；未通过的原因会持续显示</span></div><div class="data-table" id="eventsTable"></div>
       </section>
       <section class="tab-page" data-page="tracks"><div class="page-toolbar"><input class="table-search" data-search="tracks" placeholder="搜索主线…" /><span>控制颜色、顺序和叙事定义</span></div><div class="data-table" id="tracksTable"></div></section>
-      <section class="tab-page" data-page="actors"><div class="page-toolbar"><input class="table-search" data-search="actors" placeholder="搜索角色…" /><span>校准国内外角色的上牌桌评分</span></div><div class="data-table" id="actorsTable"></div></section>
+      <section class="tab-page" data-page="actors"><div class="page-toolbar"><input class="table-search" data-search="actors" placeholder="搜索角色…" /><span>查看并调整国内外公司与人物的影响力评分</span></div><div class="data-table" id="actorsTable"></div></section>
       <section class="tab-page" data-page="resources"><div class="page-toolbar"><input class="table-search" data-search="resources" placeholder="搜索模型资源…" /><span>官方入口优先，第三方参考明确风险</span></div><div class="data-table" id="resourcesTable"></div></section>
-      <section class="tab-page" data-page="view"><div class="view-editor"><aside><span>VISUAL COMPOSER</span><h2>发布视图编排</h2><p>这里决定公开站点的区块顺序、默认主线、密度、主题和筛选阈值。保存后执行“静态化”发布预览。</p><label>视图名称<input id="viewName" /></label><label>描述<textarea id="viewDescription" rows="4"></textarea></label><button type="button" id="saveView" class="primary">保存视图</button></aside><div class="json-deck"><label>Filters JSON<textarea id="viewFilters"></textarea></label><label>Layout JSON<textarea id="viewLayout"></textarea></label><label>Theme JSON<textarea id="viewTheme"></textarea></label></div></div></section>
+      <section class="tab-page" data-page="view"><div class="view-editor"><aside><span>PUBLIC VIEW</span><h2>公开页面设置</h2><p>设置公开站点的区块顺序、默认趋势、信息密度、主题和筛选阈值。保存后可生成静态预览。</p><label>视图名称<input id="viewName" /></label><label>描述<textarea id="viewDescription" rows="4"></textarea></label><button type="button" id="saveView" class="primary">保存视图</button></aside><div class="json-deck"><label>Filters JSON<textarea id="viewFilters"></textarea></label><label>Layout JSON<textarea id="viewLayout"></textarea></label><label>Theme JSON<textarea id="viewTheme"></textarea></label></div></div></section>
     </main>
 
     <div class="toast" id="toast" hidden></div>

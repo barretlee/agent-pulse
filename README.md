@@ -8,7 +8,7 @@
 
 <h1 align="center">Agent Pulse</h1>
 
-> **Agent Pulse is an AI industry intelligence and decision system for investors, executives, founders, and technical leaders, turning official releases, research papers, capital moves, policy changes, and community signals into evidence-backed events, strategic judgments, and next actions.**
+> **Evidence-backed AI industry intelligence for people who need to decide, not just keep up.** Agent Pulse turns official releases, research papers, capital moves, policy changes, and public propagation signals into traceable Events, evolving industry judgments, and explicit next signals.
 
 <p align="center">
   <a href="https://barretlee.github.io/agent-pulse/"><strong>Open Agent Pulse</strong></a>
@@ -25,32 +25,30 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/code%20license-MIT-2dd4a8?style=flat-square" alt="MIT code license" /></a>
 </p>
 
-## Why people star Agent Pulse
+## From signal to decision
 
-AI has no shortage of news, feeds, or hot takes. What is scarce is a reliable way to understand what changed, why it matters, how it connects to a longer industry shift, and what to watch next.
+AI has no shortage of news, feeds, or hot takes. What is scarce is a reliable way for investors, executives, founders, business leaders, and technical leaders to answer three questions:
 
-Agent Pulse is built for that job:
+1. **What materially changed?** Not every announcement deserves a new view.
+2. **Why does it matter?** A fact becomes useful only when connected to an industry shift and the people it affects.
+3. **What would change the judgment?** Every durable view needs a next signal, counter-signal, or invalidation condition.
 
-- **Material shifts:** surface a new view only when a hotspot, major product update, or technical leap changes the evidence;
-- **Evidence trail:** connect primary sources, context, affected players, and counter-signals;
-- **Weekly review:** summarize what changed, which judgments remain stable, and what to watch next;
-- **Continuous monitoring:** follow technology, AGI, commercialization, investment, China, and model economics without inventing a publishing rhythm.
+Agent Pulse is built around that loop: observe broadly, publish selectively, preserve the evidence trail, and update a judgment only when the evidence changes.
 
-If you want an open, evidence-first alternative to AI news overload, [star Agent Pulse](https://github.com/barretlee/agent-pulse). A star helps more decision-makers and builders discover the project, and tells us this public intelligence layer is worth maintaining.
+If that is the kind of public intelligence infrastructure you want to exist, [star Agent Pulse](https://github.com/barretlee/agent-pulse). It helps more decision-makers and builders discover the project and is the clearest signal that the open version is worth maintaining.
 
-## What you get
+## Explore the product
 
-| Product experience | The question it answers |
-| --- | --- |
-| **Latest material shift** | What changed enough to update the current view? |
-| **Strategic narratives** | Is this a one-off announcement or part of a durable industry shift? |
-| **Evidence timeline** | What happened first, what changed later, and which claims are verified? |
-| **Source updates** | What are 411 monitored sources publishing before those signals converge into Events? |
-| **Research frontier** | Which papers change technical capability, evaluation, cost, or product direction? |
-| **China and global radar** | Who is leading, catching up, constrained, or expanding internationally? |
-| **Scout opportunities** | What product, company, content, or internal experiment is worth validating now? |
+| Product surface | The question it answers | Current boundary |
+| --- | --- | --- |
+| [**Latest material shift**](https://barretlee.github.io/agent-pulse/) | What changed enough to revisit the current view? | Public judgments are evidence-linked; updates are event-driven, not quota-driven. |
+| [**Six strategic views**](https://barretlee.github.io/agent-pulse/lines/) | Is this an isolated announcement or part of a longer capability, product, infrastructure, capital, or geographic shift? | Narratives share the same Event evidence instead of duplicating facts. |
+| [**Evidence timeline**](https://barretlee.github.io/agent-pulse/timeline/) | What happened first, what changed later, and which primary sources support it? | Every published Event links back to public evidence. |
+| [**Source activity**](https://barretlee.github.io/agent-pulse/signals/) | What are catalogued sources publishing before signals converge into Events? | This is an allowlisted observation layer, not verified fact publication. |
+| [**Coverage and sources**](https://barretlee.github.io/agent-pulse/sources/) | Where is coverage strong, weak, active, isolated, or restricted? | Catalog presence is kept separate from effective observation and production qualification. |
+| [**Scout**](https://barretlee.github.io/agent-pulse/scout/) | What product, research, content, or internal experiment may be worth validating? | Scout is experimental and produces evidence-linked hypotheses, not facts or investment conclusions. |
 
-[Explore the live product →](https://barretlee.github.io/agent-pulse/)
+[Start with the latest material shift →](https://barretlee.github.io/agent-pulse/)
 
 ## Not another news aggregator
 
@@ -77,21 +75,21 @@ Aggregators can suggest candidates or propagation heat, but cannot become the so
 
 ## Live, auditable, and honest about its limits
 
-The repository is not a mockup. It contains the source catalog, collectors, evidence model, automatic quality gates, static renderer, source-health automation, and GitHub Pages delivery path used by the live product.
+The repository is not a mockup. It contains the source catalog, collectors, evidence model, automatic quality gates, static renderer, source-health automation, and GitHub Pages delivery path used by the live product. It also keeps four states deliberately separate: **catalogued**, **observed**, **active**, and **published**.
 
 GitHub Actions refreshes public data and redeploys the static site once per day. The source audit, monitor, and quality guard remain weekly; the `weekly-brief` Issue is created or updated only on Sunday (or by an explicit manual run) and only when at least one public Event clears the weekly gate, so daily freshness does not create empty Issues.
 
-Verification snapshot captured at **2026-07-13 16:33 UTC**:
+Repository evidence checked on **2026-07-14**. Source-health numbers below come from the full audit completed at **2026-07-13 16:59 UTC**; content counts come from the versioned repository snapshot.
 
 | Measure | Verified state |
 | --- | ---: |
 | Sources in the current catalog | 411 |
 | Sources covered by that full audit | 411 |
-| Healthy in that full audit | 261 |
-| Isolated observation sources | 192 |
-| Production sources | 5 |
+| Healthy / degraded / failed / skipped | 259 / 28 / 71 / 53 |
+| Accessible endpoints / endpoints with content | 397 / 270 |
+| Active production sources | 5 |
 | Published evidence-backed events | 109 |
-| Normalized direct signals in the repository snapshot | 4,386 |
+| Normalized Signals in the repository snapshot | 4,417 |
 
 See the machine-generated [source health report](data/reports/source-health.json), [data-source policy](docs/SOURCES.md), and [capability map](docs/CAPABILITIES.md).
 
@@ -154,7 +152,7 @@ npm run check                 # Lint, typecheck, tests, and static export
 
 Local development can run without `ADMIN_TOKEN`. Any non-development deployment must use a strong token and keep the Control Room behind private access controls.
 
-AI event convergence and AI weekly briefs are opt-in. Put `DEEPSEEK_API_KEY` only in the ignored local `.env` or a GitHub Actions Secret, set `AI_ENRICHMENT_ENABLED=true`, and keep `.env.example` free of real credentials. The model only receives cropped normalized Evidence or public static DTOs; deterministic readiness still decides publication.
+AI-assisted Event convergence and weekly-brief drafting remain **experimental and opt-in for local runs**. Put `DEEPSEEK_API_KEY` only in the ignored local `.env` or a GitHub Actions Secret, set `AI_ENRICHMENT_ENABLED=true`, and keep `.env.example` free of real credentials. The model only receives cropped normalized Evidence or public static DTOs; schema, evidence, readiness, and publication gates remain deterministic.
 
 ## Contribute
 

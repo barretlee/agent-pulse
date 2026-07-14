@@ -34,6 +34,7 @@ export interface PageChrome {
   baiduVerification?: string;
   /** Additional JSON-LD objects beyond the WebSite schema (e.g., Article for events). */
   jsonLd?: Record<string, unknown>[];
+  ogType?: "website" | "article";
 }
 
 export function escapeHtml(value: unknown): string {
@@ -53,6 +54,13 @@ export function safeExternalLink(value: string | null | undefined): string | nul
   } catch {
     return null;
   }
+}
+
+export function serializeJsonLd(value: unknown): string {
+  return JSON.stringify(value).replace(/[<>&\u2028\u2029]/g, (character) => {
+    const codePoint = character.codePointAt(0);
+    return codePoint === undefined ? "" : `\\u${codePoint.toString(16).padStart(4, "0")}`;
+  });
 }
 
 export function icon(name: string, label?: string): string {
@@ -114,7 +122,6 @@ export function pageLayout(input: PageChrome): string {
   ];
 
   // ── Language switcher ───────────────────────────────────────
-  const _otherLocale: Locale = locale === "zh-CN" ? "en" : "zh-CN";
   const otherLocaleHref = (() => {
     if (route === "/404.html") return locale === "zh-CN" ? "./en/" : "../";
     if (locale === "zh-CN") {
@@ -129,17 +136,26 @@ export function pageLayout(input: PageChrome): string {
 
   // ── SEO / Meta ──────────────────────────────────────────────
   const robots = input.robots ?? "index, follow";
-  const twitterCard = "summary_large_image";
-  const _siteDomain = new URL(input.siteUrl).hostname;
+  const twitterCard = "summary";
+  const repository = input.github.repositoryUrl.replace(/\/$/, "");
+  const snapshotUrl = `${repository}/commits/main/`;
 
-  // ── JSON-LD: WebSite schema (every page) ────────────────────
-  const websiteJsonLd = {
+  // ── JSON-LD: page identity and site relationship ───────────
+  const webPageJsonLd = {
     "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: "Agent Pulse",
-    url: ensureSlash(input.siteUrl),
+    "@type": "WebPage",
+    "@id": canonical,
+    url: canonical,
+    name: input.title,
     description: input.description,
     inLanguage: locale,
+    dateModified: input.generatedAt,
+    isPartOf: {
+      "@type": "WebSite",
+      "@id": `${ensureSlash(input.siteUrl)}#website`,
+      name: "Agent Pulse",
+      url: ensureSlash(input.siteUrl),
+    },
   };
 
   // ── Hreflang ────────────────────────────────────────────────
@@ -162,7 +178,8 @@ export function pageLayout(input: PageChrome): string {
   <meta name="description" content="${escapeHtml(input.description)}">
   <meta name="theme-color" content="#eeece5">
   <meta name="robots" content="${escapeHtml(robots)}">
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="${input.ogType ?? "website"}">
+  <meta property="og:site_name" content="Agent Pulse">
   <meta property="og:title" content="${escapeHtml(input.title)}">
   <meta property="og:description" content="${escapeHtml(input.description)}">
   <meta property="og:url" content="${escapeHtml(canonical)}">
@@ -178,8 +195,8 @@ export function pageLayout(input: PageChrome): string {
   <link rel="icon" href="${assetPrefix}assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="${assetPrefix}assets/app.css">
   <script type="module" src="${assetPrefix}assets/core.js"></script>
-  <script type="application/ld+json">${escapeHtml(JSON.stringify(websiteJsonLd))}</script>
-  ${(input.jsonLd ?? []).map((obj) => `<script type="application/ld+json">${escapeHtml(JSON.stringify(obj))}</script>`).join("\n  ")}
+  <script type="application/ld+json">${serializeJsonLd(webPageJsonLd)}</script>
+  ${(input.jsonLd ?? []).map((obj) => `<script type="application/ld+json">${serializeJsonLd(obj)}</script>`).join("\n  ")}
   <title>${escapeHtml(input.title)}</title>
 </head>
 <body class="${escapeHtml(input.bodyClass || "")}" data-page="${input.active}">
@@ -199,14 +216,14 @@ export function pageLayout(input: PageChrome): string {
   ${eventDrawerShell(locale, assetPrefix, prefix)}
   <footer class="site-footer">
     <div class="shell footer-grid">
-      <div class="footer-brand"><strong>AGENT PULSE</strong><p>${escapeHtml(t("footer.tagline", locale))}</p>${footerSubscriptions(input.github, locale)}</div>
+      <div class="footer-brand"><strong>AGENT PULSE</strong><p>${escapeHtml(t("footer.tagline", locale))}</p>${footerSubscriptions(input.github, locale)}${footerContacts(locale)}</div>
       <div class="footer-links">
         <nav aria-label="${locale === "en" ? "Explore" : "探索"}"><span>${locale === "en" ? "EXPLORE" : "探索"}</span><a href="${prefix}lines/">${escapeHtml(t("footer.lines", locale))}</a><a href="${prefix}industry-evolution/">${locale === "en" ? "Industry Evolution" : "行业演化"}</a><a href="${prefix}timeline/">${escapeHtml(t("footer.timeline", locale))}</a><a href="${prefix}signals/">${locale === "en" ? "Source updates" : "来源动态"}</a><a href="${prefix}scout/">${escapeHtml(t("footer.scout", locale))}</a><a href="${prefix}sources/">${escapeHtml(t("footer.sources", locale))}</a></nav>
         <nav aria-label="${locale === "en" ? "More" : "更多"}"><span>${locale === "en" ? "MORE" : "更多"}</span><a href="${prefix}actors/">${escapeHtml(t("tab.actors", locale))}</a><a href="${prefix}resources/">${escapeHtml(t("tab.resources", locale))}</a><a href="${prefix}legal/">${escapeHtml(t("footer.legal", locale))}</a><a href="${prefix}changelog/">${escapeHtml(t("footer.changelog", locale))}</a></nav>
       </div>
     </div>
     <div class="shell footer-meta">
-      <p>${t("footer.generatedAt", locale).replace("{date}", formatDate(input.generatedAt, locale))}</p>
+      <p>${escapeHtml(t("footer.principles", locale))}<br><a class="footer-snapshot" href="${escapeHtml(snapshotUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(t("footer.snapshot", locale).replace("{date}", formatDate(input.generatedAt, locale)))}${icon("external-link")}</a></p>
       <div><a class="footer-lang" href="${escapeHtml(otherLocaleHref)}" aria-label="${escapeHtml(t("lang.label", locale))}">${t("brand.switchLang", locale)}</a><span>OPEN SOURCE · STATIC BY DEFAULT</span></div>
     </div>
   </footer>
@@ -218,6 +235,7 @@ export function pageLayout(input: PageChrome): string {
       )
       .join("")}
   </nav>
+  <button class="back-to-top" data-back-to-top type="button" aria-label="${locale === "en" ? "Back to top" : "回到顶部"}" aria-hidden="true" tabindex="-1">${icon("arrow-right")}</button>
 </body>
 </html>`
     .replaceAll("__ASSET_PREFIX__", assetPrefix)
@@ -229,6 +247,21 @@ function footerSubscriptions(github: GithubData, locale: Locale): string {
   const watchUrl = `${repository}/subscription`;
   const weeklyUrl = `${repository}/issues?q=is%3Aissue+label%3Aweekly-brief`;
   return `<nav class="footer-subscriptions" aria-label="${locale === "en" ? "Agent Pulse subscriptions" : "Agent Pulse 订阅入口"}"><a href="${escapeHtml(watchUrl)}" target="_blank" rel="noopener noreferrer">${icon("github")} Watch</a><a href="${escapeHtml(weeklyUrl)}" target="_blank" rel="noopener noreferrer">${icon("route")} ${locale === "en" ? "Weekly brief" : "AI 周报"}</a></nav>`;
+}
+
+function footerContacts(locale: Locale): string {
+  const contacts = [
+    { name: "X", iconName: "x-social", href: "https://x.com/Barret_China" },
+    { name: "Weibo", iconName: "weibo", href: "https://www.weibo.com/u/1812166904" },
+    { name: "GitHub", iconName: "github", href: "https://github.com/barretlee" },
+    { name: "Email", iconName: "mail", href: "mailto:barret.china@gmail.com" },
+  ];
+  return `<nav class="footer-contacts" aria-label="${escapeHtml(t("footer.contacts", locale))}"><span>${escapeHtml(t("footer.contacts", locale))}</span>${contacts
+    .map(
+      (contact) =>
+        `<a href="${escapeHtml(contact.href)}"${contact.href.startsWith("mailto:") ? "" : ' target="_blank" rel="noopener noreferrer"'} aria-label="${escapeHtml(contact.name)}" data-label="${escapeHtml(contact.name)}">${icon(contact.iconName)}</a>`,
+    )
+    .join("")}</nav>`;
 }
 
 function eventDrawerShell(locale: Locale, assetPrefix: string, prefix: string): string {

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { capitalEvidenceSources20260714 } from "../src/catalog/capital-evidence-sources-2026-07.js";
 import { ecosystemEvidenceSources20260714 } from "../src/catalog/ecosystem-evidence-sources-2026-07.js";
 import { influencerCatalog } from "../src/catalog/influencers.js";
 import { capabilities, releases, roadmap } from "../src/catalog/product.js";
@@ -122,6 +123,27 @@ describe("knowledge source catalog", () => {
     );
   });
 
+  it("adds live-validated investment firm feeds behind the shadow gate", () => {
+    const capitalSources = capitalEvidenceSources20260714;
+
+    expect(capitalSources).toHaveLength(5);
+    expect(new Set(capitalSources.map((source) => source.slug)).size).toBe(5);
+    expect(new Set(capitalSources.map((source) => source.endpoint)).size).toBe(5);
+    expect(capitalSources.filter((source) => source.region === "CN")).toHaveLength(1);
+    expect(capitalSources.every((source) => source.category === "capital-business")).toBe(true);
+    expect(capitalSources.every((source) => source.adapter === "rss")).toBe(true);
+    expect(capitalSources.every((source) => source.acquisition === "rss")).toBe(true);
+    expect(capitalSources.every((source) => source.tier === 2)).toBe(true);
+    expect(capitalSources.every((source) => source.role === "expert")).toBe(true);
+    expect(capitalSources.every((source) => source.enabled === false)).toBe(true);
+    expect(capitalSources.every((source) => source.lifecycleStatus === "shadow")).toBe(true);
+    expect(capitalSources.every((source) => source.maintenanceStatus === "candidate")).toBe(true);
+    expect(capitalSources.every((source) => source.endpoint.startsWith("https://"))).toBe(true);
+    expect(
+      capitalSources.every((source) => sourceCatalog.some((entry) => entry.slug === source.slug)),
+    ).toBe(true);
+  });
+
   it("keeps the priority vendor evidence network broad and shadow-first", () => {
     const vendorSources = [...vendorEvidenceSources20260714, ...ecosystemEvidenceSources20260714];
 
@@ -154,10 +176,11 @@ describe("knowledge source catalog", () => {
     expect(capabilities.every((capability) => capability.evidence.length > 10)).toBe(true);
     expect(releases[0]).toMatchObject({ version: "unreleased", status: "unreleased" });
     expect(releases[1]?.capabilities.length).toBeGreaterThanOrEqual(5);
-    expect(releases[1]).toMatchObject({ version: "0.10.0", status: "released" });
-    expect(releases[2]).toMatchObject({ version: "0.9.0", status: "released" });
-    expect(releases[3]).toMatchObject({ version: "0.8.1" });
-    expect(releases[4]).toMatchObject({ version: "0.8.0" });
+    expect(releases[1]).toMatchObject({ version: "0.11.0", status: "released" });
+    expect(releases[2]).toMatchObject({ version: "0.10.0", status: "released" });
+    expect(releases[3]).toMatchObject({ version: "0.9.0", status: "released" });
+    expect(releases[4]).toMatchObject({ version: "0.8.1" });
+    expect(releases[5]).toMatchObject({ version: "0.8.0" });
   });
 
   it("keeps a unique, public and policy-aware AI influencer matrix", () => {

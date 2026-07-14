@@ -42,6 +42,9 @@ describe("Scout deterministic cards", () => {
     expect(card.artifact_idea.length).toBeGreaterThan(10);
     expect(card.counter_signals).toContain("证据");
     expect(card.total_score).toBeGreaterThan(70);
+    expect(
+      [card.title, card.observation, card.hypothesis, card.why_now, card.counter_signals].join(" "),
+    ).not.toMatch(/真正机会不在|工作杠杆|短期噪声还是结构性转折|一次性热点表达/);
   });
 
   it("fills distinct opportunity kinds and auto-publishes only viable cards", async () => {

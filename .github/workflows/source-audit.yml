@@ -74,6 +74,7 @@ jobs:
         run: |
           set -euo pipefail
           npm run export -- --skip-seed
+          npm run --silent public:validate -- --output="$RUNNER_TEMP/public-integrity.json"
           npm run --silent public:fingerprint -- --include-sources > "$RUNNER_TEMP/public-after.sha256"
           if cmp -s "$RUNNER_TEMP/public-before.sha256" "$RUNNER_TEMP/public-after.sha256"; then
             echo "No material public source changes."
@@ -82,6 +83,15 @@ jobs:
             echo "Material public source state changed."
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
+
+      - name: Upload public integrity evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: source-audit-public-integrity-${{ github.run_id }}
+          path: ${{ runner.temp }}/public-integrity.json
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Write privacy-safe snapshot with accumulated checks
         run: npm run db:snapshot -- write

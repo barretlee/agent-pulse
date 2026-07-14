@@ -8,6 +8,7 @@ import type { AppConfig } from "../config/env.js";
 import { parseJson, Repository } from "../db/repository.js";
 import type { DatabaseSchema } from "../db/types.js";
 import { evaluateSystem } from "./evaluate.js";
+import { loadResearchImpactReport, researchImpactAssessmentForEvent } from "./research-impact.js";
 import { loadMergedIndustryNarratives } from "./stage-promotion.js";
 import type {
   EnrichedEvent,
@@ -25,6 +26,64 @@ import type {
 import { githubDataAtBuildTime } from "./static-site/github.js";
 import type { StaticPage } from "./static-site/pages.js";
 import { renderStaticPages } from "./static-site/pages.js";
+
+function clarifyLegacyScoutCopy(insight: PublicScoutInsight): PublicScoutInsight {
+  const observation = insight.observation.replace(
+    /已进入已发布事件，并在影响力 (\d+)、业务价值 (\d+) 的维度上形成值得继续验证的信号。/,
+    "已发布。当前评分为行业影响 $1、业务价值 $2，适合继续做小规模验证。",
+  );
+  const title = insight.title
+    .replace(/^用「(.+)」补齐一个会改变判断的认知缺口$/, "围绕「$1」核对一个关键未知项")
+    .replace(/^把「(.+)」做成一份可复用的判断框架$/, "围绕「$1」整理一份可持续更新的分析")
+    .replace(
+      /^把「(.+)」沉淀成一个可复用的数据或工具资产$/,
+      "围绕「$1」制作一个可复用的数据集或工具",
+    )
+    .replace(/^围绕「(.+)」建立一条可持续验证的公开观点$/, "围绕「$1」发布一条可持续核验的观点")
+    .replace(/^从「(.+)」验证一个窄而深的创业入口$/, "围绕「$1」验证一个具体创业场景");
+  const replacements = new Map([
+    [
+      "真正稀缺的不是知道事件发生，而是能解释其技术前提、适用边界和反例。把未知项拆成可验证问题，可以减少团队被发布叙事带着走。",
+      "事件已经公开，但它的技术前提、适用边界和反例可能仍不清楚。把未知项拆成可验证的问题，有助于团队独立评估发布方的说法。",
+    ],
+    [
+      "市场会快速复述发布本身，但缺少把事实、反证、技术门槛和业务影响放在一起的中文分析。先建立证据框架，可能形成持续内容栏目。",
+      "市场会快速复述发布内容。把事实、反例、技术条件和业务影响放在一起，能为中文读者提供更完整的判断依据。",
+    ],
+    [
+      "如果该变化能被转译为当前组织的客户、成本或研发指标，就有机会从行业信息变成可见的工作杠杆。",
+      "将这项变化映射到客户、成本或研发指标，可以检验它是否适用于当前组织。",
+    ],
+    [
+      "事件背后的比较、评测或迁移问题会重复出现。将一次分析固化为结构化数据、检查器或模板，比继续追踪零散消息更有长期价值。",
+      "事件背后的比较、评测或迁移问题会重复出现。把分析整理为结构化数据、检查器或模板，便于后续重复使用。",
+    ],
+    [
+      "大多数传播只复述结论。把事实、非共识判断、反证和后续指标同时公开，可能形成更可信的专业影响力，而不是一次性热点表达。",
+      "公开事实、不同判断、反证和后续指标，可以让观点持续接受检验，并减少对短期热点的依赖。",
+    ],
+    [
+      "事件可能让过去成本过高或能力不足的用户问题首次可解。真正机会不在复刻发布，而在找到愿意为结果付费的窄场景与分发路径。",
+      "这项变化可能让部分过去成本过高或能力不足的问题变得可解。验证重点是找到愿意为结果付费的具体场景和可行的获客路径。",
+    ],
+  ]);
+  return {
+    ...insight,
+    title,
+    observation,
+    hypothesis: replacements.get(insight.hypothesis) ?? insight.hypothesis,
+    whyNow:
+      insight.whyNow ===
+      "能力、产业叙事和行动窗口正在同一时间发生变化；未来 7 天的新发布、采用和成本信号将决定它是短期噪声还是结构性转折。"
+        ? "未来 7 天可重点观察新发布、采用情况和成本变化，用这些信号判断影响能否持续。"
+        : insight.whyNow,
+    counterSignals:
+      insight.counterSignals ===
+      "当前证据仍可能偏向发布方叙事；如果独立采用、真实成本或持续性指标没有出现，应下调判断。"
+        ? "现有证据可能偏向发布方。如果没有独立采用、真实成本或持续性数据，应降低优先级。"
+        : insight.counterSignals,
+  };
+}
 
 export async function exportStaticSite(db: Kysely<DatabaseSchema>, config: AppConfig) {
   const repository = new Repository(db);
@@ -45,14 +104,18 @@ export async function exportStaticSite(db: Kysely<DatabaseSchema>, config: AppCo
     (source) => source.lifecycle_status !== "retired",
   );
 
-  const enrichedEvents = (await Promise.all(
-    events.map(async (event) => ({
-      ...event,
-      tracks: await repository.eventTracks(event.id),
-      actors: await repository.eventActors(event.id),
-    })),
-  )) as EnrichedEvent[];
   const generatedAt = new Date().toISOString();
+  const researchImpactReport = await loadResearchImpactReport(
+    join(config.rootDir, "data/reports/research-impact.json"),
+  );
+  const eventRelations = await repository.publicEventRelations(events.map((event) => event.id));
+  const enrichedEvents = events.map((event) => ({
+    ...event,
+    tracks: eventRelations.tracks.get(event.id) ?? [],
+    actors: eventRelations.actors.get(event.id) ?? [],
+    researchImpact: researchImpactAssessmentForEvent(event, researchImpactReport, generatedAt),
+  })) as EnrichedEvent[];
+  const publicScout = (scout as PublicScoutInsight[]).map(clarifyLegacyScoutCopy);
   const publicTracks: PublicTrack[] = tracks.map((track) => ({
     slug: track.slug,
     name: track.name,
@@ -185,7 +248,7 @@ export async function exportStaticSite(db: Kysely<DatabaseSchema>, config: AppCo
     writeJson(join(config.distDir, "data/scout.json"), {
       schemaVersion: 1,
       generatedAt,
-      insights: scout,
+      insights: publicScout,
     }),
     writeJson(join(config.distDir, "data/narratives.json"), {
       schemaVersion: 1,
@@ -232,7 +295,7 @@ export async function exportStaticSite(db: Kysely<DatabaseSchema>, config: AppCo
     sources: publicSources,
     signals: publicSignals,
     influencers: publicInfluencers,
-    scout: scout as PublicScoutInsight[],
+    scout: publicScout,
     narratives: {
       horizon: { ...narratives.horizon },
       eras: narratives.eras.map((era) => ({
@@ -335,8 +398,13 @@ async function writeSitemap(pages: StaticPage[], siteUrl: string, distDir: strin
 
   const entries: string[] = [];
   for (const [, { zhPath, enPath }] of routes) {
-    const zhUrl = `${baseUrl}${zhPath.replace(/\/index\.html$/, "/")}`;
-    const enUrl = enPath ? `${baseUrl}${enPath.replace(/\/index\.html$/, "/")}` : null;
+    const zhUrl = new URL(
+      zhPath === "index.html" ? "" : zhPath.replace(/\/index\.html$/, "/"),
+      baseUrl,
+    ).toString();
+    const enUrl = enPath
+      ? new URL(enPath.replace(/\/index\.html$/, "/"), baseUrl).toString()
+      : null;
 
     entries.push(`  <url>
     <loc>${escapeXml(zhUrl)}</loc>
@@ -398,23 +466,28 @@ async function writeJson(path: string, value: unknown): Promise<void> {
 async function optimizeStaticAssets(distDir: string): Promise<void> {
   const cssPath = join(distDir, "assets/app.css");
   const scriptPath = join(distDir, "assets/core.js");
-  const [css, script] = await Promise.all([
+  const timelineScriptPath = join(distDir, "assets/timeline.js");
+  const [css, script, timelineScript] = await Promise.all([
     readFile(cssPath, "utf8"),
     readFile(scriptPath, "utf8"),
+    readFile(timelineScriptPath, "utf8"),
   ]);
-  const [optimizedCss, optimizedScript] = await Promise.all([
+  const scriptOptions = {
+    loader: "js" as const,
+    minifyWhitespace: true,
+    minifySyntax: true,
+    minifyIdentifiers: false,
+    legalComments: "none" as const,
+    target: "es2022",
+  };
+  const [optimizedCss, optimizedScript, optimizedTimelineScript] = await Promise.all([
     transform(css, { loader: "css", minify: true, legalComments: "none" }),
-    transform(script, {
-      loader: "js",
-      minifyWhitespace: true,
-      minifySyntax: true,
-      minifyIdentifiers: false,
-      legalComments: "none",
-      target: "es2022",
-    }),
+    transform(script, scriptOptions),
+    transform(timelineScript, scriptOptions),
   ]);
   await Promise.all([
     writeFile(cssPath, optimizedCss.code, "utf8"),
     writeFile(scriptPath, optimizedScript.code, "utf8"),
+    writeFile(timelineScriptPath, optimizedTimelineScript.code, "utf8"),
   ]);
 }

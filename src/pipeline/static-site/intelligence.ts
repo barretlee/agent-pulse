@@ -1,4 +1,5 @@
 import type { PublicEvidence } from "../../domain/types.js";
+import { RESEARCH_MONTH_LIMIT } from "../research-impact.js";
 import type { EnrichedEvent, NarrativeStage, PublicSource, TechnologyCoverage } from "./dto.js";
 
 export interface EventDevelopment {
@@ -18,7 +19,9 @@ export interface EventYearGroup {
 
 export type TimelineMonthItem =
   | { kind: "event"; event: EnrichedEvent }
-  | { kind: "research-day"; key: string; events: EnrichedEvent[] };
+  | { kind: "research-month"; key: string; events: EnrichedEvent[] };
+
+const PLACEHOLDER_CONTENT = /待编辑|待补充|\bTBD\b|\bTODO\b|placeholder/i;
 
 export interface MonthlyEventDensity {
   key: string;
@@ -63,7 +66,7 @@ export const coverageDefinitions: CoverageDefinition[] = [
     description: "产品更新、Hooks、Sub Agents、SDK、Memory、Context Compression 与企业实践",
     terms: ["claude code", "claude-code", "anthropic"],
     expectedChannels: ["official", "releases", "sdk", "research", "community"],
-    nextAction: "补强 Anthropic 官方工程内容、Claude Code 文档变更与高质量社区实践。",
+    nextAction: "补充 Anthropic 官方工程内容、Claude Code 文档变更和经过验证的社区实践。",
   },
   {
     slug: "openai-codex",
@@ -111,7 +114,7 @@ export const coverageDefinitions: CoverageDefinition[] = [
     description: "AI SDK、前端 Agent 体验、流式交互与应用基础设施",
     terms: ["vercel ai", "vercel-ai", "vercel ai sdk"],
     expectedChannels: ["releases", "sdk", "community"],
-    nextAction: "补充 Vercel 官方工程文章和生产实践，而不只追踪 SDK release。",
+    nextAction: "除 SDK release 外，继续补充 Vercel 官方工程文章和生产实践。",
   },
   {
     slug: "cloudflare-ai",
@@ -119,7 +122,7 @@ export const coverageDefinitions: CoverageDefinition[] = [
     description: "Workers AI、边缘推理、AI Gateway、Browser 与 Agent 基础设施",
     terms: ["cloudflare ai", "cloudflare-ai", "workers ai"],
     expectedChannels: ["official", "enterprise", "community"],
-    nextAction: "持续区分 Cloudflare 通用更新与真正改变 AI 工程边界的变化。",
+    nextAction: "持续区分 Cloudflare 的常规更新和会显著改变 AI 工程边界的变化。",
   },
   {
     slug: "mcp",
@@ -127,7 +130,7 @@ export const coverageDefinitions: CoverageDefinition[] = [
     description: "规范、SDK、生态集成、安全边界与企业采用",
     terms: ["model context protocol", "mcp-", "mcp ", "mcp,"],
     expectedChannels: ["releases", "sdk", "community", "enterprise"],
-    nextAction: "补齐规范变更、生态采用与安全事件，不把 SDK patch 当成全部生态。",
+    nextAction: "补齐规范变更、生态采用和安全事件，使覆盖范围超过 SDK patch。",
   },
   {
     slug: "a2a",
@@ -167,7 +170,7 @@ export const coverageDefinitions: CoverageDefinition[] = [
     description: "Agent 框架、长期运行、记忆、工具调用、评测与商业落地",
     terms: ["agent", "multi-agent", "workflow"],
     expectedChannels: ["official", "releases", "sdk", "research", "community", "enterprise"],
-    nextAction: "把框架 release、研究突破、生产采用和商业结果收敛到同一证据链。",
+    nextAction: "把框架发布、研究突破、生产采用和商业结果放在同一条证据链中比较。",
   },
 ];
 
@@ -331,32 +334,82 @@ export function groupEventsByYearMonth(events: EnrichedEvent[]): EventYearGroup[
 
 export function groupTimelineMonthItems(
   events: EnrichedEvent[],
-  researchThreshold = 4,
+  researchLimit = RESEARCH_MONTH_LIMIT,
 ): TimelineMonthItem[] {
-  const researchByDay = new Map<string, EnrichedEvent[]>();
-  for (const event of events) {
-    if (!["research", "paper"].includes(event.category.toLowerCase())) continue;
-    const day = latestDevelopmentAt(event).slice(0, 10);
-    const items = researchByDay.get(day) ?? [];
-    items.push(event);
-    researchByDay.set(day, items);
-  }
-
-  const emittedDays = new Set<string>();
-  const items: TimelineMonthItem[] = [];
-  for (const event of events) {
-    const isResearch = ["research", "paper"].includes(event.category.toLowerCase());
-    const day = latestDevelopmentAt(event).slice(0, 10);
-    const research = researchByDay.get(day) ?? [];
-    if (isResearch && research.length >= researchThreshold) {
-      if (emittedDays.has(day)) continue;
-      emittedDays.add(day);
-      items.push({ kind: "research-day", key: day, events: research });
-    } else {
-      items.push({ kind: "event", event });
-    }
+  const regular = events
+    .filter((event) => !isTimelineResearchEvent(event))
+    .sort(compareTimelinePresentation);
+  const research = events
+    .filter(isHighImpactTimelineResearch)
+    .sort(compareTimelineResearch)
+    .slice(0, researchLimit);
+  const items: TimelineMonthItem[] = regular.map((event) => ({ kind: "event", event }));
+  const firstResearch = research[0];
+  if (firstResearch) {
+    const key = latestDevelopmentAt(firstResearch).slice(0, 7);
+    items.splice(Math.min(4, items.length), 0, { kind: "research-month", key, events: research });
   }
   return items;
+}
+
+export function timelineEventsForPresentation(events: EnrichedEvent[]): EnrichedEvent[] {
+  return events.filter(
+    (event) => !isTimelineResearchEvent(event) || isHighImpactTimelineResearch(event),
+  );
+}
+
+export function isTimelineResearchEvent(event: EnrichedEvent): boolean {
+  const category = event.category.toLowerCase();
+  if (category === "research" || category === "paper") return true;
+  if (category.includes("research") || category.includes("paper")) return true;
+  return event.evidence.some((evidence) => {
+    try {
+      const host = new URL(evidence.url).hostname.toLowerCase();
+      return host === "arxiv.org" || host.endsWith(".arxiv.org");
+    } catch {
+      return false;
+    }
+  });
+}
+
+export function isHighImpactTimelineResearch(event: EnrichedEvent): boolean {
+  return (
+    isTimelineResearchEvent(event) &&
+    event.researchImpact?.qualified === true &&
+    event.evidence.some((evidence) => evidence.role === "primary") &&
+    event.confidenceScore >= 80 &&
+    event.impactScore >= 75 &&
+    event.valueScore >= 75 &&
+    event.technicalInsight.trim().length >= 80 &&
+    event.industryInsight.trim().length >= 50 &&
+    event.futureOutlook.trim().length >= 40 &&
+    !PLACEHOLDER_CONTENT.test(
+      `${event.factSummary} ${event.technicalInsight} ${event.industryInsight} ${event.futureOutlook}`,
+    )
+  );
+}
+
+export function timelinePresentationScore(event: EnrichedEvent): number {
+  return (
+    event.confidenceScore * 1_000_000 +
+    event.impactScore * 10_000 +
+    event.valueScore * 100 +
+    event.heatScore
+  );
+}
+
+function compareTimelinePresentation(left: EnrichedEvent, right: EnrichedEvent): number {
+  return (
+    timelinePresentationScore(right) - timelinePresentationScore(left) ||
+    latestDevelopmentAt(right).localeCompare(latestDevelopmentAt(left))
+  );
+}
+
+function compareTimelineResearch(left: EnrichedEvent, right: EnrichedEvent): number {
+  return (
+    timelinePresentationScore(right) - timelinePresentationScore(left) ||
+    latestDevelopmentAt(right).localeCompare(latestDevelopmentAt(left))
+  );
 }
 
 function isResearch(event: EnrichedEvent): boolean {

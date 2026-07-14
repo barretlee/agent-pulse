@@ -1045,7 +1045,36 @@ export class Repository {
 
   async publicEvents(): Promise<PublicEvent[]> {
     const events = await this.listEvents("published");
-    return Promise.all(events.map((event) => this.toPublicEvent(event)));
+    if (!events.length) return [];
+    const evidenceRows = await this.db
+      .selectFrom("event_signals")
+      .innerJoin("signals", "signals.id", "event_signals.signal_id")
+      .innerJoin("sources", "sources.id", "signals.source_id")
+      .select([
+        "event_signals.event_id as eventId",
+        "signals.title as title",
+        "signals.canonical_url as url",
+        "signals.published_at as publishedAt",
+        "sources.name as source",
+        "event_signals.evidence_role as role",
+      ])
+      .where(
+        "event_signals.event_id",
+        "in",
+        events.map((event) => event.id),
+      )
+      .orderBy("event_signals.event_id")
+      .orderBy("event_signals.relevance_score", "desc")
+      .execute();
+    const evidenceByEvent = new Map<string, PublicEvent["evidence"]>();
+    for (const { eventId, ...evidence } of evidenceRows) {
+      const items = evidenceByEvent.get(eventId) ?? [];
+      if (items.length < 8) items.push(evidence);
+      evidenceByEvent.set(eventId, items);
+    }
+    return events.map((event) =>
+      this.publicEventFromRow(event, evidenceByEvent.get(event.id) ?? []),
+    );
   }
 
   async toPublicEvent(event: EventRow): Promise<PublicEvent> {
@@ -1065,6 +1094,10 @@ export class Repository {
       .limit(8)
       .execute();
 
+    return this.publicEventFromRow(event, evidence);
+  }
+
+  private publicEventFromRow(event: EventRow, evidence: PublicEvent["evidence"]): PublicEvent {
     return {
       id: event.id,
       slug: event.slug,
@@ -1261,6 +1294,60 @@ export class Repository {
       ])
       .where("event_actors.event_id", "=", eventId)
       .execute();
+  }
+
+  async publicEventRelations(eventIds: readonly string[]) {
+    if (!eventIds.length) return { tracks: new Map(), actors: new Map() };
+    const ids = [...eventIds];
+    const [trackRows, actorRows] = await Promise.all([
+      this.db
+        .selectFrom("event_tracks")
+        .innerJoin("tracks", "tracks.id", "event_tracks.track_id")
+        .select([
+          "event_tracks.event_id as eventId",
+          "tracks.slug",
+          "tracks.name",
+          "tracks.color",
+          "tracks.icon",
+          "event_tracks.node_role as role",
+          "event_tracks.narrative",
+          "event_tracks.stage",
+          "event_tracks.order_index as orderIndex",
+        ])
+        .where("event_tracks.event_id", "in", ids)
+        .orderBy("event_tracks.event_id")
+        .orderBy("event_tracks.order_index")
+        .execute(),
+      this.db
+        .selectFrom("event_actors")
+        .innerJoin("actors", "actors.id", "event_actors.actor_id")
+        .select([
+          "event_actors.event_id as eventId",
+          "actors.slug",
+          "actors.name",
+          "actors.region",
+          "actors.actor_type as actorType",
+          "actors.table_score as tableScore",
+          "event_actors.actor_role as role",
+          "event_actors.progress_stage as progressStage",
+        ])
+        .where("event_actors.event_id", "in", ids)
+        .orderBy("event_actors.event_id")
+        .execute(),
+    ]);
+    const tracks = new Map<string, Array<Omit<(typeof trackRows)[number], "eventId">>>();
+    const actors = new Map<string, Array<Omit<(typeof actorRows)[number], "eventId">>>();
+    for (const { eventId, ...track } of trackRows) {
+      const items = tracks.get(eventId) ?? [];
+      items.push(track);
+      tracks.set(eventId, items);
+    }
+    for (const { eventId, ...actor } of actorRows) {
+      const items = actors.get(eventId) ?? [];
+      items.push(actor);
+      actors.set(eventId, items);
+    }
+    return { tracks, actors };
   }
 
   async listJobs(limit = 30) {

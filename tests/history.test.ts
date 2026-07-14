@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
+import { capitalHistoryEvents } from "../src/catalog/capital-history-2023-2025.js";
 import { earlyHistoryEvents } from "../src/catalog/early-history.js";
 import { ecosystemHistoryEvents } from "../src/catalog/ecosystem-history-2026-07.js";
 import { historicalEvents, industryNarratives } from "../src/catalog/history.js";
+import { recentDensityEvents } from "../src/catalog/recent-density.js";
 import { sourceCatalog } from "../src/catalog/sources.js";
 import { eventsForVendor, priorityVendorCoverage } from "../src/catalog/vendor-coverage.js";
 import { vendorHistoryEvents } from "../src/catalog/vendor-history-2026-07.js";
@@ -29,7 +31,7 @@ describe("two-year industry history", () => {
     expect(historicalEvents.length).toBeGreaterThanOrEqual(30);
     expect(slugs.size).toBe(historicalEvents.length);
     for (const event of historicalEvents) {
-      expect(event.date >= "2024-01-01").toBe(true);
+      expect(event.date >= "2022-11-01").toBe(true);
       expect(event.date <= "2026-07-14T23:59:59.999Z").toBe(true);
       expect(new URL(event.url).protocol).toBe("https:");
       expect(sourceBySlug.get(event.source)?.role).not.toBe("aggregator");
@@ -70,6 +72,25 @@ describe("two-year industry history", () => {
       expect(new URL(event.url).protocol).toBe("https:");
       expect(sourceBySlug.get(event.source)?.tier).toBe(1);
       expect(sourceBySlug.get(event.source)?.role).not.toBe("aggregator");
+    }
+  });
+
+  it("fills the capital track with first-party funding and company milestones", () => {
+    const sourceBySlug = new Map(sourceCatalog.map((source) => [source.slug, source]));
+    const allEvents = [...earlyHistoryEvents, ...historicalEvents, ...recentDensityEvents];
+    const capitalEvents = allEvents.filter((event) => event.tracks.includes("investing"));
+
+    expect(capitalHistoryEvents).toHaveLength(10);
+    expect(new Set(capitalHistoryEvents.map((event) => event.slug)).size).toBe(10);
+    expect(capitalEvents.length).toBeGreaterThanOrEqual(21);
+    for (const event of capitalHistoryEvents) {
+      expect(event.tracks).toContain("investing");
+      expect(event.scores[1]).toBe(0);
+      expect(new URL(event.url).protocol).toBe("https:");
+      expect(sourceBySlug.get(event.source)).toMatchObject({ tier: 1, role: "primary" });
+      expect(event.fact.length).toBeGreaterThan(30);
+      expect(event.industry.length).toBeGreaterThan(30);
+      expect(event.business.length).toBeGreaterThan(30);
     }
   });
 

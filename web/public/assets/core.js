@@ -15,10 +15,12 @@ setupScrollReveals();
 setupSignalBrowser();
 setupTrendModules();
 setupGithubStarCount();
+setupBackToTop();
 const timeline = document.querySelector("[data-timeline]");
-if (timeline) setupTimeline(timeline);
+if (timeline) import("./timeline.js").then(({ setupTimeline }) => setupTimeline(timeline));
 setupCardFilters();
 setupSourceFilters();
+setupMobileListPagination();
 setupStockWidgets();
 
 function runWhenIdle(callback, timeout = 2400) {
@@ -27,6 +29,34 @@ function runWhenIdle(callback, timeout = 2400) {
     return;
   }
   setTimeout(callback, Math.min(timeout, 800));
+}
+
+function setupBackToTop() {
+  const button = document.querySelector("[data-back-to-top]");
+  if (!button) return;
+
+  const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let frame = 0;
+  const update = () => {
+    const pageIsLong = document.documentElement.scrollHeight - innerHeight > innerHeight * 0.75;
+    const visible = pageIsLong && scrollY > Math.max(480, innerHeight * 0.65);
+    button.classList.toggle("is-visible", visible);
+    button.setAttribute("aria-hidden", String(!visible));
+    button.tabIndex = visible ? 0 : -1;
+    frame = 0;
+  };
+  const queueUpdate = () => {
+    if (frame) return;
+    frame = requestAnimationFrame(update);
+  };
+
+  button.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
+    button.blur();
+  });
+  addEventListener("scroll", queueUpdate, { passive: true });
+  addEventListener("resize", queueUpdate);
+  update();
 }
 
 function setupHomeDynamics() {
@@ -185,10 +215,35 @@ function setupSignalBrowser() {
   const count = root?.querySelector("[data-signal-count]");
   if (!root || !list) return;
 
-  const pageSize = Math.max(12, Number(root.dataset.pageSize || 48));
-  let visible = pageSize;
+  const mobileQuery = matchMedia("(max-width: 820px)");
+  const desktopPageSize = Math.max(12, Number(root.dataset.pageSize || 48));
+  const mobilePageSize = Math.max(6, Number(root.dataset.mobilePageSize || 12));
+  const pageSize = () => (mobileQuery.matches ? mobilePageSize : desktopPageSize);
+  let visible = pageSize();
   let signals = null;
   let signalsPromise;
+
+  const limitInitialCards = () => {
+    if (signals) {
+      visible = pageSize();
+      render();
+      return;
+    }
+    const cards = [...list.children];
+    visible = pageSize();
+    cards.forEach((card, index) => {
+      card.hidden = index >= visible;
+    });
+    const shown = Math.min(visible, cards.length);
+    const total =
+      Number(
+        String(count?.textContent || "")
+          .split("/")
+          .pop()
+          ?.trim(),
+      ) || cards.length;
+    if (count) count.textContent = `${shown} / ${total}`;
+  };
 
   const loadSignals = () => {
     if (signals) return Promise.resolve(signals);
@@ -239,7 +294,7 @@ function setupSignalBrowser() {
   };
 
   const applyFilter = () => {
-    visible = pageSize;
+    visible = pageSize();
     loadSignals()
       .then(render)
       .catch(() => {});
@@ -249,44 +304,71 @@ function setupSignalBrowser() {
   more?.addEventListener("click", () => {
     loadSignals()
       .then(() => {
-        visible += pageSize;
+        visible += pageSize();
         render();
       })
       .catch(() => {});
   });
+  mobileQuery.addEventListener("change", limitInitialCards);
+  limitInitialCards();
 }
 
 function signalObservationNode(signal) {
-  const article = createNode("article", "signal-observation-card");
-  const meta = createNode("div", "");
-  meta.append(
-    createNode("span", "", `${signal.category || "update"} · ${signal.sourceRegion || "GLOBAL"}`),
-    createNode("time", "", formatDrawerDate(signal.publishedAt)),
+  const url = safeHttpUrl(signal.url);
+  const tone = signalObservationTone(signal);
+  const article = createNode(
+    url ? "a" : "article",
+    `signal-observation-card${tone ? ` ${tone}` : ""}`,
   );
+  if (url && article instanceof HTMLAnchorElement) {
+    article.href = url;
+    article.target = "_blank";
+    article.rel = "noopener noreferrer";
+  }
+  const meta = createNode("div", "signal-observation-meta");
+  const tags = createNode("span", "signal-observation-tags");
+  tags.append(
+    createNode("span", "signal-tag category", signal.category || "update"),
+    createNode("span", "signal-tag region", signal.sourceRegion || "GLOBAL"),
+  );
+  meta.append(tags, createNode("time", "", formatDrawerDate(signal.publishedAt)));
   article.append(meta, createNode("h2", "", signal.title || "Untitled source update"));
   if (signal.description) article.append(createNode("p", "", signal.description));
   const footer = createNode("footer", "");
   footer.append(
     createNode(
       "span",
-      "",
+      "signal-source-name",
       `${signal.sourceName || signal.sourceSlug || "Source"} · Tier ${signal.sourceTier || "—"}`,
     ),
   );
-  const url = safeHttpUrl(signal.url);
   if (url) {
-    const link = createNode(
-      "a",
-      "",
-      document.documentElement.lang === "en" ? "Open source ↗" : "查看原文 ↗",
+    const action = createNode(
+      "span",
+      "signal-source-action",
+      document.documentElement.lang === "en" ? "Open source" : "查看原文",
     );
-    link.href = url;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    footer.append(link);
+    action.append(createIconNode("external-link"));
+    footer.append(action);
   }
   article.append(footer);
   return article;
+}
+
+function signalObservationTone(signal) {
+  const category = String(signal.category || "").toLowerCase();
+  const source = `${signal.sourceSlug || ""} ${signal.sourceName || ""}`.toLowerCase();
+  const tags = Array.isArray(signal.tags)
+    ? signal.tags.map((tag) => String(tag).toLowerCase())
+    : [];
+  if (
+    category.includes("research") ||
+    category.includes("paper") ||
+    source.includes("arxiv") ||
+    tags.some((tag) => tag === "paper" || tag === "arxiv")
+  )
+    return "research";
+  return Number(signal.sourceTier) === 1 ? "high-confidence" : "";
 }
 
 function shuffle(items) {
@@ -372,6 +454,15 @@ function setupGithubStarCount() {
 function setupTrendModules() {
   const root = document.querySelector("[data-trend-detail]");
   if (!root) return;
+  const centerTrendTab = (tab) => {
+    const nav = tab?.closest(".trend-switcher");
+    if (!nav || !tab) return;
+    const left = tab.offsetLeft - (nav.clientWidth - tab.clientWidth) / 2;
+    nav.scrollTo({
+      left: Math.max(0, left),
+      behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+    });
+  };
   root.querySelectorAll("[data-module-expand]").forEach((button) => {
     button.addEventListener("click", () => {
       const module = button.closest("[data-module-expand-root]");
@@ -394,95 +485,10 @@ function setupTrendModules() {
     });
   });
   requestAnimationFrame(() => {
-    root
-      .querySelector('.trend-switcher [aria-current="page"]')
-      ?.scrollIntoView({ behavior: "instant", block: "nearest", inline: "center" });
+    centerTrendTab(root.querySelector('.trend-switcher [aria-current="page"]'));
   });
   root.querySelector(".trend-switcher")?.addEventListener("click", (event) => {
     if (event.target?.closest(".trend-tab")) navigator.vibrate?.(30);
-  });
-}
-
-function setupTimeline(root) {
-  const cards = [...root.querySelectorAll("[data-event]")];
-  const search = root.querySelector("[data-timeline-search]");
-  const count = root.querySelector("[data-result-count]");
-  let activeTrack = new URLSearchParams(location.search).get("track") || "all";
-  const centerFilter = (button) => {
-    button?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
-  };
-
-  if ("IntersectionObserver" in window) {
-    const monthObserver = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          const year = entry.target.closest("[data-timeline-year]");
-          const marker = year?.querySelector("[data-timeline-current-month]");
-          if (marker) marker.textContent = entry.target.dataset.timelineLabel || "";
-        }
-      },
-      { rootMargin: "-142px 0px -62% 0px", threshold: 0 },
-    );
-    root.querySelectorAll("[data-timeline-month]").forEach((month) => {
-      monthObserver.observe(month);
-    });
-  }
-
-  const apply = () => {
-    const query = String(search?.value || "")
-      .trim()
-      .toLowerCase();
-    let visible = 0;
-    cards.forEach((card) => {
-      const trackMatch =
-        activeTrack === "all" ||
-        (activeTrack === "official" && card.dataset.primary === "true") ||
-        (activeTrack === "research" && card.dataset.research === "true") ||
-        String(card.dataset.tracks || "")
-          .split(" ")
-          .includes(activeTrack);
-      const queryMatch = !query || String(card.dataset.search || "").includes(query);
-      card.hidden = !(trackMatch && queryMatch);
-      if (!card.hidden) visible += 1;
-    });
-    root.querySelectorAll("[data-research-group]").forEach((group) => {
-      const hasVisibleCards = [...group.querySelectorAll("[data-event]")].some(
-        (card) => !card.hidden,
-      );
-      group.hidden = !hasVisibleCards;
-      if (hasVisibleCards && (activeTrack === "research" || query)) group.open = true;
-    });
-    root.querySelectorAll(".timeline-month").forEach((month) => {
-      month.hidden = ![...month.querySelectorAll("[data-event]")].some((card) => !card.hidden);
-    });
-    root.querySelectorAll(".timeline-year").forEach((year) => {
-      year.hidden = ![...year.querySelectorAll(".timeline-month")].some((month) => !month.hidden);
-    });
-    if (count) {
-      count.textContent =
-        document.documentElement.lang === "en" ? `${visible} events` : `${visible} 个事件`;
-    }
-  };
-
-  root.querySelectorAll("[data-filter-track]").forEach((button) => {
-    button.classList.toggle("active", button.dataset.filterTrack === activeTrack);
-    button.addEventListener("click", () => {
-      activeTrack = button.dataset.filterTrack || "all";
-      root.querySelectorAll("[data-filter-track]").forEach((item) => {
-        item.classList.toggle("active", item === button);
-      });
-      const params = new URLSearchParams(location.search);
-      activeTrack === "all" ? params.delete("track") : params.set("track", activeTrack);
-      history.replaceState(null, "", `${location.pathname}${params.size ? `?${params}` : ""}`);
-      apply();
-      centerFilter(button);
-    });
-  });
-  search?.addEventListener("input", apply);
-  apply();
-  requestAnimationFrame(() => {
-    centerFilter(root.querySelector(`[data-filter-track="${CSS.escape(activeTrack)}"]`));
   });
 }
 
@@ -596,6 +602,7 @@ function setupEventDrawer() {
     if (!slug) return;
     activeSlug = slug;
     if (trigger) lastTrigger = trigger;
+    content.scrollTop = 0;
     document.querySelectorAll("[data-event]").forEach((card) => {
       card.classList.toggle("active", card.dataset.event === slug);
     });
@@ -612,6 +619,7 @@ function setupEventDrawer() {
         return;
       }
       renderDrawerEvent(content, event, labels, drawer.dataset.eventBase || "events/");
+      content.scrollTop = 0;
     } catch {
       if (activeSlug !== slug) return;
       showState(labels.failed, () => openEvent(slug, lastTrigger, false));
@@ -690,9 +698,11 @@ function renderDrawerEvent(root, event, labels, eventBase) {
   );
   article.append(evidenceLine);
 
-  const story = createNode("section", "drawer-story");
-  story.append(createNode("h3", "", labels.story), buildDrawerJourney(evidence, labels));
-  article.append(story);
+  if (evidence.length > 1) {
+    const story = createNode("section", "drawer-story");
+    story.append(createNode("h3", "", labels.story), buildDrawerJourney(evidence, labels));
+    article.append(story);
+  }
 
   const insights = createNode("div", "drawer-insight-grid");
   insights.append(
@@ -791,6 +801,16 @@ function createNode(tag, className, text) {
   return node;
 }
 
+function createIconNode(name) {
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+  svg.setAttribute("class", "icon");
+  svg.setAttribute("aria-hidden", "true");
+  use.setAttribute("href", new URL(`icons.svg#${name}`, import.meta.url).href);
+  svg.append(use);
+  return svg;
+}
+
 function safeHttpUrl(value) {
   if (!value) return "";
   try {
@@ -823,7 +843,7 @@ function drawerEvidenceLabel(evidence) {
   const primary = evidence.some((item) => item.role === "primary");
   const en = document.documentElement.lang === "en";
   if (primary && sources >= 2) return en ? "Official + corroborated" : "官方资料 + 多源佐证";
-  if (primary) return en ? "Single official source" : "单一官方资料";
+  if (primary) return en ? "Official source" : "官方资料";
   if (sources >= 2) return en ? "Multi-source reports" : "多源报道";
   return en ? "Secondary report" : "二手报道";
 }
@@ -840,6 +860,7 @@ function setupCardFilters() {
       grid?.querySelectorAll("[data-filter-value]").forEach((card) => {
         card.hidden = value !== "all" && card.dataset.filterValue !== value;
       });
+      grid?.dispatchEvent(new Event("mobile-list:refresh"));
     });
   });
 }
@@ -859,6 +880,7 @@ function setupSourceFilters() {
       const queryMatch = !query || String(row.dataset.sourceSearchValue || "").includes(query);
       row.hidden = !(filterMatch && queryMatch);
     });
+    grid.dispatchEvent(new Event("mobile-list:refresh"));
   };
   document.querySelectorAll("[data-source-filter]").forEach((button) => {
     button.addEventListener("click", () => {
@@ -870,6 +892,45 @@ function setupSourceFilters() {
     });
   });
   search?.addEventListener("input", apply);
+}
+
+function setupMobileListPagination() {
+  const en = document.documentElement.lang === "en";
+  document.querySelectorAll("[data-mobile-list]").forEach((list) => {
+    const limit = Math.max(1, Number(list.dataset.mobileLimit || 6));
+    const step = Math.max(1, Number(list.dataset.mobileStep || limit));
+    let visible = limit;
+    const button = createNode("button", "mobile-list-more button quiet");
+    const label = createNode("span", "");
+    button.type = "button";
+    button.append(label, createIconNode("chevron-down"));
+    list.after(button);
+
+    const refresh = (reset = false) => {
+      if (reset) visible = limit;
+      const items = [...list.children];
+      items.forEach((item) => {
+        item.removeAttribute("data-mobile-list-extra");
+      });
+      const eligible = items.filter((item) => !item.hidden);
+      eligible.forEach((item, index) => {
+        item.toggleAttribute("data-mobile-list-extra", index >= visible);
+      });
+      const remaining = Math.max(0, eligible.length - visible);
+      const next = Math.min(step, remaining);
+      button.hidden = remaining === 0;
+      label.textContent = en
+        ? `Show ${next} more · ${remaining} remaining`
+        : `再看 ${next} 条 · 还剩 ${remaining} 条`;
+    };
+
+    button.addEventListener("click", () => {
+      visible += step;
+      refresh();
+    });
+    list.addEventListener("mobile-list:refresh", () => refresh(true));
+    refresh();
+  });
 }
 
 function setupStockWidgets() {
