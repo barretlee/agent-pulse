@@ -57,73 +57,59 @@ const strategicTracks = [
   ["global-innovation", "全球创新版图"],
 ] as const;
 
-const aiWeeklyBriefSchema = z
-  .object({
-    headline: z.string().trim().min(20).max(180),
-    executiveSummary: z.string().trim().min(50).max(800),
-    thesisChanges: z
-      .array(
-        z.object({
-          eventSlug: z.string().min(1),
-          whatChanged: z.string().trim().min(30).max(500),
-          whyItMatters: z.string().trim().min(30).max(600),
-          affected: z.string().trim().min(10).max(300),
-          decisionImplication: z.string().trim().min(24).max(500),
-          nextSignal: z.string().trim().min(20).max(400),
-        }),
-      )
-      .min(1)
-      .max(4),
-    decisionCards: z
-      .array(
-        z.object({
-          audience: z.enum(["CEO / 业务负责人", "投资负责人", "技术负责人", "创业者 / 产品负责人"]),
-          action: z.string().trim().min(16).max(300),
-          rationale: z.string().trim().min(20).max(400),
-          firstStep: z.string().trim().min(20).max(300),
-          stopCondition: z.string().trim().min(20).max(300),
-          eventSlugs: z.array(z.string().min(1)).min(1).max(4),
-        }),
-      )
-      .min(2)
-      .max(4),
-    uncertainties: z
-      .array(
-        z.object({
-          question: z.string().trim().min(20).max(300),
-          evidenceBoundary: z.string().trim().min(20).max(400),
-          nextSignal: z.string().trim().min(20).max(300),
-          eventSlugs: z.array(z.string().min(1)).min(1).max(4),
-        }),
-      )
-      .min(1)
-      .max(4),
-    watchlist: z
-      .array(
-        z.object({
-          item: z.string().trim().min(4).max(240),
-          trigger: z.string().trim().min(15).max(300),
-          eventSlugs: z.array(z.string().min(1)).min(1).max(4),
-        }),
-      )
-      .min(2)
-      .max(6),
-  })
-  .superRefine((brief, context) => {
-    for (const [index, card] of brief.decisionCards.entries()) {
-      if (
-        !/(如果|若|一旦|当).*(未|没有|无法|不能|不再|低于|高于|超过|缺乏|失败|恶化)/.test(
-          card.stopCondition,
-        )
-      ) {
-        context.addIssue({
-          code: "custom",
-          path: ["decisionCards", index, "stopCondition"],
-          message: "must be an invalidation or abandonment condition",
-        });
-      }
-    }
-  });
+const aiWeeklyBriefSchema = z.object({
+  headline: z.string().trim().min(20).max(180),
+  executiveSummary: z.string().trim().min(50).max(800),
+  thesisChanges: z
+    .array(
+      z.object({
+        eventSlug: z.string().min(1),
+        whatChanged: z.string().trim().min(30).max(500),
+        whyItMatters: z.string().trim().min(30).max(600),
+        affected: z.string().trim().min(10).max(300),
+        decisionImplication: z.string().trim().min(24).max(500),
+        nextSignal: z.string().trim().min(20).max(400),
+      }),
+    )
+    .min(1)
+    .max(4),
+  decisionCards: z
+    .array(
+      z.object({
+        audience: z.enum(["CEO / 业务负责人", "投资负责人", "技术负责人", "创业者 / 产品负责人"]),
+        action: z.string().trim().min(16).max(300),
+        rationale: z.string().trim().min(20).max(400),
+        firstStep: z.string().trim().min(20).max(300),
+        stopCondition: z.string().trim().min(20).max(300),
+        eventSlugs: z.array(z.string().min(1)).min(1).max(4),
+      }),
+    )
+    .min(2)
+    .max(4),
+  uncertainties: z
+    .array(
+      z.object({
+        question: z.string().trim().min(20).max(300),
+        evidenceBoundary: z.string().trim().min(20).max(400),
+        nextSignal: z.string().trim().min(20).max(300),
+        eventSlugs: z.array(z.string().min(1)).min(1).max(4),
+      }),
+    )
+    .min(1)
+    .max(4),
+  watchlist: z
+    .array(
+      z.object({
+        item: z.string().trim().min(4).max(240),
+        trigger: z.string().trim().min(15).max(300),
+        eventSlugs: z.array(z.string().min(1)).min(1).max(4),
+      }),
+    )
+    .min(2)
+    .max(6),
+});
+
+const STOP_CONDITION = /(如果|若|一旦|当).*(未|没有|无法|不能|不再|低于|高于|超过|缺乏|失败|恶化)/;
 
 export type AiWeeklyBrief = z.infer<typeof aiWeeklyBriefSchema>;
 
@@ -437,7 +423,15 @@ function validateAiWeeklyBrief(value: unknown, events: WeeklyEvent[]): AiWeeklyB
     const path = issue?.path.join("_").replace(/[^a-zA-Z0-9_]/g, "_") || "root";
     throw new Error(`invalid_ai_weekly_schema_${path}_${issue?.code ?? "unknown"}`);
   }
-  const brief = parsed.data;
+  const brief: AiWeeklyBrief = {
+    ...parsed.data,
+    decisionCards: parsed.data.decisionCards.map((card) => ({
+      ...card,
+      stopCondition: STOP_CONDITION.test(card.stopCondition)
+        ? card.stopCondition
+        : "如果 7 天内无法观察到可量化改善，或风险与人工接管未下降，则停止扩面。",
+    })),
+  };
   const slugs = new Set(events.map((event) => event.slug));
   const referenced = [
     ...brief.thesisChanges.map((item) => item.eventSlug),

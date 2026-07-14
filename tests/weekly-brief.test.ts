@@ -185,7 +185,7 @@ describe("weekly GitHub Issue brief", () => {
                   action: "建立权限、状态恢复和失败隔离的最小技术基线。",
                   rationale: "长任务能力会把可靠性和权限风险放大到完整流程。",
                   firstStep: "48 小时内完成一次断点恢复和越权失败演练。",
-                  stopCondition: "如果无法限制工具权限或无法恢复中断任务，则停止扩面。",
+                  stopCondition: "完成一次演练后整理结论，并安排下一轮范围扩展。",
                   eventSlugs: ["weekly-event"],
                 },
               ],
@@ -218,6 +218,9 @@ describe("weekly GitHub Issue brief", () => {
     expect(result.body).toContain("## 给决策者的行动卡");
     expect(result.body).toContain("48 小时第一步");
     expect(result.body).toContain("停止条件");
+    expect(result.body).toContain(
+      "如果 7 天内无法观察到可量化改善，或风险与人工接管未下降，则停止扩面。",
+    );
     expect(result.body).toContain("https://barretlee.github.io/agent-pulse/events/weekly-event/");
     expect(result.body).not.toContain("```json");
     expect(result.usage.totalTokens).toBe(300);
