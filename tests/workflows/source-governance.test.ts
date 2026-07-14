@@ -72,6 +72,7 @@ describe("GitHub source governance workflows", () => {
       "npm run ops:reconcile",
       "npm run observe:sources -- --confirm",
       "npm run activate:auto",
+      "npm run ai:enrich -- --require-success",
       "npm run scout:generate -- 12",
       "npm run auto:publish",
       "npm run evaluate:system",
@@ -84,6 +85,15 @@ describe("GitHub source governance workflows", () => {
     expect(refresh).not.toContain("daily:issue");
     expect(refresh).not.toContain("agent-pulse-daily-brief");
     expect(refresh).toContain("Dispatch Pages deployment after the daily refresh");
+    expect(refresh).toContain(["DEEPSEEK_API_KEY: $", "{{ secrets.DEEPSEEK_API_KEY }}"].join(""));
+    expect(refresh.indexOf("npm run collect")).toBeLessThan(
+      refresh.indexOf("npm run ai:enrich -- --require-success"),
+    );
+    expect(refresh.indexOf("npm run ai:enrich -- --require-success")).toBeLessThan(
+      refresh.indexOf("npm run auto:publish"),
+    );
+    expect(refresh).toContain("--ai");
+    expect(refresh).toContain("--require-success");
     expect(refresh).not.toContain(
       "steps.commit.outputs.changed == 'true' && steps.public.outputs.changed == 'true'",
     );

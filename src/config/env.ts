@@ -1,9 +1,16 @@
-import { mkdirSync } from "node:fs";
+import { existsSync, mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
+import { loadEnvFile } from "node:process";
 import { fileURLToPath } from "node:url";
 import { z } from "zod";
 
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
+let localEnvLoaded = false;
+
+const booleanEnv = z
+  .enum(["true", "false"])
+  .default("false")
+  .transform((value) => value === "true");
 
 const EnvSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
@@ -19,11 +26,18 @@ const EnvSchema = z.object({
   COLLECTOR_CONCURRENCY: z.coerce.number().int().min(1).max(16).default(4),
   COLLECTOR_PROXY_MODE: z.enum(["off", "env-fallback"]).default("env-fallback"),
   PUBLIC_SITE_URL: z.string().url().default("https://barretlee.github.io/agent-pulse/"),
+  DEEPSEEK_API_KEY: z.string().min(16).optional(),
+  DEEPSEEK_BASE_URL: z.string().url().default("https://api.deepseek.com"),
+  DEEPSEEK_MODEL: z.string().min(3).default("deepseek-v4-flash"),
+  AI_ENRICHMENT_ENABLED: booleanEnv,
+  AI_ENRICHMENT_MAX_EVENTS: z.coerce.number().int().min(1).max(50).default(8),
+  AI_ENRICHMENT_TIMEOUT_MS: z.coerce.number().int().min(5_000).max(120_000).default(60_000),
 });
 
 export type AppConfig = ReturnType<typeof loadConfig>;
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
+  loadLocalEnv(env);
   const parsed = EnvSchema.parse(env);
   const databaseUrl = normalizeDatabaseUrl(parsed.DATABASE_URL);
 
@@ -37,6 +51,13 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
     databaseUrl,
     distDir: resolve(rootDir, "dist"),
   };
+}
+
+function loadLocalEnv(env: NodeJS.ProcessEnv): void {
+  if (env !== process.env || localEnvLoaded || env.NODE_ENV === "test") return;
+  localEnvLoaded = true;
+  const path = resolve(rootDir, ".env");
+  if (existsSync(path)) loadEnvFile(path);
 }
 
 function normalizeDatabaseUrl(value: string): string {

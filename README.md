@@ -143,6 +143,7 @@ Useful commands:
 
 ```bash
 npm run collect               # Collect, deduplicate, cluster, and score
+npm run ai:enrich             # Enrich eligible review Events when explicitly enabled
 npm run sources:audit         # Run a non-destructive full source audit
 npm run weekly:issue          # Render the current public weekly brief
 npm run ops:reconcile         # Reconcile source health and discovery state
@@ -152,6 +153,8 @@ npm run check                 # Lint, typecheck, tests, and static export
 ```
 
 Local development can run without `ADMIN_TOKEN`. Any non-development deployment must use a strong token and keep the Control Room behind private access controls.
+
+AI event convergence and AI weekly briefs are opt-in. Put `DEEPSEEK_API_KEY` only in the ignored local `.env` or a GitHub Actions Secret, set `AI_ENRICHMENT_ENABLED=true`, and keep `.env.example` free of real credentials. The model only receives cropped normalized Evidence or public static DTOs; deterministic readiness still decides publication.
 
 ## Contribute
 

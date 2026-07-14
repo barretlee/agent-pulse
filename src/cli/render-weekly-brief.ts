@@ -1,24 +1,34 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { z } from "zod";
+import type { JsonModelClient, ModelUsage } from "../ai/deepseek.js";
 
 export const weeklyBriefMarker = (week: string) => `<!-- agent-pulse-weekly-brief:${week} -->`;
 
-interface WeeklyEvent {
+export interface WeeklyEvent {
   slug: string;
   title: string;
   happenedAt: string;
   category: string;
   factSummary: string;
+  technicalInsight?: string;
   industryInsight: string;
   futureOutlook: string;
+  businessValue?: string;
   impactScore?: number;
   valueScore?: number;
-  evidence?: Array<{ source?: string; publishedAt?: string }>;
+  evidence?: Array<{
+    title?: string;
+    source?: string;
+    url?: string;
+    role?: string;
+    publishedAt?: string;
+  }>;
   tracks?: Array<{ slug: string; name: string }>;
 }
 
-interface WeeklyScout {
+export interface WeeklyScout {
   title: string;
   hypothesis: string;
   suggestedAction: string;
@@ -27,7 +37,7 @@ interface WeeklyScout {
   publishedAt: string;
 }
 
-interface WeeklyBriefInput {
+export interface WeeklyBriefInput {
   timeline: { generatedAt?: string; events: WeeklyEvent[] };
   scout: { insights: WeeklyScout[] };
   product: {
@@ -46,6 +56,83 @@ const strategicTracks = [
   ["investing", "资本与公司演化"],
   ["global-innovation", "全球创新版图"],
 ] as const;
+
+const aiWeeklyBriefSchema = z
+  .object({
+    headline: z.string().trim().min(20).max(180),
+    executiveSummary: z.string().trim().min(50).max(800),
+    thesisChanges: z
+      .array(
+        z.object({
+          eventSlug: z.string().min(1),
+          whatChanged: z.string().trim().min(30).max(500),
+          whyItMatters: z.string().trim().min(30).max(600),
+          affected: z.string().trim().min(10).max(300),
+          decisionImplication: z.string().trim().min(24).max(500),
+          nextSignal: z.string().trim().min(20).max(400),
+        }),
+      )
+      .min(1)
+      .max(4),
+    decisionCards: z
+      .array(
+        z.object({
+          audience: z.enum(["CEO / 业务负责人", "投资负责人", "技术负责人", "创业者 / 产品负责人"]),
+          action: z.string().trim().min(16).max(300),
+          rationale: z.string().trim().min(20).max(400),
+          firstStep: z.string().trim().min(20).max(300),
+          stopCondition: z.string().trim().min(20).max(300),
+          eventSlugs: z.array(z.string().min(1)).min(1).max(4),
+        }),
+      )
+      .min(2)
+      .max(4),
+    uncertainties: z
+      .array(
+        z.object({
+          question: z.string().trim().min(20).max(300),
+          evidenceBoundary: z.string().trim().min(20).max(400),
+          nextSignal: z.string().trim().min(20).max(300),
+          eventSlugs: z.array(z.string().min(1)).min(1).max(4),
+        }),
+      )
+      .min(1)
+      .max(4),
+    watchlist: z
+      .array(
+        z.object({
+          item: z.string().trim().min(4).max(240),
+          trigger: z.string().trim().min(15).max(300),
+          eventSlugs: z.array(z.string().min(1)).min(1).max(4),
+        }),
+      )
+      .min(2)
+      .max(6),
+  })
+  .superRefine((brief, context) => {
+    for (const [index, card] of brief.decisionCards.entries()) {
+      if (
+        !/(如果|若|一旦|当).*(未|没有|无法|不能|不再|低于|高于|超过|缺乏|失败|恶化)/.test(
+          card.stopCondition,
+        )
+      ) {
+        context.addIssue({
+          code: "custom",
+          path: ["decisionCards", index, "stopCondition"],
+          message: "must be an invalidation or abandonment condition",
+        });
+      }
+    }
+  });
+
+export type AiWeeklyBrief = z.infer<typeof aiWeeklyBriefSchema>;
+
+export interface AiWeeklyBriefResult {
+  body: string;
+  usage: ModelUsage;
+  model: string | null;
+  eventCount: number;
+}
 
 export function renderWeeklyBrief(
   input: WeeklyBriefInput,
@@ -156,6 +243,130 @@ export function renderWeeklyBrief(
   return `${lines.join("\n")}\n`;
 }
 
+export async function renderAiWeeklyBrief(
+  input: WeeklyBriefInput,
+  endDate: string,
+  client: JsonModelClient,
+  timeZone = "Asia/Shanghai",
+): Promise<AiWeeklyBriefResult> {
+  const window = isoWeekWindow(endDate);
+  const events = weeklyEvents(input, window, timeZone);
+  if (!events.length) {
+    return {
+      body: "",
+      usage: { promptTokens: 0, completionTokens: 0, totalTokens: 0 },
+      model: null,
+      eventCount: 0,
+    };
+  }
+  const scout = input.scout.insights
+    .filter((item) => {
+      const date = zonedDate(item.publishedAt, timeZone);
+      return date >= window.start && date <= window.end;
+    })
+    .sort((left, right) => right.confidenceScore - left.confidenceScore)
+    .slice(0, 6);
+  const prompt = JSON.stringify({
+    task: "生成一份面向决策者的 Agent Pulse AI 周报结构化草稿。只使用输入中的公开事实。",
+    rules: [
+      "不要复述新闻列表，要说明判断发生了什么变化、影响谁、现在应做什么。",
+      "事实与判断分开，不得补造模型能力、采用率、价格、收入或融资数字。",
+      "所有 eventSlug/eventSlugs 必须来自 events.slug。",
+      "每个动作必须有 48 小时第一步和停止条件，避免泛泛而谈。",
+      "stopCondition 必须是证伪、暂停或放弃动作的条件，使用‘如果/若/一旦/当……未、无法、低于、高于、失败’表达；完成任务本身不是停止条件。",
+      "headline 提炼判断变化，不要简单重复事件标题；避免‘颠覆、必然、直接消灭’等无证据的绝对表达。",
+      "只返回 JSON object，不要返回 Markdown。",
+    ],
+    outputSchema: {
+      headline: "string",
+      executiveSummary: "string",
+      thesisChanges: [
+        {
+          eventSlug: "events.slug",
+          whatChanged: "string",
+          whyItMatters: "string",
+          affected: "string",
+          decisionImplication: "string",
+          nextSignal: "string",
+        },
+      ],
+      decisionCards: [
+        {
+          audience: "CEO / 业务负责人 | 投资负责人 | 技术负责人 | 创业者 / 产品负责人",
+          action: "string",
+          rationale: "string",
+          firstStep: "string",
+          stopCondition: "string",
+          eventSlugs: ["events.slug"],
+        },
+      ],
+      uncertainties: [
+        {
+          question: "string",
+          evidenceBoundary: "string",
+          nextSignal: "string",
+          eventSlugs: ["events.slug"],
+        },
+      ],
+      watchlist: [{ item: "string", trigger: "string", eventSlugs: ["events.slug"] }],
+    },
+    period: window,
+    dataAsOf: endDate,
+    events: events.slice(0, 8).map((event) => ({
+      slug: event.slug,
+      title: event.title,
+      happenedAt: event.happenedAt,
+      category: event.category,
+      factSummary: safe(event.factSummary, 600),
+      technicalInsight: safe(event.technicalInsight ?? "", 600),
+      industryInsight: safe(event.industryInsight, 600),
+      futureOutlook: safe(event.futureOutlook, 500),
+      businessValue: safe(event.businessValue ?? "", 600),
+      tracks: eventTrackNames(event),
+      evidence: (event.evidence ?? []).slice(0, 6).map((evidence) => ({
+        title: safe(evidence.title ?? "", 240),
+        source: safe(evidence.source ?? "", 100),
+        role: safe(evidence.role ?? "", 40),
+        publishedAt: evidence.publishedAt,
+        url: evidence.url,
+      })),
+    })),
+    scout: scout.map((item) => ({
+      title: safe(item.title, 200),
+      hypothesis: safe(item.hypothesis, 500),
+      suggestedAction: safe(item.suggestedAction, 500),
+      counterSignals: safe(item.counterSignals ?? "", 400),
+      confidenceScore: item.confidenceScore,
+    })),
+    product: {
+      version: input.product.version,
+      evaluation: input.product.evaluation
+        ? {
+            overallScore: input.product.evaluation.overallScore,
+            evidenceCoverage: input.product.evaluation.evidenceCoverage,
+          }
+        : null,
+      sourceCoverage: input.product.sourceCoverage,
+    },
+  });
+  const completion = await client.completeJson({
+    system: [
+      "你是 Agent Pulse 的主编，服务 CEO、投资负责人、创业者和技术负责人。",
+      "你只使用提供的公开 Event 和 Evidence，不把推断写成事实。",
+      "输出必须具体、可执行、可证伪，并返回严格 JSON。",
+    ].join("\n"),
+    user: prompt,
+    maxTokens: 2_400,
+  });
+  const brief = validateAiWeeklyBrief(completion.value, events);
+  return {
+    body: renderAiWeeklyMarkdown(input, window, endDate, events, brief),
+    usage: completion.usage,
+    model: completion.model,
+    eventCount: events.length,
+  };
+}
+
 export async function runWeeklyBriefCli(args = process.argv.slice(2)): Promise<void> {
   const timelinePath = requiredValue(args, "--timeline");
   const scoutPath = requiredValue(args, "--scout");
@@ -167,7 +378,178 @@ export async function runWeeklyBriefCli(args = process.argv.slice(2)): Promise<v
       JSON.parse(await readFile(resolve(path), "utf8")),
     ),
   );
-  process.stdout.write(renderWeeklyBrief({ timeline, scout, product }, endDate, timeZone));
+  const input = { timeline, scout, product } as WeeklyBriefInput;
+  if (args.includes("--ai")) {
+    const [{ DeepSeekClient }, { loadConfig }] = await Promise.all([
+      import("../ai/deepseek.js"),
+      import("../config/env.js"),
+    ]);
+    const config = loadConfig();
+    if (!config.AI_ENRICHMENT_ENABLED)
+      throw new Error("AI_ENRICHMENT_ENABLED must be true for --ai");
+    if (!config.DEEPSEEK_API_KEY) throw new Error("DEEPSEEK_API_KEY is required for --ai");
+    const result = await renderAiWeeklyBrief(
+      input,
+      endDate,
+      new DeepSeekClient({
+        apiKey: config.DEEPSEEK_API_KEY,
+        baseUrl: config.DEEPSEEK_BASE_URL,
+        model: config.DEEPSEEK_MODEL,
+        timeoutMs: config.AI_ENRICHMENT_TIMEOUT_MS,
+      }),
+      timeZone,
+    );
+    process.stderr.write(
+      `${JSON.stringify({ mode: "ai-weekly-brief", model: result.model, eventCount: result.eventCount, usage: result.usage })}\n`,
+    );
+    process.stdout.write(result.body);
+    return;
+  }
+  process.stdout.write(renderWeeklyBrief(input, endDate, timeZone));
+}
+
+function weeklyEvents(
+  input: WeeklyBriefInput,
+  window: { start: string; end: string },
+  timeZone: string,
+): WeeklyEvent[] {
+  return input.timeline.events
+    .filter((event) => {
+      const date = eventDate(event, timeZone);
+      return date >= window.start && date <= window.end;
+    })
+    .sort(
+      (left, right) =>
+        (right.impactScore ?? 0) - (left.impactScore ?? 0) ||
+        (right.valueScore ?? 0) - (left.valueScore ?? 0) ||
+        right.happenedAt.localeCompare(left.happenedAt),
+    );
+}
+
+function validateAiWeeklyBrief(value: unknown, events: WeeklyEvent[]): AiWeeklyBrief {
+  const unwrapped =
+    value && typeof value === "object" && "weeklyBrief" in value
+      ? (value as { weeklyBrief: unknown }).weeklyBrief
+      : value;
+  const parsed = aiWeeklyBriefSchema.safeParse(unwrapped);
+  if (!parsed.success) {
+    const issue = parsed.error.issues[0];
+    const path = issue?.path.join("_").replace(/[^a-zA-Z0-9_]/g, "_") || "root";
+    throw new Error(`invalid_ai_weekly_schema_${path}_${issue?.code ?? "unknown"}`);
+  }
+  const brief = parsed.data;
+  const slugs = new Set(events.map((event) => event.slug));
+  const referenced = [
+    ...brief.thesisChanges.map((item) => item.eventSlug),
+    ...brief.decisionCards.flatMap((item) => item.eventSlugs),
+    ...brief.uncertainties.flatMap((item) => item.eventSlugs),
+    ...brief.watchlist.flatMap((item) => item.eventSlugs),
+  ];
+  if (referenced.some((slug) => !slugs.has(slug))) throw new Error("unknown_weekly_event_slug");
+  if (containsPlaceholder(brief)) throw new Error("weekly_brief_contains_placeholder");
+  return brief;
+}
+
+function renderAiWeeklyMarkdown(
+  input: WeeklyBriefInput,
+  window: { start: string; end: string; week: string },
+  dataAsOf: string,
+  events: WeeklyEvent[],
+  brief: AiWeeklyBrief,
+): string {
+  const siteUrl = input.siteUrl ?? "https://barretlee.github.io/agent-pulse/";
+  const eventsBySlug = new Map(events.map((event) => [event.slug, event]));
+  const sourceCount = new Set(
+    events.flatMap((event) => event.evidence?.map((item) => item.source).filter(Boolean) ?? []),
+  ).size;
+  const research = events.filter((event) => ["research", "paper"].includes(event.category));
+  const eventLinks = (slugs: string[]) =>
+    uniqueStrings(slugs)
+      .map((slug) => eventsBySlug.get(slug))
+      .filter((event): event is WeeklyEvent => Boolean(event))
+      .map((event) => `[${safe(event.title, 80)}](${eventUrl(siteUrl, event.slug)})`)
+      .join("、");
+  const lines = [
+    weeklyBriefMarker(window.week),
+    `# Agent Pulse AI 周报 · ${window.week}`,
+    "",
+    `> **核心判断：${safe(brief.headline, 180)}**`,
+    "",
+    safe(brief.executiveSummary, 800),
+    "",
+    `**周期** ${window.start}—${window.end} · **数据截至** ${dataAsOf} · **公开变化** ${events.length} · **独立事实信源** ${sourceCount} · **研究** ${research.length}`,
+    "",
+    `[完整站点](${siteUrl}) · [趋势判断](${siteUrl.replace(/\/?$/, "/")}lines/) · [事件脉络](${siteUrl.replace(/\/?$/, "/")}timeline/)`,
+    "",
+    "## 本周判断发生了什么变化",
+    "",
+  ];
+  for (const [index, change] of brief.thesisChanges.entries()) {
+    const event = eventsBySlug.get(change.eventSlug);
+    if (!event) continue;
+    lines.push(
+      `### ${index + 1}. [${safe(event.title, 120)}](${eventUrl(siteUrl, event.slug)})`,
+      "",
+      `- **可核验事实**：${safe(change.whatChanged, 500)}`,
+      `- **为什么现在重要**：${safe(change.whyItMatters, 600)}`,
+      `- **直接影响谁**：${safe(change.affected, 300)}`,
+      `- **决策含义**：${safe(change.decisionImplication, 500)}`,
+      `- **下一验证信号**：${safe(change.nextSignal, 400)}`,
+      "",
+    );
+  }
+  lines.push("## 给决策者的行动卡", "");
+  for (const card of brief.decisionCards) {
+    lines.push(
+      `### ${safe(card.audience, 40)}`,
+      "",
+      `- **现在做什么**：${safe(card.action, 300)}`,
+      `- **为什么**：${safe(card.rationale, 400)}`,
+      `- **48 小时第一步**：${safe(card.firstStep, 300)}`,
+      `- **停止条件**：${safe(card.stopCondition, 300)}`,
+      `- **触发事件**：${eventLinks(card.eventSlugs)}`,
+      "",
+    );
+  }
+  lines.push("## 非共识与仍需验证", "");
+  for (const uncertainty of brief.uncertainties) {
+    lines.push(
+      `- **${safe(uncertainty.question, 300)}**`,
+      `  - 当前边界：${safe(uncertainty.evidenceBoundary, 400)}`,
+      `  - 下一信号：${safe(uncertainty.nextSignal, 300)}`,
+      `  - 相关事件：${eventLinks(uncertainty.eventSlugs)}`,
+    );
+  }
+  lines.push("", "## 下周观察清单", "");
+  for (const item of brief.watchlist) {
+    lines.push(
+      `- **${safe(item.item, 240)}**：${safe(item.trigger, 300)}（${eventLinks(item.eventSlugs)}）`,
+    );
+  }
+  lines.push(
+    "",
+    "<details>",
+    "<summary>方法与覆盖</summary>",
+    "",
+    `- 站点版本：${safe(input.product.version ?? "unknown", 30)}`,
+    `- 系统评测：${boundedScore(input.product.evaluation?.overallScore)}/100`,
+    `- 证据覆盖：${boundedScore(input.product.evaluation?.evidenceCoverage)}%`,
+    `- 来源目录：${Math.max(0, Math.round(input.product.sourceCoverage?.total ?? 0))}；active ${Math.max(0, Math.round(input.product.sourceCoverage?.active ?? 0))}；observing ${Math.max(0, Math.round(input.product.sourceCoverage?.observing ?? 0))}`,
+    `- 快照生成：${safe(input.timeline.generatedAt ?? "unknown", 40)}`,
+    "",
+    "> AI 只基于已公开 Event 生成结构化判断；事实以事件页原始 Evidence 为准。来源目录不等于事实证据。",
+    "",
+    "</details>",
+  );
+  return `${lines.join("\n")}\n`;
+}
+
+function containsPlaceholder(value: unknown): boolean {
+  if (typeof value === "string") return /待编辑|待补充|\bTBD\b|\bTODO\b|placeholder/i.test(value);
+  if (Array.isArray(value)) return value.some(containsPlaceholder);
+  return Boolean(
+    value && typeof value === "object" && Object.values(value).some(containsPlaceholder),
+  );
 }
 
 function isoWeekWindow(date: string): { start: string; end: string; week: string } {

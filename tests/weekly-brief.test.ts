@@ -1,6 +1,10 @@
 import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
-import { renderWeeklyBrief, weeklyBriefMarker } from "../src/cli/render-weekly-brief.js";
+import {
+  renderAiWeeklyBrief,
+  renderWeeklyBrief,
+  weeklyBriefMarker,
+} from "../src/cli/render-weekly-brief.js";
 
 describe("weekly GitHub Issue brief", () => {
   it("groups the Shanghai ISO week and keeps public markdown safe", () => {
@@ -96,6 +100,7 @@ describe("weekly GitHub Issue brief", () => {
     expect(workflow).toContain('cron: "17 12 * * *"');
     expect(workflow).toContain("agent-pulse-weekly-brief");
     expect(workflow).toContain("weekly:issue");
+    expect(workflow).toContain("--ai");
     expect(workflow).toContain("weekly-brief");
     expect(workflow).toContain('"$PUBLISH_WEEKLY" == "true"');
     expect(workflow).toContain('"$weekday" == "7"');
@@ -105,6 +110,117 @@ describe("weekly GitHub Issue brief", () => {
     expect(workflow).toContain("gh issue edit");
     expect(workflow).not.toContain("daily:issue");
     expect(workflow).not.toContain("agent-pulse-daily-brief");
+  });
+
+  it("renders a validated AI decision brief without trusting model Markdown", async () => {
+    const result = await renderAiWeeklyBrief(
+      {
+        timeline: {
+          generatedAt: "2026-07-19T13:20:00.000Z",
+          events: [
+            {
+              slug: "weekly-event",
+              title: "Official agent platform release",
+              happenedAt: "2026-07-13T03:00:00.000Z",
+              category: "agent-platform",
+              factSummary: "The vendor released an agent platform with a public product page.",
+              technicalInsight: "The platform joins tool execution and long-running task state.",
+              industryInsight: "The control point is moving from model access to task execution.",
+              futureOutlook: "Watch completion rate, cost and permission governance.",
+              businessValue: "Teams should test one bounded workflow before changing their stack.",
+              impactScore: 88,
+              valueScore: 84,
+              evidence: [
+                {
+                  title: "Official release",
+                  source: "Official Lab",
+                  role: "primary",
+                  url: "https://example.com/release",
+                  publishedAt: "2026-07-13T03:00:00.000Z",
+                },
+              ],
+              tracks: [{ slug: "agi-progress", name: "Agent 与软件重构" }],
+            },
+          ],
+        },
+        scout: { insights: [] },
+        product: {
+          version: "0.10.0",
+          evaluation: { overallScore: 60, evidenceCoverage: 70 },
+          sourceCoverage: { total: 400, active: 10, observing: 100 },
+        },
+      },
+      "2026-07-19",
+      {
+        async completeJson() {
+          return {
+            model: "deepseek-v4-flash",
+            usage: { promptTokens: 100, completionTokens: 200, totalTokens: 300 },
+            value: {
+              headline: "Agent 竞争正在从模型调用转向任务执行控制点，产品团队需要验证真实完成率。",
+              executiveSummary:
+                "本周的一手发布显示，厂商开始把工具调用、任务状态和工作流入口组合为统一平台。当前证据只能证明产品方向，尚不能证明采用率或成本优势。",
+              thesisChanges: [
+                {
+                  eventSlug: "weekly-event",
+                  whatChanged: "厂商发布了具备任务执行入口的 Agent 平台，并提供公开产品资料。",
+                  whyItMatters:
+                    "竞争边界可能从单次模型能力转向任务状态、权限和分发入口的组合控制。",
+                  affected: "企业软件团队、自动化工具和垂直 Agent 产品。",
+                  decisionImplication: "短期应比较端到端任务结果，而不是只比较模型榜单。",
+                  nextSignal: "观察真实完成率、人工接管次数、权限事故和单任务总成本。",
+                },
+              ],
+              decisionCards: [
+                {
+                  audience: "CEO / 业务负责人",
+                  action: "选择一个高频但可回滚的流程进行结果验证。",
+                  rationale: "目前只能确认产品方向，不能确认规模化业务回报。",
+                  firstStep: "48 小时内定义成功率、成本和人工接管三个指标。",
+                  stopCondition: "如果两轮测试后完成率没有提升或人工成本反而增加，则停止扩面。",
+                  eventSlugs: ["weekly-event"],
+                },
+                {
+                  audience: "技术负责人",
+                  action: "建立权限、状态恢复和失败隔离的最小技术基线。",
+                  rationale: "长任务能力会把可靠性和权限风险放大到完整流程。",
+                  firstStep: "48 小时内完成一次断点恢复和越权失败演练。",
+                  stopCondition: "如果无法限制工具权限或无法恢复中断任务，则停止扩面。",
+                  eventSlugs: ["weekly-event"],
+                },
+              ],
+              uncertainties: [
+                {
+                  question: "平台是否真的提高复杂任务的端到端完成率？",
+                  evidenceBoundary: "当前只有发布方产品说明，没有独立采用与成本数据。",
+                  nextSignal: "等待客户案例、失败率、人工接管和单位任务成本数据。",
+                  eventSlugs: ["weekly-event"],
+                },
+              ],
+              watchlist: [
+                {
+                  item: "复杂任务完成率",
+                  trigger: "出现可复现的独立任务集和连续运行结果。",
+                  eventSlugs: ["weekly-event"],
+                },
+                {
+                  item: "权限与恢复能力",
+                  trigger: "出现企业权限模型、审计日志和失败恢复证据。",
+                  eventSlugs: ["weekly-event"],
+                },
+              ],
+            },
+          };
+        },
+      },
+    );
+
+    expect(result.body).toContain("## 给决策者的行动卡");
+    expect(result.body).toContain("48 小时第一步");
+    expect(result.body).toContain("停止条件");
+    expect(result.body).toContain("https://barretlee.github.io/agent-pulse/events/weekly-event/");
+    expect(result.body).not.toContain("```json");
+    expect(result.usage.totalTokens).toBe(300);
   });
 
   it("does not render a weekly Issue when no public Event clears the gate", () => {

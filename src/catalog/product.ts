@@ -30,6 +30,16 @@ export const capabilities = [
       "daily data refresh and Pages deployment, weekly source audit, serialized writers and monotonic snapshot merge",
   },
   {
+    slug: "ai-event-convergence",
+    name: "AI 事件收敛与决策周报",
+    domain: "intelligence",
+    status: "experimental",
+    maturity: 42,
+    release: "unreleased",
+    evidence:
+      "DeepSeek V4 Flash produces schema-validated Event drafts and weekly decision cards behind evidence, readiness and public-DTO gates",
+  },
+  {
     slug: "public-source-observations",
     name: "公开来源观察流",
     domain: "sensing",
@@ -520,10 +530,12 @@ export const releases = [
     status: "unreleased",
     version: "unreleased",
     date: "",
-    name: "Evidence First Render",
+    name: "AI Convergence and Evidence First Render",
     summary:
-      "阶段证据默认可见，修复行动参考 tabs 滚动，让 GitHub 周报只在有关键变化时发布，并实时刷新 Star。",
+      "用受证据门禁约束的 AI 收敛 Event 与决策周报，同时让阶段证据默认可见、修复行动参考滚动并实时刷新 Star。",
     capabilities: [
+      "DeepSeek Event 结构化收敛",
+      "AI 决策周报",
       "阶段证据默认展示",
       "行动参考 tabs 滚动修复",
       "紧凑 GitHub 周报",
@@ -531,6 +543,9 @@ export const releases = [
       "实时 GitHub Star",
     ],
     changes: [
+      "DeepSeek 只处理已有一手证据的 review Event，结构化结果必须通过 Schema、证据引用、主线与 readiness 门禁后才能发布",
+      "周报只读取公开 DTO，按核心判断、判断变化、角色决策、待验证项和下周观察生成结构化草稿，再由程序确定性渲染 Markdown",
+      "Actions Secret 只在对应步骤注入，运行摘要不记录密钥、原始响应或私有字段",
       "趋势详情的阶段证据退出全局滚入动画，其他模块动效保持不变",
       "行动参考 tabs 关闭纵向溢出，只在极窄屏保留横向容错",
       "周报按 Event 去重，只保留最多三个关键变化和三项行动；空趋势合并，覆盖指标默认折叠",

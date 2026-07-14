@@ -51,6 +51,7 @@
     "release:notes": "tsx src/cli/release-notes.ts",
     "export": "tsx src/cli/export.ts",
     "auto:publish": "tsx src/cli/auto-publish.ts",
+    "ai:enrich": "tsx src/cli/enrich-events.ts",
     "check": "npm run lint && npm run typecheck && npm test && npm run export"
   },
   "keywords": [

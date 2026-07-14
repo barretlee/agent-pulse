@@ -87,6 +87,17 @@ jobs:
       - name: Remove unattached aggregator provenance debt
         run: npm run repair:provenance -- --confirm
 
+      - name: Enrich evidence-ready review Events with DeepSeek
+        env:
+          AI_ENRICHMENT_ENABLED: "true"
+          AI_ENRICHMENT_MAX_EVENTS: "8"
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          DEEPSEEK_MODEL: deepseek-v4-flash
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run ai:enrich -- --require-success | tee "$RUNNER_TEMP/ai-enrichment.json"
+
       - name: Generate and publish qualified Scout opportunities
         run: npm run scout:generate -- 12
 
@@ -120,6 +131,10 @@ jobs:
           fi
 
       - name: Render an eligible weekly intelligence review
+        env:
+          AI_ENRICHMENT_ENABLED: "true"
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          DEEPSEEK_MODEL: deepseek-v4-flash
         shell: bash
         run: |
           set -euo pipefail
@@ -130,6 +145,8 @@ jobs:
           publish_weekly=false
           if [[ "$PUBLISH_WEEKLY" == "true" || ( "$weekday" == "7" && "$hour" -ge 20 ) ]]; then
             npm run --silent weekly:issue -- \
+              --ai \
+              --require-success \
               --timeline dist/data/timeline.json \
               --scout dist/data/scout.json \
               --product dist/data/product.json \
@@ -184,7 +201,9 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: quality-evidence-${{ github.run_id }}
-          path: ${{ runner.temp }}/evaluation.json
+          path: |
+            ${{ runner.temp }}/evaluation.json
+            ${{ runner.temp }}/ai-enrichment.json
           retention-days: 14
 
       - name: Create or update this week's GitHub Issue
