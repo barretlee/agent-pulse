@@ -2,13 +2,13 @@ import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { transform } from "esbuild";
 import type { Kysely } from "kysely";
-import { industryNarratives } from "../catalog/history.js";
 import { influencerCatalog } from "../catalog/influencers.js";
 import { capabilities, productVersion, releases, roadmap } from "../catalog/product.js";
 import type { AppConfig } from "../config/env.js";
 import { parseJson, Repository } from "../db/repository.js";
 import type { DatabaseSchema } from "../db/types.js";
 import { evaluateSystem } from "./evaluate.js";
+import { loadMergedIndustryNarratives } from "./stage-promotion.js";
 import type {
   EnrichedEvent,
   IndustryNarratives,
@@ -29,6 +29,7 @@ import { renderStaticPages } from "./static-site/pages.js";
 export async function exportStaticSite(db: Kysely<DatabaseSchema>, config: AppConfig) {
   const repository = new Repository(db);
   const evaluation = await evaluateSystem(db);
+  const narratives = await loadMergedIndustryNarratives(config.rootDir);
   const [events, tracks, actors, resources, view, scout, latestSourceChecks, signals] =
     await Promise.all([
       repository.publicEvents(),
@@ -189,7 +190,7 @@ export async function exportStaticSite(db: Kysely<DatabaseSchema>, config: AppCo
     writeJson(join(config.distDir, "data/narratives.json"), {
       schemaVersion: 1,
       generatedAt,
-      ...industryNarratives,
+      ...narratives,
     }),
     writeJson(join(config.distDir, "data/product.json"), {
       schemaVersion: 1,
@@ -233,12 +234,12 @@ export async function exportStaticSite(db: Kysely<DatabaseSchema>, config: AppCo
     influencers: publicInfluencers,
     scout: scout as PublicScoutInsight[],
     narratives: {
-      horizon: { ...industryNarratives.horizon },
-      eras: industryNarratives.eras.map((era) => ({
+      horizon: { ...narratives.horizon },
+      eras: narratives.eras.map((era) => ({
         ...era,
         projects: era.projects.map((project) => ({ ...project })),
       })),
-      tracks: industryNarratives.tracks.map((track) => ({
+      tracks: narratives.tracks.map((track) => ({
         ...track,
         stages: track.stages.map((stage) => ({ ...stage })),
         lenses: track.lenses.map((lens) => ({

@@ -1,7 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { fingerprintPublicContent } from "../src/cli/public-content-fingerprint.js";
+import {
+  fingerprintPublicContent,
+  PUBLIC_CONTENT_FILES,
+} from "../src/cli/public-content-fingerprint.js";
 
 describe("public content fingerprint", () => {
+  it("includes trend narratives as material public content", () => {
+    expect(PUBLIC_CONTENT_FILES).toContain("narratives.json");
+  });
+
   it("ignores export and source-check timestamps", () => {
     const first = fingerprintPublicContent([
       {

@@ -52,6 +52,7 @@
     "export": "tsx src/cli/export.ts",
     "auto:publish": "tsx src/cli/auto-publish.ts",
     "ai:enrich": "tsx src/cli/enrich-events.ts",
+    "narrative:stage": "tsx src/cli/promote-narrative-stage.ts",
     "check": "npm run lint && npm run typecheck && npm test && npm run export"
   },
   "keywords": [

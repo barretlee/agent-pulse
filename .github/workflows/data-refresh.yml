@@ -133,7 +133,112 @@ jobs:
           set -euo pipefail
           git fetch origin main
           git show origin/main:data/snapshot/v1.json > "$RUNNER_TEMP/remote-snapshot.json"
+          git show origin/main:data/narratives/stage-promotions.json > data/narratives/stage-promotions.json
           npm run db:snapshot -- merge --file="$RUNNER_TEMP/remote-snapshot.json"
+
+      - name: Assess a major narrative stage promotion with DeepSeek V4 Pro
+        id: stage_proposal
+        env:
+          AI_STAGE_PROMOTION_ENABLED: "true"
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          DEEPSEEK_STAGE_MODEL: deepseek-v4-pro
+        shell: bash
+        run: |
+          set -euo pipefail
+          set +e
+          npm run --silent narrative:stage -- propose \
+            --candidate-path "$RUNNER_TEMP/stage-promotion-candidate.json" \
+            | tee "$RUNNER_TEMP/stage-promotion.json"
+          status="${PIPESTATUS[0]}"
+          set -e
+          if [[ "$status" -ne 0 ]] || ! node -e 'JSON.parse(require("node:fs").readFileSync(process.argv[1], "utf8"))' "$RUNNER_TEMP/stage-promotion.json"; then
+            printf '%s\n' '{"status":"failed","model":"deepseek-v4-pro","errorCode":"stage_proposal_failed"}' > "$RUNNER_TEMP/stage-promotion.json"
+            echo "status=failed" >> "$GITHUB_OUTPUT"
+            echo "proposed=false" >> "$GITHUB_OUTPUT"
+            echo "::warning title=Stage promotion assessment unavailable::No stage will be added; deterministic snapshot persistence will continue."
+            exit 0
+          fi
+          proposal_status="$(node -e 'const x=JSON.parse(require("node:fs").readFileSync(process.argv[1], "utf8")); process.stdout.write(String(x.status || "unknown"))' "$RUNNER_TEMP/stage-promotion.json")"
+          if [[ "$proposal_status" == "candidate" && -s "$RUNNER_TEMP/stage-promotion-candidate.json" ]]; then
+            echo "proposed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "proposed=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "status=$proposal_status" >> "$GITHUB_OUTPUT"
+
+      - name: Create the milestone Issue and apply the validated stage
+        id: stage_apply
+        if: steps.stage_proposal.outputs.proposed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ACTIONS_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          candidate="$RUNNER_TEMP/stage-promotion-candidate.json"
+          body="$RUNNER_TEMP/stage-promotion-issue.md"
+          title_file="$RUNNER_TEMP/stage-promotion-title.txt"
+          apply_report="$RUNNER_TEMP/stage-promotion-apply.json"
+          set +e
+          npm run --silent narrative:stage -- render-issue --candidate-path "$candidate" --actions-url "$ACTIONS_URL" > "$body"
+          render_status=$?
+          npm run --silent narrative:stage -- render-issue --candidate-path "$candidate" --title > "$title_file"
+          title_status=$?
+          set -e
+          if [[ "$render_status" -ne 0 || "$title_status" -ne 0 ]]; then
+            printf '%s\n' '{"status":"failed","errorCode":"stage_issue_render_failed"}' > "$apply_report"
+            echo "status=failed" >> "$GITHUB_OUTPUT"
+            echo "::warning title=Stage milestone Issue skipped::Validated candidate could not be rendered safely."
+            exit 0
+          fi
+          marker="$(node -e 'const x=JSON.parse(require("node:fs").readFileSync(process.argv[1], "utf8")); process.stdout.write(x.marker)' "$candidate")"
+          title="$(<"$title_file")"
+          set +e
+          gh label create "stage:milestone" --color 5319e7 --description "Evidence-gated major narrative stage" --force
+          label_status=$?
+          issue_number="$(gh issue list --state all --label "stage:milestone" --limit 100 --json number,body \
+            --jq "first(.[] | select(.body | contains(\"$marker\"))) | .number // empty")"
+          list_status=$?
+          set -e
+          if [[ "$label_status" -ne 0 || "$list_status" -ne 0 ]]; then
+            printf '%s\n' '{"status":"failed","errorCode":"stage_issue_lookup_failed"}' > "$apply_report"
+            echo "status=failed" >> "$GITHUB_OUTPUT"
+            echo "::warning title=Stage milestone Issue skipped::The repository label or existing milestone Issue could not be checked."
+            exit 0
+          fi
+          set +e
+          if [[ -n "$issue_number" ]]; then
+            gh issue edit "$issue_number" --title "$title" --body-file "$body" --add-label "stage:milestone"
+            issue_status=$?
+            if [[ "$issue_status" -eq 0 ]]; then gh issue reopen "$issue_number" >/dev/null 2>&1 || true; fi
+            issue_url="$(gh issue view "$issue_number" --json url --jq .url 2>/dev/null)"
+          else
+            issue_url="$(gh issue create --title "$title" --body-file "$body" --label "stage:milestone")"
+            issue_status=$?
+            issue_number="${issue_url##*/}"
+          fi
+          set -e
+          if [[ "$issue_status" -ne 0 || -z "$issue_number" || -z "$issue_url" ]]; then
+            printf '%s\n' '{"status":"failed","errorCode":"stage_issue_upsert_failed"}' > "$apply_report"
+            echo "status=failed" >> "$GITHUB_OUTPUT"
+            echo "::warning title=Stage milestone Issue skipped::The candidate was not persisted because its dedicated Issue could not be created."
+            exit 0
+          fi
+          set +e
+          npm run --silent narrative:stage -- apply \
+            --candidate-path "$candidate" \
+            --issue-number "$issue_number" \
+            --issue-url "$issue_url" | tee "$apply_report"
+          apply_status="${PIPESTATUS[0]}"
+          set -e
+          if [[ "$apply_status" -ne 0 ]]; then
+            printf '%s\n' '{"status":"failed","errorCode":"stage_apply_failed"}' > "$apply_report"
+            echo "status=failed" >> "$GITHUB_OUTPUT"
+            gh issue comment "$issue_number" --body "⚠️ 本次 Actions 未能把候选阶段写入版本化数据，因此该阶段尚未生效。请以关联 Actions 与后续数据提交为准。" >/dev/null 2>&1 || true
+            echo "::warning title=Stage candidate not persisted::The milestone Issue remains as visible audit evidence; deterministic snapshot persistence will continue."
+            exit 0
+          fi
+          echo "status=applied" >> "$GITHUB_OUTPUT"
 
       - name: Export converged public content and detect a material change
         id: public
@@ -157,14 +262,16 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -f data/snapshot/v1.json
-          git diff --check -- data/snapshot/v1.json
-          if grep -E '"(token|secret|password|cookie|authorization|api[_-]?key)"[[:space:]]*:' data/snapshot/v1.json; then
-            echo "Sensitive key detected in repository snapshot" >&2
+          test -s data/snapshot/v1.json
+          test -s data/narratives/stage-promotions.json
+          node -e 'JSON.parse(require("node:fs").readFileSync(process.argv[1], "utf8"))' data/narratives/stage-promotions.json
+          git diff --check -- data/snapshot/v1.json data/narratives/stage-promotions.json
+          if grep -E '"(token|secret|password|cookie|authorization|api[_-]?key|reasoning|prompt|completion)"[[:space:]]*:' data/snapshot/v1.json data/narratives/stage-promotions.json; then
+            echo "Sensitive or raw model material detected in repository data" >&2
             exit 1
           fi
-          if grep -E -- '-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----|/Users/[^/]+/|/home/runner/' data/snapshot/v1.json; then
-            echo "Private material or local path detected in repository snapshot" >&2
+          if grep -E -- '-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----|/Users/[^/]+/|/home/runner/' data/snapshot/v1.json data/narratives/stage-promotions.json; then
+            echo "Private material or local path detected in repository data" >&2
             exit 1
           fi
 
@@ -173,7 +280,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          git add -- data/snapshot/v1.json
+          git add -- data/snapshot/v1.json data/narratives/stage-promotions.json
           if git diff --cached --quiet; then
             echo "No material data changes; skipping commit."
             echo "changed=false" >> "$GITHUB_OUTPUT"
@@ -282,6 +389,8 @@ jobs:
           {
             echo "## Data Refresh"
             echo "- AI enrichment: ${{ steps.enrichment.outputs.status || 'not-run' }}"
+            echo "- Stage proposal: ${{ steps.stage_proposal.outputs.status || 'not-run' }}"
+            echo "- Stage apply: ${{ steps.stage_apply.outputs.status || 'skipped' }}"
             echo "- Snapshot changed: ${{ steps.commit.outputs.changed || 'unknown' }}"
             echo "- Weekly render: ${{ steps.weekly.outputs.status || 'not-run' }}"
             echo "- Weekly Issue: ${{ steps.weekly_issue.outcome || 'skipped' }}"
@@ -295,6 +404,8 @@ jobs:
           path: |
             ${{ runner.temp }}/evaluation.json
             ${{ runner.temp }}/ai-enrichment.json
+            ${{ runner.temp }}/stage-promotion.json
+            ${{ runner.temp }}/stage-promotion-apply.json
             ${{ runner.temp }}/weekly-status.json
           if-no-files-found: ignore
           retention-days: 14

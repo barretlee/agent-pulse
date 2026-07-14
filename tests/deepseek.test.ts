@@ -80,4 +80,40 @@ describe("DeepSeek JSON client", () => {
     expect(String(error)).not.toContain("test-secret-value");
     expect(String(error)).not.toContain("bad key");
   });
+
+  it("enables V4 Pro high-effort thinking only when the request asks for it", async () => {
+    const request = vi.fn(async (_url: string | URL | Request, init?: RequestInit) => {
+      const body = JSON.parse(String(init?.body));
+      expect(body).toMatchObject({
+        model: "deepseek-v4-pro",
+        thinking: { type: "enabled" },
+        reasoning_effort: "high",
+        temperature: 0,
+        response_format: { type: "json_object" },
+      });
+      return new Response(
+        JSON.stringify({
+          model: "deepseek-v4-pro",
+          choices: [{ finish_reason: "stop", message: { content: '{"decision":"hold"}' } }],
+        }),
+        { status: 200 },
+      );
+    });
+    const client = new DeepSeekClient({
+      apiKey: "test-secret-value",
+      model: "deepseek-v4-pro",
+      fetch: request as typeof fetch,
+      maxAttempts: 1,
+    });
+
+    await client.completeJson({
+      system: "system",
+      user: "user",
+      thinking: true,
+      reasoningEffort: "high",
+      temperature: 0,
+    });
+
+    expect(request).toHaveBeenCalledOnce();
+  });
 });

@@ -110,6 +110,25 @@ describe("GitHub source governance workflows", () => {
     expect(refresh).toContain("--require-success");
     expect(refresh).toContain("weekly-status.json");
     expect(refresh).toContain("AI weekly brief skipped");
+    expect(refresh).toContain("DEEPSEEK_STAGE_MODEL: deepseek-v4-pro");
+    expect(refresh).toContain('gh label create "stage:milestone"');
+    expect(refresh).toContain('gh issue create --title "$title"');
+    expect(refresh).toContain("npm run --silent narrative:stage -- apply");
+    expect(refresh).toContain("data/narratives/stage-promotions.json");
+    const artifactSection = refresh.slice(refresh.indexOf("name: Upload refresh observability"));
+    expect(artifactSection).not.toContain("stage-promotion-candidate.json");
+    expect(
+      refresh.indexOf("git show origin/main:data/narratives/stage-promotions.json"),
+    ).toBeLessThan(refresh.indexOf("npm run --silent narrative:stage -- propose"));
+    expect(refresh.indexOf("npm run --silent narrative:stage -- propose")).toBeLessThan(
+      refresh.indexOf("npm run --silent narrative:stage -- apply"),
+    );
+    expect(refresh.indexOf('gh issue create --title "$title"')).toBeLessThan(
+      refresh.indexOf("npm run --silent narrative:stage -- apply"),
+    );
+    expect(refresh.indexOf("npm run --silent narrative:stage -- apply")).toBeLessThan(
+      refresh.lastIndexOf("npm run --silent public:fingerprint"),
+    );
     expect(refresh).toContain("if: always()");
     expect(refresh).toContain("if-no-files-found: ignore");
     expect(refresh).not.toContain(

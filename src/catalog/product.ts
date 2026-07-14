@@ -79,6 +79,16 @@ export const capabilities = [
     evidence: "five eras and six executive track narratives with China-position comparisons",
   },
   {
+    slug: "major-stage-promotion",
+    name: "重大里程碑阶段晋级",
+    domain: "intelligence",
+    status: "experimental",
+    maturity: 46,
+    release: "unreleased",
+    evidence:
+      "deterministic rarity gates, DeepSeek V4 Pro high-effort review, evidence allowlists, dedicated GitHub Issues and versioned narrative promotion records",
+  },
+  {
     slug: "primary-source-gate",
     name: "一手事实门禁",
     domain: "governance",
@@ -542,6 +552,7 @@ export const releases = [
       "空周报发布门禁",
       "实时 GitHub Star",
       "Actions 增量数据可靠回流",
+      "重大里程碑阶段晋级",
     ],
     changes: [
       "DeepSeek 只处理已有一手证据的 review Event，结构化结果必须通过 Schema、证据引用、主线与 readiness 门禁后才能发布",
@@ -554,6 +565,8 @@ export const releases = [
       "顶部 Star 在页面加载时请求 GitHub 官方 API；构建值和本地缓存仅作为失败兜底",
       "Data Refresh 先完成快照 merge、隐私校验、commit、push 与 Pages dispatch，再尝试可选 AI 周报；模型失败不会丢失确定性增量",
       "AI 周报结构失败会进行一次有界修复重试并留下安全状态，Monitor 生命周期百分比与 CI 失败定位同步修正",
+      "趋势阶段新增改为极低频晋级：确定性门禁先筛候选，DeepSeek V4 Pro 以高强度思考默认审慎保留，只有通过 Event、Evidence、Source、时间边界和置信度复核后才会创建专属 Issue 并写入版本化阶段记录",
+      "阶段 Issue 必须先于数据落库成功创建，完整记录重大事件、旧阶段失效原因、影响、中国位置、反向信号和下一验证；模型或 Issue 失败不会阻断确定性快照增量回流",
     ],
   },
   {

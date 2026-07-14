@@ -17,6 +17,9 @@
 - Data Refresh 将快照 merge、隐私校验、commit、push 与 Pages dispatch 提前到可选 AI 周报之前；Event enrichment 或周报失败只留下安全 warning 与 artifact，不再丢失已经采集的增量数据。
 - AI 周报对结构校验失败执行一次有界修复重试，并修复 Monitor 将 active 与 degraded 相减导致负百分比、把 active 覆盖误称 healthy 的问题；CI 同时拆分为可定位的 lint、typecheck、test、export 和 build 步骤。
 - Data Refresh 的 AI 增强与系统评测证据改为无 npm banner 的可解析 JSON，并在上传 artifact 前执行 JSON 校验，避免扩展名正确但内容不可被自动审计。
+- 趋势阶段新增改为极低频的重大里程碑晋级：确定性门禁先检查近 14 天、里程碑角色、阶段间隔、高影响高置信事件、独立信源和 Tier 1 证据，再由 DeepSeek V4 Pro 以高强度思考审慎判断，默认保持原阶段。
+- 只有模型置信度、Event / Evidence / Source allowlist、阶段边界和本地一致性校验全部通过，才会先创建带 `stage:milestone` 标签的专属 GitHub Issue，再把新阶段及其证据、信源和 Issue 回链原子写入版本化数据。
+- 重大阶段 Issue 详细说明事件、旧阶段为何不足、业务影响、中国位置、反向信号和下一验证；V4 Pro、Issue 或阶段落库失败只留下安全告警，不阻断快照增量提交与 Pages 更新。
 
 ## [0.10.0] - 2026-07-14
 

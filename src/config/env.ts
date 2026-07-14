@@ -32,6 +32,9 @@ const EnvSchema = z.object({
   AI_ENRICHMENT_ENABLED: booleanEnv,
   AI_ENRICHMENT_MAX_EVENTS: z.coerce.number().int().min(1).max(50).default(8),
   AI_ENRICHMENT_TIMEOUT_MS: z.coerce.number().int().min(5_000).max(120_000).default(60_000),
+  AI_STAGE_PROMOTION_ENABLED: booleanEnv,
+  DEEPSEEK_STAGE_MODEL: z.string().min(3).default("deepseek-v4-pro"),
+  AI_STAGE_PROMOTION_TIMEOUT_MS: z.coerce.number().int().min(10_000).max(180_000).default(120_000),
 });
 
 export type AppConfig = ReturnType<typeof loadConfig>;

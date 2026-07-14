@@ -4,6 +4,9 @@ export interface JsonCompletionRequest {
   system: string;
   user: string;
   maxTokens?: number;
+  thinking?: boolean;
+  reasoningEffort?: "low" | "medium" | "high";
+  temperature?: number;
 }
 
 export interface ModelUsage {
@@ -100,8 +103,9 @@ export class DeepSeekClient implements JsonModelClient {
               { role: "user", content: request.user },
             ],
             response_format: { type: "json_object" },
-            thinking: { type: "disabled" },
-            temperature: 0.1,
+            thinking: { type: request.thinking ? "enabled" : "disabled" },
+            ...(request.reasoningEffort ? { reasoning_effort: request.reasoningEffort } : {}),
+            temperature: request.temperature ?? 0.1,
             max_tokens: request.maxTokens ?? 1_800,
             stream: false,
           }),
