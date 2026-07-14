@@ -96,7 +96,7 @@ export function pageLayout(input: PageChrome): string {
     { key: "timeline", label: t("nav.timeline", locale), route: "timeline/" },
     {
       key: "signals",
-      label: locale === "en" ? "Source Updates" : "来源动态",
+      label: locale === "en" ? "Source Updates" : "来源更新",
       route: "signals/",
     },
     { key: "scout", label: t("nav.scout", locale), route: "scout/" },
@@ -115,7 +115,7 @@ export function pageLayout(input: PageChrome): string {
     {
       key: "signals",
       icon: "menu",
-      label: locale === "en" ? "Updates" : "动态",
+      label: locale === "en" ? "Updates" : "更新",
       route: "signals/",
     },
     { key: "scout", icon: "sparkles", label: t("mobile.scout", locale), route: "scout/" },
@@ -218,7 +218,7 @@ export function pageLayout(input: PageChrome): string {
     <div class="shell footer-grid">
       <div class="footer-brand"><strong>AGENT PULSE</strong><p>${escapeHtml(t("footer.tagline", locale))}</p>${footerSubscriptions(input.github, locale)}${footerContacts(locale)}</div>
       <div class="footer-links">
-        <nav aria-label="${locale === "en" ? "Explore" : "探索"}"><span>${locale === "en" ? "EXPLORE" : "探索"}</span><a href="${prefix}lines/">${escapeHtml(t("footer.lines", locale))}</a><a href="${prefix}industry-evolution/">${locale === "en" ? "Industry Evolution" : "行业演化"}</a><a href="${prefix}timeline/">${escapeHtml(t("footer.timeline", locale))}</a><a href="${prefix}signals/">${locale === "en" ? "Source updates" : "来源动态"}</a><a href="${prefix}scout/">${escapeHtml(t("footer.scout", locale))}</a><a href="${prefix}sources/">${escapeHtml(t("footer.sources", locale))}</a></nav>
+        <nav aria-label="${locale === "en" ? "Explore" : "探索"}"><span>${locale === "en" ? "EXPLORE" : "探索"}</span><a href="${prefix}lines/">${escapeHtml(t("footer.lines", locale))}</a><a href="${prefix}industry-evolution/">${locale === "en" ? "Industry History" : "行业发展历程"}</a><a href="${prefix}timeline/">${escapeHtml(t("footer.timeline", locale))}</a><a href="${prefix}signals/">${locale === "en" ? "Source updates" : "来源更新"}</a><a href="${prefix}scout/">${escapeHtml(t("footer.scout", locale))}</a><a href="${prefix}sources/">${escapeHtml(t("footer.sources", locale))}</a></nav>
         <nav aria-label="${locale === "en" ? "More" : "更多"}"><span>${locale === "en" ? "MORE" : "更多"}</span><a href="${prefix}actors/">${escapeHtml(t("tab.actors", locale))}</a><a href="${prefix}resources/">${escapeHtml(t("tab.resources", locale))}</a><a href="${prefix}legal/">${escapeHtml(t("footer.legal", locale))}</a><a href="${prefix}changelog/">${escapeHtml(t("footer.changelog", locale))}</a></nav>
       </div>
     </div>
@@ -265,8 +265,8 @@ function footerContacts(locale: Locale): string {
 }
 
 function eventDrawerShell(locale: Locale, assetPrefix: string, prefix: string): string {
-  const label = locale === "en" ? "Event evidence drawer" : "事件证据抽屉";
-  const kicker = locale === "en" ? "EVENT BRIEF" : "事件判断";
+  const label = locale === "en" ? "Event detail drawer" : "事件详情抽屉";
+  const kicker = locale === "en" ? "EVENT BRIEF" : "事件解读";
   const close = locale === "en" ? "Close event drawer" : "关闭事件抽屉";
   return `<aside class="timeline-preview event-drawer" id="event-drawer" role="dialog" aria-modal="true" aria-hidden="true" aria-label="${escapeHtml(label)}" data-event-drawer data-timeline-src="${escapeHtml(`${assetPrefix}data/timeline.json`)}" data-event-base="${escapeHtml(`${prefix}events/`)}" inert><header class="drawer-header"><span>${escapeHtml(kicker)}</span><button class="preview-close" type="button" data-event-drawer-close aria-label="${escapeHtml(close)}">${icon("x")}</button></header><div class="event-drawer-content" data-event-drawer-content></div></aside><div class="preview-backdrop" data-event-drawer-backdrop hidden></div>`;
 }

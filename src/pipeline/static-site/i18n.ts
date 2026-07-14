@@ -13,13 +13,13 @@ export const localePaths: Record<Locale, string> = {
 const translations: Record<string, Record<Locale, string>> = {
   // ─── Navigation ────────────────────────────────────────────
   "nav.home": { "zh-CN": "关键变化", en: "Latest Shifts" },
-  "nav.lines": { "zh-CN": "趋势判断", en: "Industry Shifts" },
-  "nav.timeline": { "zh-CN": "事件脉络", en: "Event Stories" },
-  "nav.scout": { "zh-CN": "行动参考", en: "Action Ideas" },
-  "nav.changelog": { "zh-CN": "Changelog", en: "Changelog" },
+  "nav.lines": { "zh-CN": "领域趋势", en: "Industry Trends" },
+  "nav.timeline": { "zh-CN": "事件时间线", en: "Event Timeline" },
+  "nav.scout": { "zh-CN": "行动建议", en: "Action Ideas" },
+  "nav.changelog": { "zh-CN": "产品更新", en: "Product Updates" },
   "mobile.home": { "zh-CN": "变化", en: "Shifts" },
   "mobile.lines": { "zh-CN": "趋势", en: "Shifts" },
-  "mobile.timeline": { "zh-CN": "脉络", en: "Stories" },
+  "mobile.timeline": { "zh-CN": "时间线", en: "Timeline" },
   "mobile.scout": { "zh-CN": "行动", en: "Actions" },
   "mobile.more": { "zh-CN": "来源", en: "Sources" },
 
@@ -40,12 +40,12 @@ const translations: Record<string, Record<Locale, string>> = {
 
   // ─── Footer ────────────────────────────────────────────────
   "footer.tagline": { "zh-CN": "用证据看清 AI 行业变化。", en: "See AI clearly through evidence." },
-  "footer.lines": { "zh-CN": "主线", en: "Strategic Lines" },
-  "footer.timeline": { "zh-CN": "事件时间线", en: "Timeline" },
-  "footer.scout": { "zh-CN": "行动参考", en: "Action Ideas" },
-  "footer.sources": { "zh-CN": "覆盖与来源", en: "Coverage & Sources" },
+  "footer.lines": { "zh-CN": "领域趋势", en: "Industry Trends" },
+  "footer.timeline": { "zh-CN": "事件时间线", en: "Event Timeline" },
+  "footer.scout": { "zh-CN": "行动建议", en: "Action Ideas" },
+  "footer.sources": { "zh-CN": "信息来源", en: "Sources" },
   "footer.legal": { "zh-CN": "版权与纠错", en: "Legal & Corrections" },
-  "footer.changelog": { "zh-CN": "Changelog", en: "Changelog" },
+  "footer.changelog": { "zh-CN": "产品更新", en: "Product Updates" },
   "footer.principles": {
     "zh-CN": "一手来源优先 · 事实与判断分离 · 证据可追溯",
     en: "Primary sources first · Facts separated from analysis · Evidence traceable",
@@ -70,8 +70,8 @@ const translations: Record<string, Record<Locale, string>> = {
     "zh-CN": "{count} 个独立来源",
     en: "{count} independent sources",
   },
-  "home.verifyEvidence": { "zh-CN": "读完整判断", en: "Read the Full Assessment" },
-  "home.viewTimeline": { "zh-CN": "查看事情如何发展", en: "See How It Developed" },
+  "home.verifyEvidence": { "zh-CN": "查看完整分析", en: "Read the Full Analysis" },
+  "home.viewTimeline": { "zh-CN": "查看完整事件", en: "View the Full Event" },
   "home.lensWhy": { "zh-CN": "为什么重要", en: "Why It Matters" },
   "home.lensWho": { "zh-CN": "影响谁", en: "Who It Affects" },
   "home.lensNext": { "zh-CN": "接下来观察", en: "What to Watch Next" },
@@ -85,12 +85,20 @@ const translations: Record<string, Record<Locale, string>> = {
   },
   // Home — Strategic lines section
   "home.sectionLines": { "zh-CN": "04 / INDUSTRY SHIFTS", en: "04 / INDUSTRY SHIFTS" },
-  "home.sectionLinesTitle": { "zh-CN": "行业趋势", en: "Industry Shifts" },
+  "home.sectionLinesTitle": { "zh-CN": "六个领域趋势", en: "Six Industry Trends" },
+  "home.sectionLinesDesc": {
+    "zh-CN": "从六个领域查看行业方向、关键事件和下一观察点。",
+    en: "Follow the direction, key events, and next watchpoint across six industry areas.",
+  },
 
   // Home — Recent evidence section
   "home.sectionEvidence": { "zh-CN": "02 / ALSO WORTH KNOWING", en: "02 / ALSO WORTH KNOWING" },
   "home.sectionEvidenceTitle": { "zh-CN": "近期变化", en: "Recent Shifts" },
-  "home.openTimeline": { "zh-CN": "查看所有事件的发展脉络", en: "Explore Every Event Story" },
+  "home.sectionEvidenceDesc": {
+    "zh-CN": "最近经过核验、值得继续关注的行业事件。",
+    en: "Recently verified industry events worth following.",
+  },
+  "home.openTimeline": { "zh-CN": "查看全部事件", en: "View All Events" },
 
   // Home — Research section
   "home.sectionResearch": { "zh-CN": "03 / RESEARCH FRONTIER", en: "03 / RESEARCH FRONTIER" },
@@ -120,12 +128,12 @@ const translations: Record<string, Record<Locale, string>> = {
   "home.sectionProduct": { "zh-CN": "06 / PRODUCT EVOLUTION", en: "06 / PRODUCT EVOLUTION" },
   "home.sectionProductTitle": { "zh-CN": "最近发生了哪些变化", en: "What's Changed Recently" },
   "home.sectionProductDesc": {
-    "zh-CN": "Changelog 记录每次更新带来的实际变化。",
+    "zh-CN": "记录每次产品更新带来的实际变化。",
     en: "The changelog records the practical changes delivered in each update.",
   },
   "home.viewChangelog": {
-    "zh-CN": "查看完整产品演进",
-    en: "View Full Product Evolution",
+    "zh-CN": "查看全部产品更新",
+    en: "View All Product Updates",
   },
 
   // Home — GitHub CTA
@@ -182,10 +190,10 @@ const translations: Record<string, Record<Locale, string>> = {
   "home.gatewayProduct": { "zh-CN": "了解我们如何得出判断", en: "See How We Reach a Judgment" },
   "home.gatewayProductStat": { "zh-CN": "{count} 项能力", en: "{count} capabilities" },
   "home.gatewayProductDesc": {
-    "zh-CN": "公开判断方法、证据边界，以及目前还不够可靠的地方。",
+    "zh-CN": "了解事实如何核对、分析如何更新，以及目前还不够可靠的内容。",
     en: "See the method, evidence boundaries, and what is not yet reliable enough.",
   },
-  "home.enterTool": { "zh-CN": "继续了解", en: "Continue" },
+  "home.enterTool": { "zh-CN": "打开页面", en: "Open Page" },
 
   // Home — Coverage bar
   "home.coveragePrimary": { "zh-CN": "一手覆盖", en: "Primary Coverage" },
@@ -195,15 +203,15 @@ const translations: Record<string, Record<Locale, string>> = {
 
   // ─── Lines ─────────────────────────────────────────────────
   "lines.heroTitle": {
-    "zh-CN": "六个视角",
-    en: "Six Perspectives",
+    "zh-CN": "六个领域趋势",
+    en: "Six Industry Trends",
   },
   "lines.heroDesc": {
-    "zh-CN": "在一页中查看每个趋势的阶段、证据、决策影响和后续观察点。",
-    en: "See each trend's phases, evidence, decision impact, and next watchpoints on one page.",
+    "zh-CN": "查看六个领域目前走向哪里、经历了哪些变化，以及下一步要观察什么。",
+    en: "See where six AI industry areas are heading, how they changed, and what to watch next.",
   },
   "lines.statusEvents": { "zh-CN": "{count} 个公开事件", en: "{count} public events" },
-  "lines.selectLine": { "zh-CN": "选择一条主线开始", en: "Pick a line to start" },
+  "lines.selectLine": { "zh-CN": "选择一个领域开始", en: "Pick an area to start" },
   "lines.arcTitle": {
     "zh-CN": "行业演化",
     en: "Industry Evolution",
@@ -218,23 +226,23 @@ const translations: Record<string, Record<Locale, string>> = {
   "lines.flowCapital": { "zh-CN": "资本与竞争", en: "Capital & Competition" },
 
   // Lines — detail
-  "lines.phases": { "zh-CN": "01 / PHASES", en: "01 / PHASES" },
-  "lines.phasesTitle": { "zh-CN": "阶段轨迹", en: "Phase Trajectory" },
+  "lines.phases": { "zh-CN": "01 / 趋势变化", en: "01 / TREND HISTORY" },
+  "lines.phasesTitle": { "zh-CN": "趋势变化轨迹", en: "How the Trend Changed" },
   "lines.phasesDesc": {
-    "zh-CN": "每个趋势按时间分为不同阶段。横向滚动查看阶段，具体事实请以关联事件和原始资料为准。",
-    en: "Each trend is divided into phases over time. Scroll horizontally and verify the details in the linked events and source material.",
+    "zh-CN": "按时间查看这个领域从早期到现在经历的主要变化。",
+    en: "Follow the major changes in this area from its early phase to today.",
   },
-  "lines.evidenceSpine": { "zh-CN": "02 / EVIDENCE SPINE", en: "02 / EVIDENCE SPINE" },
-  "lines.evidenceSpineTitle": { "zh-CN": "阶段证据", en: "Phase Evidence" },
+  "lines.evidenceSpine": { "zh-CN": "02 / 关键依据", en: "02 / SUPPORTING EVENTS" },
+  "lines.evidenceSpineTitle": { "zh-CN": "关键事件与证据", en: "Events Behind the Shift" },
   "lines.evidenceSpineDesc": {
-    "zh-CN": "{count} 个公开事件按阶段排列。默认每个阶段显示两个，展开后可查看全部。",
-    en: "{count} public events grouped by phase. Two are shown by default; expand a phase to see the rest.",
+    "zh-CN": "{count} 个已核验事件按变化阶段汇总，展开可查看全部。",
+    en: "{count} verified events grouped by trend phase. Expand a phase to see them all.",
   },
-  "lines.lenses": { "zh-CN": "03 / DECISION LENSES", en: "03 / DECISION LENSES" },
-  "lines.lensesTitle": { "zh-CN": "角色判断", en: "Decision Lenses" },
+  "lines.lenses": { "zh-CN": "03 / 决策影响", en: "03 / DECISION IMPACT" },
+  "lines.lensesTitle": { "zh-CN": "对不同角色的影响", en: "What It Means by Role" },
   "lines.lensesDesc": {
-    "zh-CN": "按角色查看结论、影响、建议动作、后续观察点和相关证据。请结合自身情况独立决策。",
-    en: "For each role, review the conclusion, implications, suggested actions, watchpoints, and supporting evidence. Apply your own judgment.",
+    "zh-CN": "分别查看对经营、投资、技术和产品决策的影响与可行动作。",
+    en: "Review the implications and possible actions for business, investment, technology, and product decisions.",
   },
   "lines.chinaSection": { "zh-CN": "CHINA / GLOBAL", en: "CHINA / GLOBAL" },
   "lines.chinaTitle": {
@@ -242,40 +250,40 @@ const translations: Record<string, Record<Locale, string>> = {
     en: "China in Practice",
   },
   "lines.sparse": {
-    "zh-CN": "当前只有 {count} 个公开节点，仍属于证据稀疏主线。",
+    "zh-CN": "当前只有 {count} 个公开事件，仍需更多资料才能形成稳定判断。",
     en: "Currently only {count} public nodes — still an evidence-sparse line.",
   },
   "lines.waitingNext": {
     "zh-CN": "等待能改变当前判断的官方原始资料。",
     en: "Awaiting official source material that could change the current thesis.",
   },
-  "lines.judgmentLabel": { "zh-CN": "当前判断 · 系统分析", en: "Current Thesis · System Analysis" },
-  "lines.nextLabel": { "zh-CN": "下一观察 · 待验证", en: "Next Observation · To Verify" },
+  "lines.judgmentLabel": { "zh-CN": "当前趋势", en: "Current Direction" },
+  "lines.nextLabel": { "zh-CN": "接下来观察", en: "What to Watch Next" },
   "lines.noChinaPosition": {
     "zh-CN": "当前没有经过审核的同维度对比。",
     en: "No reviewed comparison available for this dimension.",
   },
   "lines.noStages": {
-    "zh-CN": "当前主线尚无阶段叙事。",
+    "zh-CN": "这个领域暂无完整的变化轨迹。",
     en: "No phase narrative for this line yet.",
   },
-  "lines.noEvidence": { "zh-CN": "暂无官方原始资料节点。", en: "No official source nodes yet." },
+  "lines.noEvidence": { "zh-CN": "暂无可核验的相关事件。", en: "No verified events yet." },
   "lines.viewTimeline": {
-    "zh-CN": "在时间轴查看全部节点",
-    en: "View all nodes on the timeline",
+    "zh-CN": "在时间线查看全部事件",
+    en: "View all events on the timeline",
   },
-  "lines.openLine": { "zh-CN": "查看趋势详情", en: "Explore This Trend" },
-  "lines.nodes": { "zh-CN": "{count} 节点", en: "{count} nodes" },
+  "lines.openLine": { "zh-CN": "查看领域分析", en: "View Area Analysis" },
+  "lines.nodes": { "zh-CN": "{count} 个事件", en: "{count} events" },
   "lines.latest": { "zh-CN": "最新 · {date}", en: "Latest · {date}" },
   "lines.waitingEvidence": { "zh-CN": "证据待补", en: "Evidence pending" },
   "lines.nextWait": { "zh-CN": "等待新证据", en: "Waiting for new evidence" },
   "lines.evidenceNodes": {
-    "zh-CN": "{count} EVIDENCE NODES",
-    en: "{count} EVIDENCE NODES",
+    "zh-CN": "{count} 个相关事件",
+    en: "{count} RELATED EVENTS",
   },
-  "lines.verifyEvidence": { "zh-CN": "沿阶段核验证据", en: "Verify evidence by phase" },
-  "lines.openSourceMap": { "zh-CN": "查看来源地图", en: "View Source Map" },
-  "lines.navAria": { "zh-CN": "六个趋势方向", en: "Strategic trends" },
+  "lines.verifyEvidence": { "zh-CN": "查看各阶段依据", en: "Review evidence by phase" },
+  "lines.openSourceMap": { "zh-CN": "查看全部信息来源", en: "View all sources" },
+  "lines.navAria": { "zh-CN": "六个领域趋势", en: "Six industry trends" },
 
   // Lines — role lenses
   "lines.lensCEO": { "zh-CN": "CEO", en: "CEO" },
@@ -305,33 +313,32 @@ const translations: Record<string, Record<Locale, string>> = {
 
   // ─── Timeline ──────────────────────────────────────────────
   "timeline.heroTitle": {
-    "zh-CN": "事件脉络",
-    en: "Event Stories",
+    "zh-CN": "事件时间线",
+    en: "Event Timeline",
   },
   "timeline.heroDesc": {
-    "zh-CN":
-      "同一事件的首次报道、官方更新、外部讨论和行业反馈会按时间排列，最近有进展的事件优先显示。",
-    en: "First reports, official updates, external discussion, and industry responses are arranged chronologically. Recently updated events appear first.",
+    "zh-CN": "按月查看已核验的行业事件和重要研究，可按领域或内容类型筛选。",
+    en: "Browse verified industry events and important research by month, area, or content type.",
   },
   "timeline.statusEvents": { "zh-CN": "{count} 个公开事件", en: "{count} public events" },
   "timeline.statusPrimary": {
     "zh-CN": "{count} 个有官方原始资料",
     en: "{count} backed by official material",
   },
-  "timeline.statusHint": { "zh-CN": "搜索或选择主线", en: "Search or select a line" },
+  "timeline.statusHint": { "zh-CN": "搜索或选择领域", en: "Search or select an area" },
   "timeline.searchPlaceholder": {
     "zh-CN": "搜索主体、技术、事件或关键词",
     en: "Search company, topic, event, or keyword",
   },
-  "timeline.filterAll": { "zh-CN": "全部变化", en: "All Changes" },
-  "timeline.filterPrimary": { "zh-CN": "官方发布", en: "Official Releases" },
-  "timeline.filterResearch": { "zh-CN": "论文与研究", en: "Papers & Research" },
+  "timeline.filterAll": { "zh-CN": "全部事件", en: "All Events" },
+  "timeline.filterPrimary": { "zh-CN": "官方信息", en: "Official Updates" },
+  "timeline.filterResearch": { "zh-CN": "重要研究", en: "Important Research" },
   "timeline.nodes": { "zh-CN": "{count} 个事件", en: "{count} events" },
   "timeline.monthEvents": { "zh-CN": "{count} 个事件", en: "{count} events" },
   "timeline.selectYear": { "zh-CN": "选择时间轴年份", en: "Select timeline year" },
   "timeline.selectMonth": { "zh-CN": "选择时间轴月份", en: "Select timeline month" },
   "timeline.drawerLabel": { "zh-CN": "事件详情抽屉", en: "Event detail drawer" },
-  "timeline.drawerKicker": { "zh-CN": "事件判断", en: "EVENT ASSESSMENT" },
+  "timeline.drawerKicker": { "zh-CN": "事件解读", en: "EVENT BRIEF" },
   "timeline.closePreview": { "zh-CN": "关闭预览", en: "Close preview" },
   "timeline.pendingTrack": { "zh-CN": "待编排", en: "Unassigned" },
   "timeline.searchLabel": { "zh-CN": "时间轴筛选", en: "Timeline filter" },
@@ -361,7 +368,7 @@ const translations: Record<string, Record<Locale, string>> = {
   "timeline.loadMonth": { "zh-CN": "立即加载本月", en: "Load this month now" },
 
   // ─── Event ─────────────────────────────────────────────────
-  "event.breadcrumb": { "zh-CN": "证据时间轴", en: "Evidence Timeline" },
+  "event.breadcrumb": { "zh-CN": "事件时间线", en: "Event Timeline" },
   "event.categoryGeneral": { "zh-CN": "行业事件", en: "Industry Event" },
   "event.unknownEntity": { "zh-CN": "主体未知", en: "Unknown Entity" },
   "event.factStatement": { "zh-CN": "发生了什么", en: "What Happened" },
@@ -386,8 +393,8 @@ const translations: Record<string, Record<Locale, string>> = {
   "event.sourceEvidence": { "zh-CN": "原始证据", en: "Source Evidence" },
   "event.relatedSection": { "zh-CN": "相关事件", en: "Related Events" },
   "event.relatedDesc": {
-    "zh-CN": "相邻事件共享主线，但事实和证据保持独立。",
-    en: "Adjacent events share the line, but facts and evidence remain independent.",
+    "zh-CN": "这些事件属于同一领域，但事实和证据各自独立。",
+    en: "These events belong to the same area, while their facts and evidence remain independent.",
   },
   "event.noRelated": { "zh-CN": "暂无相关公开事件。", en: "No related public events." },
   "event.evidenceCount": { "zh-CN": "{count} 条证据", en: "{count} pieces of evidence" },
@@ -401,7 +408,7 @@ const translations: Record<string, Record<Locale, string>> = {
   "event.developmentDiscussion": { "zh-CN": "外部讨论", en: "External Discussion" },
   "event.developmentResponse": { "zh-CN": "行业反馈", en: "Industry Response" },
   "event.currentAssessment": { "zh-CN": "当前判断", en: "Current Assessment" },
-  "event.untracked": { "zh-CN": "待编排主线", en: "Untracked" },
+  "event.untracked": { "zh-CN": "暂未归入领域", en: "Not yet assigned" },
   "event.pendingEvidence": { "zh-CN": "证据待补", en: "Evidence pending" },
   "event.researchNoticeTitle": {
     "zh-CN": "研究预印本：方法和结果尚待独立复现",
@@ -413,10 +420,11 @@ const translations: Record<string, Record<Locale, string>> = {
   },
 
   // ─── Scout ─────────────────────────────────────────────────
-  "scout.heroTitle": { "zh-CN": "行动参考", en: "Action Ideas" },
+  "scout.heroTitle": { "zh-CN": "行动建议", en: "Action Ideas" },
   "scout.heroDesc": {
-    "zh-CN": "把行业变化转成可以在 7–30 天验证的创业、内容、工作、学习、产物与影响力实验。",
-    en: "Turn industry changes into venture, media, work, learning, artifact, and influence experiments you can validate in 7–30 days.",
+    "zh-CN":
+      "根据已核验的行业变化，给出可在 7–30 天内验证的创业、内容、工作和学习实验。每条都是待验证假设。",
+    en: "Turn verified industry shifts into venture, media, work, and learning experiments that can be tested in 7–30 days. Each item is a hypothesis.",
   },
   "scout.statusHypotheses": { "zh-CN": "{count} 条公开假设", en: "{count} public hypotheses" },
   "scout.statusDisclaimer": { "zh-CN": "假设，不是事实", en: "Hypotheses, not facts" },
@@ -433,10 +441,10 @@ const translations: Record<string, Record<Locale, string>> = {
   },
 
   // ─── Actors ────────────────────────────────────────────────
-  "actors.heroTitle": { "zh-CN": "关键角色", en: "Key Actors" },
+  "actors.heroTitle": { "zh-CN": "公司与机构", en: "Companies & Institutions" },
   "actors.heroDesc": {
-    "zh-CN": "按公司与机构查看其领域、规模和公开入口。",
-    en: "Browse companies and institutions by focus, scale, and official links.",
+    "zh-CN": "查看主要公司和机构正在关注哪些领域，以及它们的官方入口。",
+    en: "See which areas major companies and institutions focus on, with links to their official sites.",
   },
   "actors.statusActors": { "zh-CN": "{count} 个角色", en: "{count} actors" },
   "actors.statusChina": { "zh-CN": "{count} 个中国角色", en: "{count} China-based actors" },
@@ -448,10 +456,10 @@ const translations: Record<string, Record<Locale, string>> = {
   "actors.website": { "zh-CN": "官方网站", en: "Official Website" },
 
   // ─── Resources ─────────────────────────────────────────────
-  "resources.heroTitle": { "zh-CN": "模型成本", en: "Model Costs" },
+  "resources.heroTitle": { "zh-CN": "模型价格", en: "Model Pricing" },
   "resources.heroDesc": {
-    "zh-CN": "把价格、单位、核验时点和官方入口放在一起；第三方比价只作参考。",
-    en: "Price, unit, verification date, and official links on one screen. Third-party comparisons are for reference only.",
+    "zh-CN": "比较主流模型的输入、输出价格、计费单位和官方购买入口。价格以标注的核验日期为准。",
+    en: "Compare input and output prices, billing units, and official purchase links. Prices reflect the stated verification date.",
   },
   "resources.statusCount": { "zh-CN": "{count} 个资源", en: "{count} resources" },
   "resources.statusCheck": { "zh-CN": "购买前重新核验", en: "Re-verify before purchase" },
@@ -469,17 +477,17 @@ const translations: Record<string, Record<Locale, string>> = {
   "resources.inquire": { "zh-CN": "按方案询价", en: "Contact for pricing" },
 
   // ─── Product ───────────────────────────────────────────────
-  "product.heroTitle": { "zh-CN": "判断方法", en: "Method" },
+  "product.heroTitle": { "zh-CN": "我们怎么判断", en: "How We Assess" },
   "product.heroDesc": {
-    "zh-CN": "查看公开事实如何经过核验，形成趋势判断。每一步都附有证据。",
-    en: "See how public facts are verified and turned into trend assessments, with evidence at every step.",
+    "zh-CN": "了解我们如何核对事实、区分分析与预测，并在新证据出现后更新结论。",
+    en: "See how we verify facts, separate analysis from forecasts, and update conclusions when new evidence appears.",
   },
   "product.statusScore": { "zh-CN": "{score}/100 校准分", en: "{score}/100 Calibrated" },
   "product.statusPending": { "zh-CN": "评测待生成", en: "Evaluation Pending" },
   "product.statusCapabilities": { "zh-CN": "{count} 项能力", en: "{count} capabilities" },
   "product.metricVersion": { "zh-CN": "版本", en: "Version" },
   "product.metricSources": { "zh-CN": "来源目录", en: "Source Catalog" },
-  "product.metricObserving": { "zh-CN": "E3 观察", en: "E3 Observing" },
+  "product.metricObserving": { "zh-CN": "观察中", en: "Observing" },
   "product.metricCoverage": { "zh-CN": "证据覆盖", en: "Evidence Coverage" },
   "product.evalTitle": {
     "zh-CN": "评测依据",
@@ -505,10 +513,10 @@ const translations: Record<string, Record<Locale, string>> = {
   "product.sample": { "zh-CN": "样本", en: "Sample" },
 
   // ─── Changelog ─────────────────────────────────────────────
-  "changelog.heroTitle": { "zh-CN": "Changelog", en: "Changelog" },
+  "changelog.heroTitle": { "zh-CN": "产品更新", en: "Product Updates" },
   "changelog.heroDesc": {
-    "zh-CN": "查看每个版本增加了什么、改善了哪些体验，以及相关指标如何变化。",
-    en: "See what each release added, which experiences improved, and how the related metrics changed.",
+    "zh-CN": "查看每个版本新增了什么、修复了什么。",
+    en: "See what each release added and fixed.",
   },
   "changelog.status": { "zh-CN": "{count} 条版本记录", en: "{count} release entries" },
   "changelog.current": { "zh-CN": "当前 v{version}", en: "Current v{version}" },
@@ -522,19 +530,18 @@ const translations: Record<string, Record<Locale, string>> = {
 
   // ─── Sources ───────────────────────────────────────────────
   "sources.heroTitle": {
-    "zh-CN": "来源覆盖",
-    en: "Source Coverage",
+    "zh-CN": "信息来源",
+    en: "Information Sources",
   },
   "sources.heroDesc": {
     "zh-CN":
-      "先查看各技术领域覆盖了多少来源，再核对来源最近是否正常运行。目录中的来源可能仍在验证，尚未进入持续观测。",
-    en: "Start with source coverage by technology, then check whether each source is running normally. Some catalog entries are still being validated and are not yet monitored continuously.",
+      "查看我们跟踪哪些来源、哪些领域仍有缺口，以及每个来源最近是否可用。目录来源不一定已用于公开事实。",
+    en: "See which sources we track, where coverage is still thin, and whether each source is currently usable. Catalog entries are not necessarily used as public evidence.",
   },
-  "sources.portfolioTitle": { "zh-CN": "来源组合", en: "Source Portfolio" },
+  "sources.portfolioTitle": { "zh-CN": "来源构成", en: "Source Mix" },
   "sources.portfolioDesc": {
-    "zh-CN":
-      "按领域、地区、采集方式和最近运行状态查看来源构成。新增来源需要通过隔离验证并持续产出有效信号，才能改善覆盖。",
-    en: "Review the source mix by domain, region, acquisition method, and recent runtime status. New sources improve coverage only after isolated validation and sustained useful output.",
+    "zh-CN": "按领域、地区、获取方式和最近运行状态查看来源分布。",
+    en: "Review the source mix by area, region, acquisition method, and recent runtime status.",
   },
   "sources.portfolioCategory": { "zh-CN": "领域分布", en: "Domains" },
   "sources.portfolioRegion": { "zh-CN": "地域分布", en: "Regions" },
@@ -542,13 +549,12 @@ const translations: Record<string, Record<Locale, string>> = {
   "sources.portfolioRuntime": { "zh-CN": "运行状态", en: "Runtime" },
   "sources.coverageKicker": { "zh-CN": "TECH COVERAGE CHECK", en: "TECH COVERAGE CHECK" },
   "sources.coverageTitle": {
-    "zh-CN": "覆盖与缺口",
-    en: "Coverage Gaps",
+    "zh-CN": "哪些领域还缺信息",
+    en: "Where Information Is Missing",
   },
   "sources.coverageDesc": {
-    "zh-CN":
-      "目录数量只能说明已经找到多少来源。下面结合最近运行状态、渠道类型和缺失项评估实际覆盖。",
-    en: "Catalog size shows how many sources have been identified. Actual coverage also depends on recent health, channel diversity, and remaining gaps.",
+    "zh-CN": "结合来源数量、最近运行状态和缺失类型，判断每个领域的信息是否够用。",
+    en: "Use source count, recent health, and missing source types to judge whether each area has enough coverage.",
   },
   "sources.coverageCovered": { "zh-CN": "覆盖较完整", en: "Well Covered" },
   "sources.coverageWatch": { "zh-CN": "需要补强", en: "Needs Strengthening" },
@@ -559,16 +565,16 @@ const translations: Record<string, Record<Locale, string>> = {
   "sources.coverageMissing": { "zh-CN": "还缺", en: "Still missing" },
   "sources.coverageNext": { "zh-CN": "下一步补强", en: "Next coverage action" },
   "sources.catalogTitle": {
-    "zh-CN": "来源状态",
-    en: "Source Status",
+    "zh-CN": "来源运行状态",
+    en: "Source Runtime Status",
   },
   "sources.catalogDesc": {
-    "zh-CN": "可按名称、领域或地域搜索。健康状态取自最近一次实际检查。",
-    en: "Search by name, domain, or region. Health status comes from the latest live check.",
+    "zh-CN": "按名称、领域或地区搜索；运行状态来自最近一次实际检查。",
+    en: "Search by name, area, or region. Runtime status comes from the latest live check.",
   },
-  "sources.statusTotal": { "zh-CN": "{total} 个目录源", en: "{total} catalog sources" },
-  "sources.statusObserving": { "zh-CN": "{total} 个 E3 观察", en: "{total} E3 observing" },
-  "sources.statusActive": { "zh-CN": "{total} 个 E4 active", en: "{total} E4 active" },
+  "sources.statusTotal": { "zh-CN": "{total} 个已收录来源", en: "{total} catalog sources" },
+  "sources.statusObserving": { "zh-CN": "{total} 个观察中", en: "{total} under observation" },
+  "sources.statusActive": { "zh-CN": "{total} 个稳定使用", en: "{total} in production" },
   "sources.levelE0Desc": { "zh-CN": "已记录名称和入口", en: "Name and endpoint recorded" },
   "sources.levelE1Desc": { "zh-CN": "当前可访问", en: "Currently accessible" },
   "sources.levelE2Desc": {
@@ -588,8 +594,8 @@ const translations: Record<string, Record<Locale, string>> = {
     en: "Search sources, region, or type",
   },
   "sources.filterAll": { "zh-CN": "全部", en: "All" },
-  "sources.filterActive": { "zh-CN": "Active", en: "Active" },
-  "sources.filterObserving": { "zh-CN": "E3 观察", en: "E3 Observing" },
+  "sources.filterActive": { "zh-CN": "稳定使用", en: "In Production" },
+  "sources.filterObserving": { "zh-CN": "观察中", en: "Observing" },
   "sources.filterChina": { "zh-CN": "中国", en: "China" },
   "sources.contributeTitle": {
     "zh-CN": "推荐来源",
@@ -685,12 +691,12 @@ const translations: Record<string, Record<Locale, string>> = {
     en: "Signal Not Found",
   },
   "notFound.body": {
-    "zh-CN": "页面可能已经移动、合并或撤回。你可以回到关键变化，或沿主线继续阅读。",
+    "zh-CN": "页面可能已经移动、合并或撤回。你可以回到关键变化，或继续查看领域趋势。",
     en: "The page may have been moved, merged, or removed. Return to the latest shifts or continue reading along a strategic line.",
   },
   "notFound.home": { "zh-CN": "返回首页", en: "Back to Home" },
-  "notFound.lines": { "zh-CN": "六条主线", en: "Strategic Lines" },
-  "notFound.timeline": { "zh-CN": "证据时间轴", en: "Evidence Timeline" },
+  "notFound.lines": { "zh-CN": "领域趋势", en: "Industry Trends" },
+  "notFound.timeline": { "zh-CN": "事件时间线", en: "Event Timeline" },
 
   // ─── Evidence labels ───────────────────────────────────────
   "evidence.primaryMulti": { "zh-CN": "官方来源 · 多源核验", en: "Official · Cross-checked" },
@@ -731,14 +737,14 @@ const translations: Record<string, Record<Locale, string>> = {
   "category.general": { "zh-CN": "行业事件", en: "Industry Event" },
 
   // ─── Tool tabs ─────────────────────────────────────────────
-  "tab.scout": { "zh-CN": "行动参考", en: "Action Ideas" },
-  "tab.actors": { "zh-CN": "关键角色", en: "Key Actors" },
-  "tab.resources": { "zh-CN": "模型成本", en: "Model Costs" },
-  "tab.product": { "zh-CN": "判断方法", en: "Method" },
+  "tab.scout": { "zh-CN": "行动建议", en: "Action Ideas" },
+  "tab.actors": { "zh-CN": "公司与机构", en: "Companies" },
+  "tab.resources": { "zh-CN": "模型价格", en: "Model Pricing" },
+  "tab.product": { "zh-CN": "我们怎么判断", en: "How We Assess" },
   "tab.selectFilter": { "zh-CN": "选择筛选开始", en: "Select a filter to start" },
 
   // ─── Common / misc ─────────────────────────────────────────
-  "common.openLine": { "zh-CN": "打开主线", en: "Open Line" },
+  "common.openLine": { "zh-CN": "查看领域分析", en: "View Area Analysis" },
   "common.unknown": { "zh-CN": "未知", en: "Unknown" },
   "common.pending": { "zh-CN": "待定", en: "Pending" },
   "common.noJudgment": {

@@ -195,17 +195,17 @@ describe("SQLite application", () => {
     );
     const staticPages = [
       ["index.html", "AI 行业关键变化与证据 · Agent Pulse"],
-      ["lines/index.html", "趋势判断 · Agent Pulse"],
-      ["industry-evolution/index.html", "行业演化 · Agent Pulse"],
+      ["lines/index.html", "领域趋势 · Agent Pulse"],
+      ["industry-evolution/index.html", "行业发展历程 · Agent Pulse"],
       ["lines/tech-evolution/index.html", "模型能力与研究 · Agent Pulse"],
-      ["timeline/index.html", "事件脉络 · Agent Pulse"],
-      ["signals/index.html", "来源动态 · Agent Pulse"],
-      ["scout/index.html", "行动参考 · Agent Pulse"],
-      ["actors/index.html", "关键角色 · Agent Pulse"],
-      ["resources/index.html", "模型成本 · Agent Pulse"],
-      ["product/index.html", "判断方法 · Agent Pulse"],
-      ["changelog/index.html", "Changelog · Agent Pulse"],
-      ["sources/index.html", "覆盖与来源 · Agent Pulse"],
+      ["timeline/index.html", "事件时间线 · Agent Pulse"],
+      ["signals/index.html", "来源更新 · Agent Pulse"],
+      ["scout/index.html", "行动建议 · Agent Pulse"],
+      ["actors/index.html", "公司与机构 · Agent Pulse"],
+      ["resources/index.html", "模型价格 · Agent Pulse"],
+      ["product/index.html", "我们怎么判断 · Agent Pulse"],
+      ["changelog/index.html", "产品更新 · Agent Pulse"],
+      ["sources/index.html", "信息来源 · Agent Pulse"],
       ["legal/index.html", "版权与纠错 · Agent Pulse"],
       ["404.html", "页面未找到 · Agent Pulse"],
     ] as const;
@@ -240,8 +240,8 @@ describe("SQLite application", () => {
     expect(home.indexOf('src="./assets/core.js"')).toBeLessThan(home.indexOf("</head>"));
     expect(home.match(/src="\.\/assets\/core\.js"/g)).toHaveLength(1);
     expect(home).toContain("GPT-5.6");
-    expect(home).toContain("LATEST MATERIAL SHIFT");
-    expect(home).toContain("最新趋势判断");
+    expect(home).toContain("ONE OF SIX INDUSTRY TRENDS");
+    expect(home).toContain("领域趋势");
     expect(home).toContain("看清 AI 行业的关键变化");
     expect(home).toContain('class="signal-field"');
     expect(home.match(/class="trend-shift-card reveal"/g)?.length).toBeGreaterThanOrEqual(2);
@@ -256,9 +256,11 @@ describe("SQLite application", () => {
     expect(home).not.toContain("信源网络正在看到什么");
     expect(home).not.toContain("data-random-signal-list");
     expect(home).toContain("data-random-trend-next");
-    expect(home).toContain("换一个");
+    expect(home).toContain("随机领域趋势");
+    expect(home).toContain("换个领域");
+    expect(home).toContain("查看领域分析");
     expect(home).toContain("接下来观察");
-    expect(home).toContain("独立信源");
+    expect(home).toContain("独立来源");
     expect(home).not.toContain('class="signal-object"');
     expect(home).not.toContain('class="signal-orb"');
     expect(home).not.toContain('class="home-hero-path"');
@@ -290,7 +292,7 @@ describe("SQLite application", () => {
     expect(home).toContain("data-github-star-button");
     expect(home).toContain("data-github-star-count");
     expect(home).toContain('data-event-link="blind-spots-bench-vision-language"');
-    expect(home.indexOf("最新趋势判断")).toBeGreaterThan(home.indexOf("看清 AI 行业的关键变化"));
+    expect(home.indexOf("六个领域趋势")).toBeGreaterThan(home.indexOf("看清 AI 行业的关键变化"));
     expect(home).not.toContain("形成判断");
     expect(home).not.toContain("继续深入");
     expect(home).not.toContain('href="./product/"');
@@ -350,7 +352,7 @@ describe("SQLite application", () => {
     );
     expect(siteStyles).toContain(".trend-shift-randomize{justify-self:end;min-height:44px}");
     expect(timelinePage).toContain('class="hero-motion hero-motion-timeline"');
-    expect(timelinePage).toContain("事件脉络");
+    expect(timelinePage).toContain("事件时间线");
     expect(timelinePage).toContain("最近进展");
     expect(timelinePage).toContain('id="event-drawer"');
     expect(timelinePage).toContain('aria-haspopup="dialog"');
@@ -439,7 +441,7 @@ describe("SQLite application", () => {
     expect(overviewNav).toContain('href="../lines/"');
     expect(overviewNav).toContain('aria-current="page"');
     expect(linesPage).toContain("模型能力与研究");
-    expect(linesPage).toContain('aria-label="六个趋势视角"');
+    expect(linesPage).toContain('aria-label="六个领域趋势"');
     expect(linesPage).not.toContain("选择趋势");
     expect(linesPage).not.toContain("EVENT · 8 阶段");
     expect(linesPage).not.toContain('class="trend-switcher-panel');
@@ -452,7 +454,7 @@ describe("SQLite application", () => {
       join(config.distDir, "industry-evolution/index.html"),
       "utf8",
     );
-    expect(evolutionPage).toContain("行业演化");
+    expect(evolutionPage).toContain("行业发展历程");
     expect(evolutionPage).toContain("已收购");
     expect(evolutionPage).toContain("已停止");
     expect(evolutionPage).not.toContain('class="trend-switcher');
@@ -476,20 +478,22 @@ describe("SQLite application", () => {
     expect(trendDetailPage).not.toContain("data-density-value");
     expect(trendDetailPage).not.toContain("data-density-extra");
     expect(trendDetailPage).toContain("data-module-expand");
-    expect(trendDetailPage).toContain("展开轨迹");
+    expect(trendDetailPage).toContain("趋势变化轨迹");
+    expect(trendDetailPage).toContain("展开全部阶段");
+    expect(trendDetailPage).toContain("关键事件与证据");
     expect(trendDetailPage).toContain('class="module-expand-toggle section-module-toggle"');
-    expect(trendDetailPage).toContain("展开完整判断");
-    expect(trendDetailPage).toMatch(/查看全部 \d+ 条证据/);
+    expect(trendDetailPage).toContain("查看完整建议");
+    expect(trendDetailPage).toMatch(/查看全部 \d+ 个事件/);
     expect((trendDetailPage.match(/class="phase-sequence-index"/g) ?? []).length).toBeGreaterThan(
       8,
     );
     const actorsPage = await readFile(join(config.distDir, "actors/index.html"), "utf8");
     expect(actorsPage).toContain('class="hero-motion hero-motion-action"');
-    expect(actorsPage).toContain("关键角色");
+    expect(actorsPage).toContain("公司与机构");
     expect(actorsPage).not.toContain("已收录角色 · 持续观测程度需回到事件证据");
     const actionTabs = actorsPage.match(/<nav class="tool-tabs"[\s\S]*?<\/nav>/)?.[0];
     expect(actionTabs?.match(/<a /g)).toHaveLength(3);
-    expect(actionTabs).not.toContain("判断方法");
+    expect(actionTabs).not.toContain("我们怎么判断");
     const productPage = await readFile(join(config.distDir, "product/index.html"), "utf8");
     expect(productPage).toContain("核对事实");
     expect(productPage).toContain("标明内容性质");
@@ -497,7 +501,7 @@ describe("SQLite application", () => {
     expect(productPage).not.toContain("STATE 1");
     const sourcesPage = await readFile(join(config.distDir, "sources/index.html"), "utf8");
     const signalsPage = await readFile(join(config.distDir, "signals/index.html"), "utf8");
-    expect(signalsPage).toContain("来源动态");
+    expect(signalsPage).toContain("来源更新");
     expect(signalsPage).not.toContain("来源观察 ≠ 已核实事实");
     expect(signalsPage).toContain('class="hero-motion hero-motion-signals"');
     expect(signalsPage).toContain('class="signal-stream"');
@@ -512,14 +516,14 @@ describe("SQLite application", () => {
     expect(signalsPage).toContain('class="signal-region-control"');
     expect(signalsPage).toContain('data-signal-region aria-label="按地域筛选"');
     expect(signalsPage).toContain("assets/icons.svg#chevron-down");
-    expect(sourcesPage).toContain("核心观察者");
+    expect(sourcesPage).toContain("重点关注的人");
     expect(sourcesPage).toContain("宝玉");
-    expect(sourcesPage).toContain("平台受限");
+    expect(sourcesPage).toContain("仅作线索");
     expect(sourcesPage).toContain("Federal Reserve Economic Data (FRED)");
     expect(sourcesPage).toContain("SEC EDGAR APIs");
     expect(timelinePage).toContain("inert");
     expect(timelinePage).not.toContain("data-event-panel");
-    expect(sourcesPage).toContain("覆盖与缺口");
+    expect(sourcesPage).toContain("哪些领域还缺信息");
     expect(sourcesPage).toContain('data-mobile-limit="12"');
     for (const domain of ["Claude Code", "OpenAI / Codex", "Lovable", "MCP", "A2A"]) {
       expect(sourcesPage).toContain(domain);

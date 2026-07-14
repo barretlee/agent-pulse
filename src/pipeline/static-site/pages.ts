@@ -99,7 +99,7 @@ function renderPagesForLocale(model: StaticSiteModel, locale: Locale): StaticPag
       `${lp}industry-evolution/index.html`,
       1,
       "lines",
-      `${locale === "en" ? "Industry Evolution" : "行业演化"} · Agent Pulse`,
+      `${locale === "en" ? "Industry History" : "行业发展历程"} · Agent Pulse`,
       industryEvolutionPage(model, locale),
       locale,
       locale === "en"
@@ -124,7 +124,7 @@ function renderPagesForLocale(model: StaticSiteModel, locale: Locale): StaticPag
       `${lp}signals/index.html`,
       1,
       "signals",
-      `${locale === "en" ? "Source Updates" : "来源动态"} · Agent Pulse`,
+      `${locale === "en" ? "Source Updates" : "来源更新"} · Agent Pulse`,
       signalsPage(model, locale),
       locale,
       locale === "en"
@@ -164,7 +164,7 @@ function renderPagesForLocale(model: StaticSiteModel, locale: Locale): StaticPag
       `${lp}changelog/index.html`,
       1,
       "changelog",
-      `Changelog · Agent Pulse`,
+      `${t("changelog.heroTitle", locale)} · Agent Pulse`,
       changelogPage(model, locale),
       locale,
     ),
@@ -284,31 +284,31 @@ function pageDescription(active: PageKey, locale: Locale): string {
       "Track material AI industry shifts from primary evidence to business impact and the next signal to watch.",
     ],
     lines: [
-      "沿模型研究、Agent、商业化、基础设施、资本与全球创新主线理解 AI 行业阶段变化。",
-      "Understand AI industry shifts across research, agents, commercialization, infrastructure, capital, and global innovation.",
+      "查看模型、Agent、商业化、基础设施、资本和全球创新六个领域的变化方向。",
+      "Follow changes across models, agents, commercialization, infrastructure, capital, and global innovation.",
     ],
     timeline: [
       "按时间、主题与证据置信度浏览 AI 行业事件、高质量研究和后续进展。",
       "Browse AI industry events, high-impact research, and follow-up evidence by time, topic, and confidence.",
     ],
     signals: [
-      "查看官方、研究、专家与行业来源的近期动态，并回到原始材料核验。",
+      "查看官方、研究、专家与行业来源刚发布的内容，并直接打开原文。",
       "Review recent official, research, expert, and industry updates with direct links to the original material.",
     ],
     scout: [
-      "从已发布事件中提取可验证的创业、内容、产品与认知行动参考。",
+      "从已核验事件中提取可验证的创业、内容、工作与学习行动建议。",
       "Turn published events into testable venture, media, product, and learning actions.",
     ],
     actors: [
-      "查看 AI 行业关键公司、机构与人物的领域、地域和公开进展。",
-      "Explore the domains, regions, and public progress of key AI companies, institutions, and people.",
+      "查看 AI 行业主要公司与机构关注的领域、所在地区和官方入口。",
+      "Explore the focus, region, and official links of major AI companies and institutions.",
     ],
     resources: [
       "比较主流 AI 模型与服务的公开价格、适用对象、核验时间和原始来源。",
       "Compare public AI model pricing, intended audiences, verification dates, and original sources.",
     ],
     product: [
-      "了解 Agent Pulse 如何区分事实、判断、预测与机会假设，以及公开发布边界。",
+      "了解 Agent Pulse 如何核对事实、形成分析并标明预测和假设。",
       "Learn how Agent Pulse separates facts, analysis, forecasts, and opportunity hypotheses before publication.",
     ],
     changelog: [
@@ -316,7 +316,7 @@ function pageDescription(active: PageKey, locale: Locale): string {
       "Review Agent Pulse releases, capability changes, data governance, and public-site updates.",
     ],
     sources: [
-      "查看 Agent Pulse AI 来源地图、覆盖缺口、采集方式、生命周期与近期健康状态。",
+      "查看 Agent Pulse 跟踪的信息来源、领域缺口和最近运行状态。",
       "Explore the Agent Pulse AI source map, coverage gaps, acquisition methods, lifecycle, and recent health.",
     ],
     legal: [
@@ -349,7 +349,7 @@ function home(model: StaticSiteModel, locale: Locale): string {
 
   return `<section class="home-page-hero shell"><div><span class="section-kicker">AI INDUSTRY INTELLIGENCE</span><h1>${escapeHtml(locale === "en" ? "See the shifts shaping AI" : "看清 AI 行业的关键变化")}</h1><p>${escapeHtml(locale === "en" ? "Follow each shift from primary evidence to its likely impact and the next point to watch." : "从一手证据出发，了解每项变化的影响和接下来要观察什么。")}</p></div><div class="signal-field" aria-hidden="true"><svg viewBox="0 0 320 220"><path class="signal-link" d="M40 158 C79 127 100 139 132 103 S197 73 226 96 S269 108 294 61"/><path class="signal-link signal-link-secondary" d="M57 69 C91 93 115 71 149 89 S211 135 276 146"/><circle class="signal-pulse" cx="226" cy="96" r="12"/><circle class="signal-pulse signal-pulse-delay" cx="132" cy="103" r="12"/><circle class="signal-node signal-node-a" cx="40" cy="158" r="4"/><circle class="signal-node signal-node-b" cx="57" cy="69" r="3"/><circle class="signal-node signal-node-c" cx="132" cy="103" r="5"/><circle class="signal-node signal-node-d" cx="149" cy="89" r="3"/><circle class="signal-node signal-node-e" cx="226" cy="96" r="5"/><circle class="signal-node signal-node-f" cx="276" cy="146" r="3"/><circle class="signal-node signal-node-g" cx="294" cy="61" r="4"/></svg></div></section>
     <section class="today-section shell">
-      <header class="today-heading"><div><span class="section-kicker">LATEST MATERIAL SHIFT</span><h2>${escapeHtml(locale === "en" ? "Latest Trend Judgment" : "最新趋势判断")}</h2></div></header>
+      <header class="today-heading"><div><span class="section-kicker">ONE OF SIX INDUSTRY TRENDS</span><h2>${escapeHtml(locale === "en" ? "Random Industry Trend" : "随机领域趋势")}</h2></div></header>
       ${latestShift}
     </section>
 
@@ -390,9 +390,9 @@ function trendShiftCandidate(
   const evidenceItems = trackEvents.flatMap((event) => event.evidence);
   const independentSources = evidenceSourceCountFor(evidenceItems);
   return `<article class="trend-shift-card reveal" data-trend-slug="${escapeHtml(activeTrack.slug)}" style="--track-color:${escapeHtml(activeTrack.color)}">
-    <header class="trend-shift-header"><div><span>${escapeHtml(activeTrack.perspective)}</span><a href="__PREFIX__lines/${escapeHtml(activeTrack.slug)}/">${escapeHtml(activeTrack.name)} ${icon("arrow-right")}</a></div><button class="trend-shift-randomize" type="button" data-random-trend-next aria-label="${locale === "en" ? "Show another trend judgment" : "换一个趋势判断"}"><span aria-hidden="true">↻</span>${locale === "en" ? "Another" : "换一个"}</button></header>
-    <div class="trend-shift-body"><section class="trend-shift-judgment"><span>${locale === "en" ? "CURRENT ASSESSMENT" : "当前判断"}</span><h2>${escapeHtml(narrative.now)}</h2><div class="trend-shift-dimensions"><section><span>${locale === "en" ? "Trend shift" : "趋势变化"}</span><p>${escapeHtml(narrative.thesis)}</p></section><section><span>${locale === "en" ? "What to watch" : "接下来观察"}</span><p>${escapeHtml(narrative.next)}</p></section></div></section><aside class="trend-shift-evidence"><header><div><span>${locale === "en" ? "LATEST EVIDENCE" : "最新证据"}</span><strong>${shiftEvidence.length} ${locale === "en" ? "supporting events" : "项相关事件"}</strong></div><a href="__PREFIX__timeline/?track=${escapeHtml(activeTrack.slug)}">${locale === "en" ? "All evidence" : "全部证据"}</a></header><div>${shiftEvidence.map((event) => `<a data-event-link="${escapeHtml(event.slug)}" href="__PREFIX__events/${escapeHtml(event.slug)}/"><time>${escapeHtml(formatDate(latestDevelopmentAt(event), locale))}</time><strong>${escapeHtml(event.title)}</strong><small>${t("home.sourceCount", locale).replace("{count}", String(evidenceSourceCount(event)))}</small></a>`).join("")}</div></aside></div>
-    <footer class="trend-shift-footer"><div><span>${locale === "en" ? "Public events" : "公开事件"}<strong>${trackEvents.length}</strong></span><span>${locale === "en" ? "Evidence" : "证据"}<strong>${evidenceItems.length}</strong></span><span>${locale === "en" ? "Independent sources" : "独立信源"}<strong>${independentSources}</strong></span></div><a class="button primary" href="__PREFIX__lines/${escapeHtml(activeTrack.slug)}/">${locale === "en" ? "Open trend judgment" : "查看趋势判断"} ${icon("arrow-right")}</a></footer>
+    <header class="trend-shift-header"><div><span>${locale === "en" ? "INDUSTRY AREA" : "领域趋势"}</span><a href="__PREFIX__lines/${escapeHtml(activeTrack.slug)}/">${escapeHtml(activeTrack.name)} ${icon("arrow-right")}</a></div><button class="trend-shift-randomize" type="button" data-random-trend-next aria-label="${locale === "en" ? "Show another industry area" : "换个领域"}"><span aria-hidden="true">↻</span>${locale === "en" ? "Another Area" : "换个领域"}</button></header>
+    <div class="trend-shift-body"><section class="trend-shift-judgment"><span>${locale === "en" ? "CURRENT DIRECTION" : "当前趋势"}</span><h2>${escapeHtml(narrative.now)}</h2><div class="trend-shift-dimensions"><section><span>${locale === "en" ? "Why we see it this way" : "为什么这样判断"}</span><p>${escapeHtml(narrative.thesis)}</p></section><section><span>${locale === "en" ? "What to watch next" : "接下来观察"}</span><p>${escapeHtml(narrative.next)}</p></section></div></section><aside class="trend-shift-evidence"><header><div><span>${locale === "en" ? "RECENT SUPPORT" : "最近依据"}</span><strong>${shiftEvidence.length} ${locale === "en" ? "related events" : "个相关事件"}</strong></div><a href="__PREFIX__timeline/?track=${escapeHtml(activeTrack.slug)}">${locale === "en" ? "View related events" : "查看相关事件"}</a></header><div>${shiftEvidence.map((event) => `<a data-event-link="${escapeHtml(event.slug)}" href="__PREFIX__events/${escapeHtml(event.slug)}/"><time>${escapeHtml(formatDate(latestDevelopmentAt(event), locale))}</time><strong>${escapeHtml(event.title)}</strong><small>${t("home.sourceCount", locale).replace("{count}", String(evidenceSourceCount(event)))}</small></a>`).join("")}</div></aside></div>
+    <footer class="trend-shift-footer"><div><span>${locale === "en" ? "Events" : "相关事件"}<strong>${trackEvents.length}</strong></span><span>${locale === "en" ? "Source records" : "证据资料"}<strong>${evidenceItems.length}</strong></span><span>${locale === "en" ? "Independent sources" : "独立来源"}<strong>${independentSources}</strong></span></div><a class="button primary" href="__PREFIX__lines/${escapeHtml(activeTrack.slug)}/">${locale === "en" ? "View area analysis" : "查看领域分析"} ${icon("arrow-right")}</a></footer>
   </article>`;
 }
 
@@ -400,7 +400,7 @@ function signalsPage(model: StaticSiteModel, locale: Locale): string {
   const sourceCount = new Set(model.signals.map((signal) => signal.sourceSlug)).size;
   const latest = model.signals[0]?.publishedAt;
   const initial = model.signals.slice(0, 48);
-  return `<section class="page-hero compact has-motion shell"><span class="section-kicker">SOURCE OBSERVATIONS</span><h1>${escapeHtml(locale === "en" ? "Source Updates" : "来源动态")}</h1><p>${escapeHtml(locale === "en" ? "Browse recent source updates with brief context and direct links. These observations are published as verified events only after they pass the evidence checks." : "浏览各来源的近期更新、简要说明和原文链接。条目通过证据核验后，才会作为事件发布。")}</p>${pageStatus(`${model.signals.length} ${locale === "en" ? "observations" : "条观察"}`, `${sourceCount} ${locale === "en" ? "sources" : "个信源"}`, latest ? formatDate(latest, locale) : "—")}${heroMotion("signals")}</section>
+  return `<section class="page-hero compact has-motion shell"><span class="section-kicker">SOURCE UPDATES</span><h1>${escapeHtml(locale === "en" ? "Source Updates" : "来源更新")}</h1><p>${escapeHtml(locale === "en" ? "See what tracked sources have just published, with direct links to the original material. Items enter the event timeline only after verification." : "查看各来源刚发布的内容和原文链接。这里只是待核验线索，通过证据检查后才会进入事件时间线。")}</p>${pageStatus(`${model.signals.length} ${locale === "en" ? "updates" : "条更新"}`, `${sourceCount} ${locale === "en" ? "sources" : "个来源"}`, latest ? formatDate(latest, locale) : "—")}${heroMotion("signals")}</section>
     <section class="section section-tint"><div class="shell signal-browser" data-signal-browser data-signals-src="__ASSET_PREFIX__data/signals.json" data-page-size="48" data-mobile-page-size="12">
       <div class="signal-browser-toolbar"><label>${icon("search")}<input type="search" data-signal-search placeholder="${locale === "en" ? "Search title, source, category or tag" : "搜索标题、来源、分类或标签"}"></label><div class="signal-region-control"><select data-signal-region aria-label="${locale === "en" ? "Filter by region" : "按地域筛选"}"><option value="all">${locale === "en" ? "All regions" : "全部地域"}</option>${[
         ...new Set(model.signals.map((signal) => signal.sourceRegion)),
@@ -409,7 +409,7 @@ function signalsPage(model: StaticSiteModel, locale: Locale): string {
         .map((region) => `<option value="${escapeHtml(region)}">${escapeHtml(region)}</option>`)
         .join("")}</select>${icon("chevron-down")}</div></div>
       <div class="signal-stream" data-signal-list>${initial.map((signal) => signalCard(signal, locale)).join("")}</div>
-      <div class="signal-browser-footer"><span data-signal-count>${Math.min(initial.length, model.signals.length)} / ${model.signals.length}</span><button class="button quiet" type="button" data-signal-more>${locale === "en" ? "Load more" : "加载更多"}</button></div>
+      <div class="signal-browser-footer"><span data-signal-count>${Math.min(initial.length, model.signals.length)} / ${model.signals.length}</span><button class="button quiet" type="button" data-signal-more>${locale === "en" ? "View more" : "查看更多"}</button></div>
     </div></section>`;
 }
 
@@ -417,7 +417,7 @@ function signalCard(signal: PublicSignal, locale: Locale): string {
   const url = safeExternalLink(signal.url);
   if (!url) return "";
   const tone = signalTone(signal);
-  return `<a class="signal-observation-card${tone ? ` ${tone}` : ""}" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" data-signal-search-value="${escapeHtml([signal.title, signal.description, signal.sourceName, signal.sourceSlug, signal.category, signal.sourceRegion, ...signal.tags].join(" ").toLowerCase())}" data-signal-region-value="${escapeHtml(signal.sourceRegion)}"><div class="signal-observation-meta"><span class="signal-observation-tags"><span class="signal-tag category">${escapeHtml(signal.category)}</span><span class="signal-tag region">${escapeHtml(signal.sourceRegion)}</span></span><time>${escapeHtml(formatDate(signal.publishedAt, locale))}</time></div><h2>${escapeHtml(signal.title)}</h2>${signal.description ? `<p>${escapeHtml(signal.description)}</p>` : ""}<footer><span class="signal-source-name">${escapeHtml(signal.sourceName)} · Tier ${signal.sourceTier}</span><span class="signal-source-action">${locale === "en" ? "Open source" : "查看原文"}${icon("external-link")}</span></footer></a>`;
+  return `<a class="signal-observation-card${tone ? ` ${tone}` : ""}" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" data-signal-search-value="${escapeHtml([signal.title, signal.description, signal.sourceName, signal.sourceSlug, signal.category, signal.sourceRegion, ...signal.tags].join(" ").toLowerCase())}" data-signal-region-value="${escapeHtml(signal.sourceRegion)}"><div class="signal-observation-meta"><span class="signal-observation-tags"><span class="signal-tag category">${escapeHtml(signal.category)}</span><span class="signal-tag region">${escapeHtml(signal.sourceRegion)}</span></span><time>${escapeHtml(formatDate(signal.publishedAt, locale))}</time></div><h2>${escapeHtml(signal.title)}</h2>${signal.description ? `<p>${escapeHtml(signal.description)}</p>` : ""}<footer><span class="signal-source-name">${escapeHtml(signal.sourceName)} · ${escapeHtml(sourceTierLabel(signal.sourceTier, locale))}</span><span class="signal-source-action">${locale === "en" ? "Open source" : "查看原文"}${icon("external-link")}</span></footer></a>`;
 }
 
 function signalTone(signal: PublicSignal): "research" | "high-confidence" | "" {
@@ -436,11 +436,11 @@ function signalTone(signal: PublicSignal): "research" | "high-confidence" | "" {
 
 function industryEvolutionPage(model: StaticSiteModel, locale: Locale): string {
   return `<section class="page-hero compact lines-overview-hero has-motion shell">
-      <span class="section-kicker">2022 → TODAY</span><h1>${escapeHtml(locale === "en" ? "Industry Evolution" : "行业演化")}</h1><p>${escapeHtml(locale === "en" ? "The major product, platform, and capability shifts that shaped the current AI landscape." : "沿产品、平台与能力转折，回看今天的 AI 行业格局如何形成。")}</p>
+      <span class="section-kicker">2022 → TODAY</span><h1>${escapeHtml(locale === "en" ? "Industry History" : "行业发展历程")}</h1><p>${escapeHtml(locale === "en" ? "Review the product, platform, and capability shifts that shaped today's AI industry." : "回看产品、平台和能力如何一步步塑造今天的 AI 行业。")}</p>
       ${heroMotion("lines")}
     </section>
     <section class="section section-tint"><div class="shell">
-      ${sectionHead("INDUSTRY ARC", locale === "en" ? "Evolution Timeline" : "演化脉络", t("lines.arcDesc", locale))}
+      ${sectionHead("INDUSTRY HISTORY", locale === "en" ? "Major Stages" : "主要发展阶段", t("lines.arcDesc", locale))}
       <div class="industry-arc">${model.narratives.eras.map((era) => eraCard(era, locale)).join("")}</div>
     </div></section>`;
 }
@@ -472,12 +472,12 @@ function lineDetail(
   const stages = narrative?.stages ?? [];
   return `<div class="trend-detail" data-trend-detail style="--track-color:${escapeHtml(track.color)}"><section class="line-hero${defaultRoute ? " default-trend" : ""} shell">
       ${trendSwitcher(model, locale, track.slug, true, defaultRoute)}
-      <div class="line-hero-grid"><div class="line-hero-copy"><span class="section-kicker">${escapeHtml(track.perspective.toUpperCase())} · ${t("lines.evidenceNodes", locale).replace("{count}", String(events.length))}</span><h1>${escapeHtml(track.name)}</h1><p class="line-now">${escapeHtml(narrative?.now || track.description)}</p>${defaultRoute ? heroMotion("lines") : ""}</div>
+      <div class="line-hero-grid"><div class="line-hero-copy"><span class="section-kicker">${locale === "en" ? "INDUSTRY TREND" : "领域趋势"} · ${t("lines.evidenceNodes", locale).replace("{count}", String(events.length))}</span><h1>${escapeHtml(track.name)}</h1><p class="line-now">${escapeHtml(narrative?.now || track.description)}</p>${defaultRoute ? heroMotion("lines") : ""}</div>
       <aside><span>${escapeHtml(t("lines.judgmentLabel", locale))}</span><strong>${escapeHtml(narrative?.thesis || track.description)}</strong><div><span>${escapeHtml(t("lines.nextLabel", locale))}</span><p>${escapeHtml(narrative?.next ?? t("lines.waitingNext", locale))}</p></div></aside></div>
     </section>
     <section class="section shell" data-module-expand-root>
-      <header class="section-head section-head-action"><div><span class="section-kicker">${escapeHtml(t("lines.phases", locale))}</span><h2>${escapeHtml(t("lines.phasesTitle", locale))}</h2></div>${moduleExpandButton(locale === "en" ? "Expand trajectory" : "展开轨迹", locale === "en" ? "Collapse trajectory" : "收起轨迹", "section-module-toggle")}</header>
-      <div class="phase-rail" tabindex="0" aria-label="${locale === "en" ? "Scrollable phase trajectory" : "可横向滚动的阶段轨迹"}">${stages.map((stage, index) => phaseCard(stage, eventsInStage(events, stage), locale, index)).join("") || emptyState(t("lines.noStages", locale), "")}</div>
+      <header class="section-head section-head-action"><div><span class="section-kicker">${escapeHtml(t("lines.phases", locale))}</span><h2>${escapeHtml(t("lines.phasesTitle", locale))}</h2></div>${moduleExpandButton(locale === "en" ? "Expand all stages" : "展开全部阶段", locale === "en" ? "Collapse stages" : "收起阶段", "section-module-toggle")}</header>
+      <div class="phase-rail" tabindex="0" aria-label="${locale === "en" ? "Scrollable trend history" : "可横向滚动的趋势变化轨迹"}">${stages.map((stage, index) => phaseCard(stage, eventsInStage(events, stage), locale, index)).join("") || emptyState(t("lines.noStages", locale), "")}</div>
     </section>
     <section class="section section-tint" data-no-scroll-reveal><div class="shell">
       ${sectionHead(t("lines.evidenceSpine", locale), t("lines.evidenceSpineTitle", locale), t("lines.evidenceSpineDesc", locale).replace("{count}", String(events.length)))}
@@ -491,8 +491,8 @@ function lineDetail(
       </div>
     </section>
     <section class="section section-tint"><div class="shell">
-      ${sectionHead(locale === "en" ? "04 / OBSERVATION POOL" : "04 / OBSERVATION POOL", locale === "en" ? "Observation Sources" : "观察来源", locale === "en" ? "These cataloged sources help discover future updates. Their material counts as factual evidence only after it is verified and linked to a public event." : "这些目录来源用于发现后续变化。来源材料经过核验并关联到公开事件后，才会计入事实证据。")}
-      <div class="trend-source-module" data-module-expand-root><div class="trend-source-pool">${sourcePool.map((source, index) => trendSource(source, locale, index >= 12)).join("") || emptyState(locale === "en" ? "No matching observation source" : "暂无匹配观察源", "")}</div>${sourcePool.length > 12 ? moduleExpandButton(locale === "en" ? `View all ${sourcePool.length} sources` : `查看全部 ${sourcePool.length} 个观察源`, locale === "en" ? "Show fewer sources" : "收起观察源") : ""}</div>
+      ${sectionHead(locale === "en" ? "04 / SOURCES TO WATCH" : "04 / SOURCES TO WATCH", locale === "en" ? "Sources We Keep Watching" : "持续关注的来源", locale === "en" ? "These sources help discover future changes. Their material becomes public evidence only after verification." : "这些来源用于发现后续变化，内容经过核验后才会成为公开证据。")}
+      <div class="trend-source-module" data-module-expand-root><div class="trend-source-pool">${sourcePool.map((source, index) => trendSource(source, locale, index >= 12)).join("") || emptyState(locale === "en" ? "No matching source yet" : "暂无匹配来源", "")}</div>${sourcePool.length > 12 ? moduleExpandButton(locale === "en" ? `View all ${sourcePool.length} sources` : `查看全部 ${sourcePool.length} 个来源`, locale === "en" ? "Show fewer sources" : "收起来源") : ""}</div>
       <a class="text-link" href="__PREFIX__sources/">${t("lines.openSourceMap", locale)} ${icon("arrow-right")}</a>
     </div></section>
     </div></section></div>`;
@@ -654,11 +654,11 @@ function productPage(_model: StaticSiteModel, locale: Locale): string {
   return `${toolHeader("gauge", t("product.heroTitle", locale), t("product.heroDesc", locale), "product", locale)}
     <section class="section shell method-page">
       <div class="method-flow">
-        ${methodStep("01", locale === "en" ? "Verify facts" : "核对事实", locale === "en" ? "Prefer primary material. A material claim needs one Tier 1 source or two independent Tier 2 sources." : "优先采用官方原始资料。重大事实至少需要一个官方原始来源（Tier 1），或两个相互独立的公开来源（Tier 2）。")}
+        ${methodStep("01", locale === "en" ? "Verify facts" : "核对事实", locale === "en" ? "Prefer primary material. A material claim needs one Tier 1 source or two independent Tier 2 sources." : "优先采用官方原始资料。重大事实至少需要一个官方原始来源，或两个相互独立的公开来源。")}
         ${methodStep("02", locale === "en" ? "Label the analysis" : "标明内容性质", locale === "en" ? "Facts, inferences, opinions, forecasts, and opportunity hypotheses are labeled separately." : "事实、推断、观点、预测和机会假设会分别标注，便于读者判断内容性质。")}
         ${methodStep("03", locale === "en" ? "Recalibrate" : "持续校准", locale === "en" ? "A public assessment changes only when new evidence alters the phase, impact, or next watchpoint." : "只有新证据改变阶段、影响或后续观察点时，才更新公开判断。")}
       </div>
-      <div class="method-boundaries"><article><span>${locale === "en" ? "VERIFIABLE" : "可直接核验"}</span><h2>${locale === "en" ? "Evidence and event history" : "证据与事件脉络"}</h2><p>${locale === "en" ? "Every public event links to its source material and keeps later updates in the same thread." : "每个公开事件都链接到原始资料，后续进展也会记录在同一事件中。"}</p><a class="text-link" href="__PREFIX__timeline/">${locale === "en" ? "Open event stories" : "查看事件脉络"} ${icon("arrow-right")}</a></article><article><span>${locale === "en" ? "USE JUDGMENT" : "需要独立决策"}</span><h2>${locale === "en" ? "Forecasts and action ideas" : "预测与行动参考"}</h2><p>${locale === "en" ? "Role assessments, opportunity hypotheses, cost comparisons, and future signals are reference material. Apply them to your own context." : "角色判断、机会假设、成本比较和未来信号仅供参考，请结合自身情况判断。"}</p><a class="text-link" href="__PREFIX__legal/">${locale === "en" ? "Read the boundary" : "查看使用边界"} ${icon("arrow-right")}</a></article></div>
+      <div class="method-boundaries"><article><span>${locale === "en" ? "VERIFIABLE" : "可直接核验"}</span><h2>${locale === "en" ? "Evidence and event history" : "证据与事件记录"}</h2><p>${locale === "en" ? "Every public event links to its source material and keeps later updates in the same thread." : "每个公开事件都链接到原始资料，后续进展也会记录在同一事件中。"}</p><a class="text-link" href="__PREFIX__timeline/">${locale === "en" ? "View the event timeline" : "查看事件时间线"} ${icon("arrow-right")}</a></article><article><span>${locale === "en" ? "USE JUDGMENT" : "需要独立决策"}</span><h2>${locale === "en" ? "Forecasts and action ideas" : "预测与行动建议"}</h2><p>${locale === "en" ? "Role assessments, opportunity hypotheses, cost comparisons, and future signals are reference material. Apply them to your own context." : "角色分析、机会假设、价格比较和未来信号仅供参考，请结合自身情况判断。"}</p><a class="text-link" href="__PREFIX__legal/">${locale === "en" ? "Read the usage boundary" : "查看使用边界"} ${icon("arrow-right")}</a></article></div>
     </section>`;
 }
 
@@ -700,13 +700,13 @@ function sourcesPage(model: StaticSiteModel, locale: Locale): string {
       <div class="technology-coverage-grid" data-filter-grid data-mobile-list data-mobile-limit="4" data-mobile-step="4">${technologyCoverage.map((item) => technologyCoverageCard(item, locale)).join("")}</div>
     </section>
     <section class="section shell influencer-section">
-      ${sectionHead("KOL SIGNAL MATRIX", locale === "en" ? "Core Observers" : "核心观察者", locale === "en" ? "Personal RSS and Atom feeds are collected directly. Restricted profiles on X, LinkedIn, Weibo, and Jike are used only to discover leads and cannot support a major factual claim on their own." : "个人 RSS/Atom 会直接采集。X、LinkedIn、微博和即刻等受限账号只用于发现线索，不能单独支撑重大事实。")}
-      <div class="coverage-summary">${metric(locale === "en" ? "Core people" : "核心个人", model.influencers.length)}${metric(locale === "en" ? "Automatic feeds" : "自动个人 Feed", automaticInfluencers)}${metric(locale === "en" ? "China" : "中国", model.influencers.filter((item) => item.region === "CN").length)}${metric(locale === "en" ? "Restricted profiles" : "平台受限入口", restrictedProfiles)}</div>
+      ${sectionHead("PEOPLE TO WATCH", locale === "en" ? "People We Follow" : "重点关注的人", locale === "en" ? "Personal RSS and Atom feeds are collected directly. Restricted profiles on X, LinkedIn, Weibo, and Jike are used only to discover leads and cannot support a major factual claim on their own." : "个人 RSS/Atom 会直接采集。X、LinkedIn、微博和即刻等受限账号只用于发现线索，不能单独支撑重大事实。")}
+      <div class="coverage-summary">${metric(locale === "en" ? "People" : "关注人数", model.influencers.length)}${metric(locale === "en" ? "Automatic feeds" : "可自动更新", automaticInfluencers)}${metric(locale === "en" ? "China" : "中国", model.influencers.filter((item) => item.region === "CN").length)}${metric(locale === "en" ? "Restricted profiles" : "受限平台入口", restrictedProfiles)}</div>
       <div class="influencer-grid" data-mobile-list data-mobile-limit="4" data-mobile-step="4">${model.influencers.map((item) => influencerCard(item, locale)).join("")}</div>
     </section>
     <section class="section section-tint"><div class="shell">
       ${sectionHead("SOURCE RUNTIME", t("sources.catalogTitle", locale), t("sources.catalogDesc", locale))}
-      <div class="source-standard">${sourceLevel("E0", "Catalog", t("sources.levelE0Desc", locale))}${sourceLevel("E1", "Reachable", t("sources.levelE1Desc", locale))}${sourceLevel("E2", "Healthy", t("sources.levelE2Desc", locale))}${sourceLevel("E3", "Observing", t("sources.levelE3Desc", locale))}${sourceLevel("E4", "Production", t("sources.levelE4Desc", locale))}</div>
+      <div class="source-standard">${sourceLevel("E0", locale === "en" ? "Cataloged" : "已收录", t("sources.levelE0Desc", locale))}${sourceLevel("E1", locale === "en" ? "Reachable" : "可访问", t("sources.levelE1Desc", locale))}${sourceLevel("E2", locale === "en" ? "Checked" : "检查通过", t("sources.levelE2Desc", locale))}${sourceLevel("E3", locale === "en" ? "Observing" : "观察中", t("sources.levelE3Desc", locale))}${sourceLevel("E4", locale === "en" ? "In Production" : "稳定使用", t("sources.levelE4Desc", locale))}</div>
       <div class="source-toolbar"><label class="search-box">${icon("search")}<input data-source-search type="search" placeholder="${escapeHtml(t("sources.searchPlaceholder", locale))}"></label><div class="chip-row"><button class="active" data-source-filter="all">${t("sources.filterAll", locale)}</button><button data-source-filter="active">${t("sources.filterActive", locale)}</button><button data-source-filter="observing">${t("sources.filterObserving", locale)}</button><button data-source-filter="healthy">${locale === "en" ? "Healthy" : "最近健康"}</button><button data-source-filter="rss">RSS / Atom</button><button data-source-filter="github">GitHub</button><button data-source-filter="CN">${t("sources.filterChina", locale)}</button></div></div>
       <div class="source-table" data-source-grid data-mobile-list data-mobile-limit="12" data-mobile-step="12">${model.sources.map((src) => sourceRow(src, locale)).join("")}</div>
       <div class="contribute-card"><div>${icon("git-pull-request")}<h2>${escapeHtml(t("sources.contributeTitle", locale))}</h2><p>${escapeHtml(t("sources.contributeDesc", locale))}</p></div><a class="button primary" href="${escapeHtml(model.github.repositoryUrl)}/issues/new/choose" target="_blank" rel="noopener noreferrer">${t("sources.contributeButton", locale)} ${icon("arrow-right")}</a></div>
@@ -727,7 +727,7 @@ function sourcePortfolioCard(
         dimension === "health"
           ? locale === "en"
             ? `${bucket.observing} observing`
-            : `${bucket.observing} 个 E3 观察`
+            : `${bucket.observing} 个观察中`
           : locale === "en"
             ? `${bucket.healthy} healthy · ${bucket.observing} observing`
             : `${bucket.healthy} 个健康 · ${bucket.observing} 个观察`;
@@ -769,7 +769,7 @@ function sourcePortfolioLabel(
     arxiv: "arXiv",
     html: "公开网页",
     manual: "人工核验",
-    social: "平台受限",
+    social: "受限平台",
     healthy: "最近健康",
     degraded: "需要观察",
     failed: "检查失败",
@@ -785,7 +785,7 @@ function influencerCard(item: PublicInfluencer, locale: Locale): string {
       const url = safeExternalLink(profile.url);
       if (!url) return "";
       const label = `${profile.platform === "x" ? "X" : profile.platform} · ${profile.handle}`;
-      return `<a class="influencer-profile ${escapeHtml(profile.access)}" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer"><span>${escapeHtml(label)}</span><small>${profile.access === "automatic" ? (locale === "en" ? "automatic" : "可自动采集") : locale === "en" ? "restricted" : "平台受限"}</small>${icon("external-link")}</a>`;
+      return `<a class="influencer-profile ${escapeHtml(profile.access)}" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer"><span>${escapeHtml(label)}</span><small>${profile.access === "automatic" ? (locale === "en" ? "automatic" : "可自动更新") : locale === "en" ? "lead only" : "仅作线索"}</small>${icon("external-link")}</a>`;
     })
     .join("");
   return `<article class="influencer-card"><header><span>${escapeHtml(item.region === "CN" ? (locale === "en" ? "China" : "中国") : locale === "en" ? "Global" : "全球")}</span><strong>${item.feedSourceSlug ? (locale === "en" ? "FEED ACTIVE" : "Feed 正在采集") : locale === "en" ? "IDENTITY ONLY" : "仅记录身份"}</strong></header><h3>${escapeHtml(item.name)}</h3><p>${item.focus.map((focus) => escapeHtml(focus)).join(" · ")}</p><div>${profiles}</div></article>`;
@@ -827,7 +827,7 @@ function toolHeader(
   tabActive: string,
   locale: Locale,
 ): string {
-  return `<section class="page-hero compact tool-hero has-motion shell"><span class="section-kicker">${locale === "en" ? "DECISION TOOLS" : "决策工具"}</span><h1>${escapeHtml(title)}</h1><p>${escapeHtml(copy)}</p>${heroMotion("action")}<nav class="tool-tabs" aria-label="${locale === "en" ? "Decision tools" : "决策工具"}">${toolTabs(tabActive, locale)}</nav></section>`;
+  return `<section class="page-hero compact tool-hero has-motion shell"><span class="section-kicker">${locale === "en" ? "PRACTICAL TOOLS" : "实用工具"}</span><h1>${escapeHtml(title)}</h1><p>${escapeHtml(copy)}</p>${heroMotion("action")}<nav class="tool-tabs" aria-label="${locale === "en" ? "Practical tools" : "实用工具"}">${toolTabs(tabActive, locale)}</nav></section>`;
 }
 
 function toolTabs(active: string, locale: Locale): string {
@@ -905,7 +905,7 @@ function trendSwitcher(
       return `<a class="trend-tab" href="__PREFIX__${escapeHtml(route)}" style="--track-color:${escapeHtml(track.color)}"${isCurrent ? ' aria-current="page"' : ""}><span>${String(index + 1).padStart(2, "0")}</span><strong>${escapeHtml(track.name)}</strong>${compact ? "" : `<small>${escapeHtml(track.perspective)}</small>`}</a>`;
     })
     .join("");
-  return `<nav class="trend-switcher${compact ? " compact" : ""}" aria-label="${locale === "en" ? "Six trend perspectives" : "六个趋势视角"}">${tabs}</nav>`;
+  return `<nav class="trend-switcher${compact ? " compact" : ""}" aria-label="${locale === "en" ? "Six industry trends" : "六个领域趋势"}">${tabs}</nav>`;
 }
 
 function phaseCard(
@@ -916,7 +916,7 @@ function phaseCard(
 ): string {
   const stageEvidence = events.flatMap((event) => evidenceForNarrativeStage(event, stage));
   const sources = new Set(stageEvidence.map((item) => item.source.trim().toLowerCase()));
-  return `<article style="--phase-index:${index}"><header><span class="phase-sequence"><b class="phase-sequence-index">${String(index + 1).padStart(2, "0")}</b>${escapeHtml(stage.period)}</span><small>${events.length} EVENT · ${sources.size} ${locale === "en" ? "SOURCES" : "信源"}</small></header><h3>${escapeHtml(stage.label)}</h3><p>${escapeHtml(stage.summary)}</p><div class="phase-interpretation"><strong>${locale === "en" ? "Why this phase matters" : "阶段解读"}</strong><p>${escapeHtml(stage.interpretation)}</p></div><div data-module-extra><strong>${locale === "en" ? "Next signal" : "下一验证信号"}</strong><p>${escapeHtml(stage.nextSignal)}</p></div></article>`;
+  return `<article style="--phase-index:${index}"><header><span class="phase-sequence"><b class="phase-sequence-index">${String(index + 1).padStart(2, "0")}</b>${escapeHtml(stage.period)}</span><small>${events.length} ${locale === "en" ? "EVENTS" : "个事件"} · ${sources.size} ${locale === "en" ? "SOURCES" : "个来源"}</small></header><h3>${escapeHtml(stage.label)}</h3><p>${escapeHtml(stage.summary)}</p><div class="phase-interpretation"><strong>${locale === "en" ? "What changed in this stage" : "这一阶段发生了什么"}</strong><p>${escapeHtml(stage.interpretation)}</p></div><div data-module-extra><strong>${locale === "en" ? "What to verify next" : "接下来验证"}</strong><p>${escapeHtml(stage.nextSignal)}</p></div></article>`;
 }
 
 function stageEvidenceGroup(
@@ -929,11 +929,11 @@ function stageEvidenceGroup(
   const collapsedLabel = hiddenCount
     ? locale === "en"
       ? `View all ${events.length} events`
-      : `查看全部 ${events.length} 条证据`
+      : `查看全部 ${events.length} 个事件`
     : locale === "en"
       ? "Expand phase evidence"
-      : "展开阶段证据";
-  return `<section class="stage-evidence-group" data-module-expand-root><header><span class="phase-sequence"><b class="phase-sequence-index">${String(index + 1).padStart(2, "0")}</b>${escapeHtml(stage.period)}</span><h3>${escapeHtml(stage.label)}</h3></header><div class="stage-reading"><p><strong>${locale === "en" ? "Interpretation" : "阶段解读"}</strong>${escapeHtml(stage.interpretation)}</p><p data-module-extra><strong>${locale === "en" ? "Next signal" : "下一验证"}</strong>${escapeHtml(stage.nextSignal)}</p></div><div class="evidence-spine">${events.map((event, eventIndex) => eventRow(event, locale, eventIndex >= 2, stage, "module")).join("") || emptyState(locale === "en" ? "Evidence still needed for this phase" : "这一阶段仍需补充公开证据", stage.nextSignal)}${moduleExpandButton(collapsedLabel, locale === "en" ? "Show less" : "收起证据")}</div></section>`;
+      : "展开本阶段事件";
+  return `<section class="stage-evidence-group" data-module-expand-root><header><span class="phase-sequence"><b class="phase-sequence-index">${String(index + 1).padStart(2, "0")}</b>${escapeHtml(stage.period)}</span><h3>${escapeHtml(stage.label)}</h3></header><div class="stage-reading"><p><strong>${locale === "en" ? "What changed" : "变化说明"}</strong>${escapeHtml(stage.interpretation)}</p><p data-module-extra><strong>${locale === "en" ? "What to verify next" : "接下来验证"}</strong>${escapeHtml(stage.nextSignal)}</p></div><div class="evidence-spine">${events.map((event, eventIndex) => eventRow(event, locale, eventIndex >= 2, stage, "module")).join("") || emptyState(locale === "en" ? "This stage still needs public evidence" : "这一阶段仍需补充公开证据", stage.nextSignal)}${moduleExpandButton(collapsedLabel, locale === "en" ? "Show less" : "收起")}</div></section>`;
 }
 
 function roleLens(lens: DecisionLens, events: EnrichedEvent[], locale: Locale): string {
@@ -946,7 +946,7 @@ function roleLens(lens: DecisionLens, events: EnrichedEvent[], locale: Locale): 
   const evidence = lens.evidenceSlugs
     .map((slug) => events.find((event) => event.slug === slug))
     .filter((event): event is EnrichedEvent => Boolean(event));
-  return `<article data-module-expand-root><header><span>${escapeHtml(roleLabels[lens.role])}</span><small>${evidence.length} ${locale === "en" ? "EVIDENCE LINKS" : "条证据回链"}</small></header><h3>${escapeHtml(lens.question)}</h3><p class="role-answer">${escapeHtml(lens.answer)}</p><div class="role-detail" data-module-extra><section><strong>${locale === "en" ? "Implications" : "影响链"}</strong><ul>${lens.implications.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section><section><strong>${locale === "en" ? "Actions" : "建议动作"}</strong><ul>${lens.actions.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section></div><div class="role-watch"><strong>${locale === "en" ? "Keep watching" : "继续观察"}</strong><ul>${lens.watch.map((item, index) => `<li${index > 0 ? " data-module-extra" : ""}>${escapeHtml(item)}</li>`).join("")}</ul></div>${moduleExpandButton(locale === "en" ? "Expand judgment" : "展开完整判断", locale === "en" ? "Collapse judgment" : "收起完整判断")}${evidence.length ? `<footer>${evidence.map((event) => `<a data-event-link="${escapeHtml(event.slug)}" href="__PREFIX__events/${escapeHtml(event.slug)}/">${escapeHtml(event.title)} ${icon("arrow-right")}</a>`).join("")}</footer>` : ""}</article>`;
+  return `<article data-module-expand-root><header><span>${escapeHtml(roleLabels[lens.role])}</span><small>${evidence.length} ${locale === "en" ? "RELATED EVENTS" : "个相关事件"}</small></header><h3>${escapeHtml(lens.question)}</h3><p class="role-answer">${escapeHtml(lens.answer)}</p><div class="role-detail" data-module-extra><section><strong>${locale === "en" ? "Main implications" : "主要影响"}</strong><ul>${lens.implications.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section><section><strong>${locale === "en" ? "Possible actions" : "可以做什么"}</strong><ul>${lens.actions.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section></div><div class="role-watch"><strong>${locale === "en" ? "Keep watching" : "继续关注"}</strong><ul>${lens.watch.map((item, index) => `<li${index > 0 ? " data-module-extra" : ""}>${escapeHtml(item)}</li>`).join("")}</ul></div>${moduleExpandButton(locale === "en" ? "View full guidance" : "查看完整建议", locale === "en" ? "Collapse guidance" : "收起建议")}${evidence.length ? `<footer>${evidence.map((event) => `<a data-event-link="${escapeHtml(event.slug)}" href="__PREFIX__events/${escapeHtml(event.slug)}/">${escapeHtml(event.title)} ${icon("arrow-right")}</a>`).join("")}</footer>` : ""}</article>`;
 }
 
 function moduleExpandButton(
@@ -968,10 +968,10 @@ function eventRow(
   const stageEvidence = stage ? evidenceForNarrativeStage(event, stage) : event.evidence;
   const evidenceSummary = stage
     ? stageEvidence.length
-      ? `${stageEvidence.length} ${locale === "en" ? "phase evidence" : "条阶段证据"}`
+      ? `${stageEvidence.length} ${locale === "en" ? "related records" : "条相关资料"}`
       : locale === "en"
         ? `event origin · ${event.evidence.length} total evidence`
-        : `事件起点 · 共 ${event.evidence.length} 条证据`
+        : `事件起点 · 共 ${event.evidence.length} 条资料`
     : `${event.evidence.length} ${locale === "en" ? "evidence" : "条证据"}`;
   const developmentAt = stage
     ? latestNarrativeStageDevelopmentAt(event, stage) || event.happenedAt
@@ -1064,7 +1064,8 @@ function sourcesForTrack(sources: PublicSource[], slug: string): PublicSource[] 
 
 function trendSource(source: PublicSource, locale: Locale, extra: boolean): string {
   const url = safeExternalLink(source.homepageUrl);
-  const body = `<span><i class="source-runtime ${escapeHtml(source.healthStatus)}"></i>${escapeHtml(source.region)} · Tier ${source.tier} · ${escapeHtml(source.lifecycle)}</span><strong>${escapeHtml(source.name)}</strong><small>${escapeHtml(source.role)} · ${escapeHtml(source.cadence)} · ${escapeHtml(sourceHealthLabel(source, locale))}</small>`;
+  const lifecycle = locale === "en" ? source.lifecycle : sourceLifecycleLabel(source.lifecycle);
+  const body = `<span><i class="source-runtime ${escapeHtml(source.healthStatus)}"></i>${escapeHtml(source.region)} · ${escapeHtml(sourceTierLabel(source.tier, locale))} · ${escapeHtml(lifecycle)}</span><strong>${escapeHtml(source.name)}</strong><small>${escapeHtml(sourceRoleLabel(source.role, locale))} · ${escapeHtml(sourceCadenceLabel(source.cadence, locale))} · ${escapeHtml(sourceHealthLabel(source, locale))}</small>`;
   return url
     ? `<a${extra ? " data-module-extra" : ""} href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${body}${icon("external-link")}</a>`
     : `<div${extra ? " data-module-extra" : ""}>${body}</div>`;
@@ -1215,7 +1216,52 @@ function technologyCoverageCard(item: TechnologyCoverage, locale: Locale): strin
 function sourceRow(source: PublicSource, locale: Locale): string {
   const filter = `${source.region} ${source.lifecycle} ${source.healthStatus} ${source.acquisition} ${source.observationEnabled ? "observing" : ""}`;
   const url = safeExternalLink(source.homepageUrl);
-  return `<article data-source-value="${escapeHtml(filter)}" data-source-search-value="${escapeHtml([source.name, source.slug, source.region, source.category, ...source.topics].join(" ").toLowerCase())}"><div><strong>${escapeHtml(source.name)}</strong><span>${escapeHtml(source.slug)}</span></div><span>${escapeHtml(source.region)}</span><span>${escapeHtml(source.category)}</span><span>Tier ${source.tier}</span><span>${source.observationEnabled ? "E3 observing" : escapeHtml(source.lifecycle)}</span><span class="source-runtime ${escapeHtml(source.healthStatus)}"><i></i>${escapeHtml(sourceHealthLabel(source, locale))}</span>${url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" aria-label="${t("sources.ariaOpen", locale).replace("{name}", source.name)}">${icon("external-link")}</a>` : ""}</article>`;
+  const lifecycle = locale === "en" ? source.lifecycle : sourceLifecycleLabel(source.lifecycle);
+  const usage = source.observationEnabled ? (locale === "en" ? "Observing" : "观察中") : lifecycle;
+  return `<article data-source-value="${escapeHtml(filter)}" data-source-search-value="${escapeHtml([source.name, source.slug, source.region, source.category, ...source.topics].join(" ").toLowerCase())}"><div><strong>${escapeHtml(source.name)}</strong><span>${escapeHtml(source.slug)}</span></div><span>${escapeHtml(source.region)}</span><span>${escapeHtml(sourcePortfolioLabel(source.category, "category", locale))}</span><span>${escapeHtml(sourceTierLabel(source.tier, locale))}</span><span>${escapeHtml(usage)}</span><span class="source-runtime ${escapeHtml(source.healthStatus)}"><i></i>${escapeHtml(sourceHealthLabel(source, locale))}</span>${url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" aria-label="${t("sources.ariaOpen", locale).replace("{name}", source.name)}">${icon("external-link")}</a>` : ""}</article>`;
+}
+
+function sourceTierLabel(tier: number, locale: Locale): string {
+  return locale === "en" ? `Tier ${tier}` : `${tier} 级来源`;
+}
+
+function sourceRoleLabel(role: string, locale: Locale): string {
+  if (locale === "en") return role;
+  const labels: Record<string, string> = {
+    primary: "官方信息",
+    research: "研究资料",
+    expert: "专家观点",
+    media: "媒体报道",
+    heat: "传播热度",
+    aggregator: "线索聚合",
+    policy: "政策信息",
+  };
+  return labels[role] ?? role;
+}
+
+function sourceCadenceLabel(cadence: string, locale: Locale): string {
+  if (locale === "en") return cadence;
+  const hourMatch = cadence.match(/^(\d+)h$/);
+  if (hourMatch?.[1]) return `每 ${hourMatch[1]} 小时更新`;
+  return (
+    {
+      weekly: "每周更新",
+      manual: "人工更新",
+    }[cadence] ?? cadence
+  );
+}
+
+function sourceLifecycleLabel(lifecycle: PublicSource["lifecycle"]): string {
+  return (
+    {
+      draft: "待验证",
+      shadow: "隔离验证",
+      active: "稳定使用",
+      degraded: "部分可用",
+      quarantined: "已隔离",
+      retired: "已停用",
+    }[lifecycle] ?? lifecycle
+  );
 }
 
 function coverageStatusLabel(status: TechnologyCoverage["status"], locale: Locale): string {
@@ -1400,7 +1446,7 @@ function timelineJsonLd(model: StaticSiteModel, locale: Locale): Record<string, 
       "@context": "https://schema.org",
       "@type": "CollectionPage",
       "@id": url,
-      name: locale === "en" ? "AI Industry Event Timeline" : "AI 行业事件脉络",
+      name: locale === "en" ? "AI Industry Event Timeline" : "AI 行业事件时间线",
       description: pageDescription("timeline", locale),
       url,
       inLanguage: locale,
@@ -1501,7 +1547,7 @@ function eventJsonLd(
         {
           "@type": "ListItem",
           position: 2,
-          name: locale === "en" ? "Event Timeline" : "事件脉络",
+          name: locale === "en" ? "Event Timeline" : "事件时间线",
           item: timelineUrl,
         },
         { "@type": "ListItem", position: 3, name: event.title, item: eventUrl },
