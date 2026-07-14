@@ -27,8 +27,8 @@
 ## 4. GitHub 闭环
 
 - [x] Actions Secret 配置
-- [ ] 分支 CI 通过
-- [ ] main Data Refresh 真实成功
+- [x] 分支 CI 通过
+- [x] main Data Refresh 真实成功
 - [x] Issue #13 使用新 AI 周报模板更新并验收
-- [ ] bot 快照提交、Pages 部署与线上内容验证
+- [x] bot 快照提交、Pages 部署与线上内容验证
 - [x] 更新状态、Changelog 和网站 Changelog
