@@ -24,26 +24,28 @@ type TimelineMonthItem =
   | { kind: "research-month"; key: "2026-07"; events: EnrichedEvent[] };
 ```
 
-论文组内按研究展示权重倒序，最多保留 6 篇。月份没有通过外部影响证据门禁的论文时不创建研究组；目录中的月度候选数不等于公开入选数。组摘要展示月份、入选数和高频关键词，默认折叠，在“论文与研究”筛选或关键词命中时自动展开。
+论文组内按研究展示权重倒序，最多保留 10 篇。月份没有通过外部影响证据门禁的论文时不创建研究组；目录中的月度候选数不等于公开入选数。组摘要展示月份、入选数和高频关键词，默认折叠，在“论文与研究”筛选或关键词命中时自动展开。
 
 ## 3. 研究影响报告
 
 GitHub Actions 在自动发布和静态导出前运行 `research:impact`：
 
 ```text
-published/review research Event + primary paper URL
+published/review research Event + primary research URL
   -> normalize arXiv / DOI identity
   -> fetch bounded OpenAlex metadata in batches
-  -> verify title identity
-  -> calculate age-aware citation and recent-velocity signals
-  -> merge audited peer-review / industry override evidence
+  -> verify title identity when an index record exists
+  -> calculate mature-paper citation signals
+  -> merge audited direct-source / peer-review / industry evidence
   -> data/reports/research-impact.json
   -> Timeline consumes only qualified assessments
 ```
 
-报告为版本化、隐私安全的审计数据，记录 event slug、论文标识、指标、入选路径、理由和来源 URL。API 失败、身份不匹配或报告缺失时采用 fail-closed：不得把该论文放进 Timeline。指标或判断发生变化时立即更新；没有变化时按 7 天 freshness 窗口刷新检查时间，避免每日制造无意义 diff，也不会超过 14 天展示有效期。
+报告为版本化、隐私安全的审计数据，记录 event slug、论文标识、指标、入选路径、理由、审核时间、失效条件和来源 URL。成熟论文继续要求索引身份一致；当年论文可以通过“官方研究页 + 论文正文 + 出版 / 代码 / 数据 / 部署 / 独立复现之一”的直接证据路径进入。证据冲突、报告缺失或报告过期时采用 fail-closed。OpenAlex 暂时不可用时，不撤销仍在有效审核期内的直接证据结论。指标或判断发生变化时立即更新；没有变化时按 7 天 freshness 窗口刷新检查时间，避免每日制造无意义 diff，也不会超过 14 天展示有效期。
 
-OpenAlex 用于开放学术图谱与引用趋势；Semantic Scholar 和 Crossref 可作为交叉核验；OpenReview 用于公开的 venue / decision；GitHub 官方 API 和 Hugging Face 官方数据用于代码与模型采用。任何单一平台都不能同时证明论文质量、同行认可与产业影响。
+报告同时检查最近 6 个完整月份。连续 2 个完整月份没有任何合格研究时，Actions 研究审计失败并留下明确缺口；该门禁只触发补充调查与信源修复，不自动降低阈值或生成占位论文。
+
+OpenAI Research、Google Research、Google DeepMind、Anthropic Research 与 Microsoft Research 的官方研究页用于直接发现；正式论文、Nature / 会议页面、OpenReview 与官方代码仓库用于核验。OpenAlex 继续负责成熟论文的开放学术图谱与引用趋势；Semantic Scholar 和 Crossref 可作为交叉核验。任何单一平台都不能同时证明论文质量、同行认可与产业影响。
 
 ## 4. 月级展开
 
@@ -79,6 +81,6 @@ query     -> apply inside currently allowed view; matching research auto-open
 
 ## 7. 回滚
 
-- 500 阈值、初始月份数、单月 6 条和论文最多 6 篇均为代码常量，可单独回滚。
+- 500 阈值、初始月份数、单月 6 条和论文最多 10 篇均为代码常量，可单独回滚。
 - 移除 template 分支即可恢复全量 DOM。
 - 研究影响报告可以回滚到上一版本；门禁失败不影响数据库、永久事件页或 Evidence，只收紧 Timeline 注意力入口。

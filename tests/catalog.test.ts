@@ -46,6 +46,23 @@ describe("knowledge source catalog", () => {
     expect(releaseSources.every((source) => source.lifecycleStatus === "shadow")).toBe(true);
   });
 
+  it("keeps direct research feeds machine-readable and shadow-first", () => {
+    const direct = sourceCatalog.filter((source) =>
+      ["microsoft-research", "google-research"].includes(source.slug),
+    );
+
+    expect(direct).toHaveLength(2);
+    expect(direct.every((source) => source.tier === 1 && source.role === "research")).toBe(true);
+    expect(direct.every((source) => source.acquisition === "rss")).toBe(true);
+    expect(direct.every((source) => source.adapter === "rss")).toBe(true);
+    expect(direct.every((source) => !source.enabled)).toBe(true);
+    expect(direct.every((source) => source.lifecycleStatus === "shadow")).toBe(true);
+    expect(direct.map((source) => source.endpoint)).toEqual([
+      "https://www.microsoft.com/en-us/research/feed/",
+      "https://research.google/blog/rss/",
+    ]);
+  });
+
   it("adds official macro and filing sources without activating unverified collectors", () => {
     const supplementalSlugs = [
       "fred",
@@ -176,11 +193,12 @@ describe("knowledge source catalog", () => {
     expect(capabilities.every((capability) => capability.evidence.length > 10)).toBe(true);
     expect(releases[0]).toMatchObject({ version: "unreleased", status: "unreleased" });
     expect(releases[1]?.capabilities.length).toBeGreaterThanOrEqual(5);
-    expect(releases[1]).toMatchObject({ version: "0.11.0", status: "released" });
-    expect(releases[2]).toMatchObject({ version: "0.10.0", status: "released" });
-    expect(releases[3]).toMatchObject({ version: "0.9.0", status: "released" });
-    expect(releases[4]).toMatchObject({ version: "0.8.1" });
-    expect(releases[5]).toMatchObject({ version: "0.8.0" });
+    expect(releases[1]).toMatchObject({ version: "0.11.1", status: "released" });
+    expect(releases[2]).toMatchObject({ version: "0.11.0", status: "released" });
+    expect(releases[3]).toMatchObject({ version: "0.10.0", status: "released" });
+    expect(releases[4]).toMatchObject({ version: "0.9.0", status: "released" });
+    expect(releases[5]).toMatchObject({ version: "0.8.1" });
+    expect(releases[6]).toMatchObject({ version: "0.8.0" });
   });
 
   it("keeps a unique, public and policy-aware AI influencer matrix", () => {

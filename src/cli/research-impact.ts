@@ -12,6 +12,8 @@ import {
   type OpenAlexWorkMetrics,
   RESEARCH_IMPACT_POLICY_VERSION,
   type ResearchImpactReport,
+  reportIsStale,
+  researchCoverageForCompletedMonths,
 } from "../pipeline/research-impact.js";
 
 const config = loadConfig();
@@ -35,8 +37,22 @@ try {
     },
   );
   const ids = [...new Set(events.map(arxivIdForEvent).filter((id): id is string => !!id))];
-  const works = await fetchOpenAlex(ids);
   const referenceAt = new Date().toISOString();
+  const previous = await readPrevious(reportPath);
+  let sourceStatus: "fresh" | "cached-fallback" = "fresh";
+  let works: Map<string, OpenAlexWorkMetrics>;
+  try {
+    works = await fetchOpenAlex(ids);
+  } catch (error) {
+    sourceStatus = "cached-fallback";
+    const cacheIsCurrent =
+      previous?.policyVersion === RESEARCH_IMPACT_POLICY_VERSION &&
+      !reportIsStale(previous, referenceAt);
+    works = worksFromPrevious(cacheIsCurrent ? previous : null);
+    process.stderr.write(
+      `[research-impact] OpenAlex unavailable; using ${works.size} current cached identities while audited direct-source reviews remain active: ${message(error)}\n`,
+    );
+  }
   const assessments = events
     .map((event) =>
       assessResearchImpact(
@@ -47,14 +63,15 @@ try {
       ),
     )
     .sort((left, right) => left.eventSlug.localeCompare(right.eventSlug));
+  const coverage = researchCoverageForCompletedMonths(events, assessments, referenceAt);
   const next: ResearchImpactReport = {
     schemaVersion: 1,
     policyVersion: RESEARCH_IMPACT_POLICY_VERSION,
     generatedAt: referenceAt,
-    source: { name: "OpenAlex", url: "https://developers.openalex.org/" },
+    source: { name: "OpenAlex", url: "https://developers.openalex.org/", status: sourceStatus },
+    coverage,
     assessments,
   };
-  const previous = await readPrevious(reportPath);
   const changed =
     comparable(previous) !== comparable(next) || freshnessRefreshDue(previous, referenceAt);
   if (changed) {
@@ -69,10 +86,38 @@ try {
       qualified: assessments.filter((item) => item.qualified).length,
       rejected: assessments.filter((item) => item.route === "rejected").length,
       watch: assessments.filter((item) => item.route === "watch").length,
+      sourceStatus,
+      coverage,
     })}\n`,
   );
+  if (coverage.maxConsecutiveEmptyMonths >= 2) {
+    throw new Error(
+      `Research coverage gap: ${coverage.maxConsecutiveEmptyMonths} consecutive completed months have no qualified research`,
+    );
+  }
 } finally {
   await db.destroy();
+}
+
+function worksFromPrevious(report: ResearchImpactReport | null): Map<string, OpenAlexWorkMetrics> {
+  const works = new Map<string, OpenAlexWorkMetrics>();
+  if (!report) return works;
+  for (const assessment of report.assessments) {
+    if (!assessment.arxivId || !assessment.openAlexId || !assessment.publicationDate) continue;
+    works.set(assessment.arxivId, {
+      id: assessment.openAlexId,
+      doi: `https://doi.org/10.48550/arxiv.${assessment.arxivId}`,
+      title: assessment.paperTitle,
+      publicationDate: assessment.publicationDate,
+      citedByCount: assessment.citedByCount,
+      recentCitations: assessment.recentCitations,
+    });
+  }
+  return works;
+}
+
+function message(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
 }
 
 async function fetchOpenAlex(ids: string[]): Promise<Map<string, OpenAlexWorkMetrics>> {
@@ -151,6 +196,7 @@ function comparable(report: ResearchImpactReport | null): string {
     schemaVersion: report.schemaVersion,
     policyVersion: report.policyVersion,
     source: report.source,
+    coverage: report.coverage,
     assessments: report.assessments,
   });
 }

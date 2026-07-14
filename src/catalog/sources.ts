@@ -2904,8 +2904,8 @@ const rows: SourceSeed[] = [
     "research-eval",
     1,
     "research",
-    "html",
-    undefined,
+    "rss",
+    "https://research.google/blog/rss/",
     "research,paper,google",
   ],
   [

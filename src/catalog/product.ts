@@ -1,4 +1,4 @@
-export const productVersion = "0.11.0";
+export const productVersion = "0.11.1";
 
 export const capabilities = [
   {
@@ -544,6 +544,27 @@ export const releases = [
     summary: "后续变化将在验证完成后记录。",
     capabilities: [],
     changes: [],
+  },
+  {
+    status: "released",
+    version: "0.11.1",
+    date: "2026-07-14",
+    name: "Audited Research Continuity",
+    summary: "持续改善研究质量门禁、直接信源覆盖与移动端阅读体验。",
+    capabilities: [
+      "年龄感知研究质量门禁",
+      "限期审计的直接信源影响路径",
+      "2026 官方研究脉络",
+      "Microsoft 与 Google Research 影子采集",
+      "连续研究覆盖缺口告警",
+      "移动端趋势换一条对齐",
+    ],
+    changes: [
+      "当年论文不再被成熟论文引用阈值误伤；官方研究页、完整论文与正式出版、代码或部署证据组成限期审计包后可进入事件脉络",
+      "补充 Microsoft、OpenAI、Anthropic 与 Google 直接发布的 7 项研究，恢复 2026 年 1—7 月高质量研究脉络；Microsoft Research 与 Google Research RSS 在 Actions 中保持 shadow 观察",
+      "研究审计检查最近 6 个完整月份；连续 2 个月没有合格研究时阻止静默发布并暴露信源缺口，但不会自动降低门槛补量",
+      "移动端首页“最新趋势判断”的“换一个”操作固定在卡片头部右上角，窄屏下仍与标题清晰对齐",
+    ],
   },
   {
     status: "released",

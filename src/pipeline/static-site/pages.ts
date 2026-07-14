@@ -288,7 +288,7 @@ function pageDescription(active: PageKey, locale: Locale): string {
       "Understand AI industry shifts across research, agents, commercialization, infrastructure, capital, and global innovation.",
     ],
     timeline: [
-      "按时间、主题与证据置信度浏览 AI 行业事件、高影响论文和后续进展。",
+      "按时间、主题与证据置信度浏览 AI 行业事件、高质量研究和后续进展。",
       "Browse AI industry events, high-impact research, and follow-up evidence by time, topic, and confidence.",
     ],
     signals: [

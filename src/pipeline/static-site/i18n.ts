@@ -344,8 +344,8 @@ const translations: Record<string, Record<Locale, string>> = {
   "timeline.noActors": { "zh-CN": "暂无角色关联", en: "No related actors" },
   "timeline.researchDigest": { "zh-CN": "当月论文组", en: "Monthly Research Group" },
   "timeline.researchDigestCount": {
-    "zh-CN": "本月精选 {count} 篇高影响研究",
-    en: "{count} high-impact papers selected this month",
+    "zh-CN": "本月精选 {count} 篇高质量研究",
+    en: "{count} high-quality research papers selected this month",
   },
   "timeline.researchDigestFallback": {
     "zh-CN": "展开查看全部研究事件",

@@ -2,8 +2,8 @@ import type { CuratedEventSeed } from "./history.js";
 import researchPapers from "./research-history-2022-2025.json" with { type: "json" };
 
 /**
- * Editorially selected arXiv research history from 2022-11 through 2025-12.
- * Every completed month carries four primary-source papers that pass the public Timeline gate.
+ * Editorially selected arXiv research candidates from 2022-11 through 2025-12.
+ * Public Timeline inclusion is decided separately by the research impact report.
  */
 export const researchHistory2022To2025 = researchPapers.map(
   (paper): CuratedEventSeed => ({

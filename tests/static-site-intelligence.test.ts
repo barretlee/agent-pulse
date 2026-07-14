@@ -124,14 +124,14 @@ describe("static-site intelligence consumption model", () => {
     });
   });
 
-  it("caps a monthly research group at the 6 highest-weight papers", () => {
+  it("caps a monthly research group at the 10 highest-weight papers", () => {
     const research = Array.from({ length: 15 }, (_, index) => ({
       ...researchEvent(`paper-${index}`, "2026-07-09T08:00:00Z"),
       impactScore: 75 + index / 2,
     }));
     const group = groupTimelineMonthItems(research).find((item) => item.kind === "research-month");
 
-    expect(group?.events).toHaveLength(6);
+    expect(group?.events).toHaveLength(10);
     expect(group?.events[0]?.slug).toBe("paper-14");
     expect(group?.events.map((item) => item.slug)).not.toContain("paper-0");
   });

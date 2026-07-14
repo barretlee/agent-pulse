@@ -74,6 +74,16 @@ jobs:
             npm run collect
           fi
 
+      - name: Observe direct research feeds in shadow
+        shell: bash
+        run: |
+          set -u
+          for source in microsoft-research google-research; do
+            if ! npm run collect -- --source="$source"; then
+              echo "::warning title=Direct research source unavailable::$source remains in shadow and does not block the batch"
+            fi
+          done
+
       - name: Reconcile sources and source radar
         run: npm run ops:reconcile
 

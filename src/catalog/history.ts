@@ -1,4 +1,5 @@
 import { capitalHistoryEvents } from "./capital-history-2023-2025.js";
+import { directResearchHistory2026 } from "./direct-research-history-2026.js";
 import { ecosystemHistoryEvents } from "./ecosystem-history-2026-07.js";
 import { researchHistory2022To2025 } from "./research-history-2022-2025.js";
 import { researchHistory2026 } from "./research-history-2026.js";
@@ -763,6 +764,7 @@ export const historicalEvents = [
   ...vendorHistoryEvents,
   ...ecosystemHistoryEvents,
   ...capitalHistoryEvents,
+  ...directResearchHistory2026,
   ...researchHistory2022To2025,
   ...researchHistory2026,
 ] as const satisfies readonly CuratedEventSeed[];

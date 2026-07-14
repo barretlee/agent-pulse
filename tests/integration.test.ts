@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { gzipSync } from "node:zlib";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { capitalHistoryEvents } from "../src/catalog/capital-history-2023-2025.js";
+import { directResearchHistory2026 } from "../src/catalog/direct-research-history-2026.js";
 import { earlyHistoryEvents } from "../src/catalog/early-history.js";
 import { ecosystemHistoryEvents } from "../src/catalog/ecosystem-history-2026-07.js";
 import { historicalEvents } from "../src/catalog/history.js";
@@ -116,13 +117,13 @@ describe("SQLite application", () => {
       tracks: 10,
       sources: sourceCatalog.length,
       signals: expect.any(Number),
-      version: "0.11.0",
+      version: "0.11.1",
     });
     const timeline = await readFile(join(config.distDir, "data/timeline.json"), "utf8");
     expect(timeline).not.toContain("ADMIN_TOKEN");
     expect(timeline).not.toContain("/Users/");
     expect(timeline).not.toContain('\n  "schemaVersion"');
-    expect(Buffer.byteLength(timeline)).toBeLessThan(1_300_000);
+    expect(Buffer.byteLength(timeline)).toBeLessThan(1_400_000);
     expect(gzipSync(timeline).byteLength).toBeLessThan(300_000);
     expect(JSON.parse(timeline).events[0]).not.toHaveProperty("manual_override");
     const scout = JSON.parse(await readFile(join(config.distDir, "data/scout.json"), "utf8"));
@@ -132,9 +133,10 @@ describe("SQLite application", () => {
     const product = JSON.parse(await readFile(join(config.distDir, "data/product.json"), "utf8"));
     expect(product.roadmap).toHaveLength(5);
     expect(product.releases[0]).toMatchObject({ version: "unreleased", status: "unreleased" });
-    expect(product.releases[1]).toMatchObject({ version: "0.11.0", status: "released" });
-    expect(product.releases[2]).toMatchObject({ version: "0.10.0", status: "released" });
-    expect(product.releases[3]).toMatchObject({ version: "0.9.0", status: "released" });
+    expect(product.releases[1]).toMatchObject({ version: "0.11.1", status: "released" });
+    expect(product.releases[2]).toMatchObject({ version: "0.11.0", status: "released" });
+    expect(product.releases[3]).toMatchObject({ version: "0.10.0", status: "released" });
+    expect(product.releases[4]).toMatchObject({ version: "0.9.0", status: "released" });
     expect(product.sourceCoverage.total).toBeGreaterThanOrEqual(100);
     expect(product.sourceCoverage.observing).toBe(0);
     expect(product.evaluation).toMatchObject({
@@ -343,6 +345,10 @@ describe("SQLite application", () => {
     expect(siteStyles).toContain("overscroll-behavior-y:contain");
     expect(siteStyles).toContain(".back-to-top");
     expect(siteStyles).toContain("[data-mobile-list-extra]");
+    expect(siteStyles).toContain(
+      ".trend-shift-header{display:grid;align-items:start;grid-template-columns:minmax(0,1fr) auto",
+    );
+    expect(siteStyles).toContain(".trend-shift-randomize{justify-self:end;min-height:44px}");
     expect(timelinePage).toContain('class="hero-motion hero-motion-timeline"');
     expect(timelinePage).toContain("事件脉络");
     expect(timelinePage).toContain("最近进展");
@@ -359,13 +365,17 @@ describe("SQLite application", () => {
     expect(timelinePage).toContain('data-filter-track="research"');
     expect(timelinePage).toContain('data-research="true"');
     expect(timelinePage).not.toMatch(/data-category="(?:research|paper)" data-research="false"/);
-    const researchGroups = [...timelinePage.matchAll(/本月精选 (\d+) 篇高影响研究/g)];
+    const researchGroups = [...timelinePage.matchAll(/本月精选 (\d+) 篇高质量研究/g)];
     expect(researchGroups.length).toBeGreaterThan(0);
     for (const group of researchGroups) {
       expect(Number(group[1])).toBeGreaterThan(0);
-      expect(Number(group[1])).toBeLessThanOrEqual(6);
+      expect(Number(group[1])).toBeLessThanOrEqual(10);
     }
-    expect(timelinePage).toMatch(/本月精选 \d+ 篇高影响研究/);
+    expect(timelinePage).toMatch(/本月精选 \d+ 篇高质量研究/);
+    for (const event of directResearchHistory2026) {
+      expect(timelinePage, event.slug).toContain(`data-event="${event.slug}"`);
+      expect(timelinePage, event.date).toContain(`data-research-month="${event.date.slice(0, 7)}"`);
+    }
     expect(timelinePage).not.toMatch(/research-month-group[^>]*data-month-extra/);
     expect(timelinePage).not.toContain("data-research-day");
     expect(timelinePage).not.toContain("同日论文组");
@@ -540,7 +550,7 @@ describe("SQLite application", () => {
     expect(github).toMatchObject({
       repositoryUrl: "https://github.com/barretlee/agent-pulse",
       stars: null,
-      latestRelease: "v0.11.0",
+      latestRelease: "v0.11.1",
     });
     const integrity = await validatePublicSite(config.distDir, "2026-07-14T00:00:00.000Z");
     expect(integrity.issues).toEqual([]);

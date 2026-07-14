@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { capitalHistoryEvents } from "../src/catalog/capital-history-2023-2025.js";
+import { directResearchHistory2026 } from "../src/catalog/direct-research-history-2026.js";
 import { earlyHistoryEvents } from "../src/catalog/early-history.js";
 import { ecosystemHistoryEvents } from "../src/catalog/ecosystem-history-2026-07.js";
 import { historicalEvents, industryNarratives } from "../src/catalog/history.js";
@@ -42,6 +43,23 @@ describe("two-year industry history", () => {
     expect(
       historicalEvents.filter((event) => event.tracks.includes("global-innovation")).length,
     ).toBeGreaterThanOrEqual(6);
+  });
+
+  it("backs every completed 2026 month with a directly published research package", () => {
+    const months = directResearchHistory2026.map((event) => event.date.slice(0, 7));
+    const directSources = new Set(["microsoft-research", "openai", "anthropic", "google-research"]);
+
+    expect(months).toEqual([
+      "2026-01",
+      "2026-02",
+      "2026-03",
+      "2026-04",
+      "2026-05",
+      "2026-06",
+      "2026-07",
+    ]);
+    expect(directResearchHistory2026.every((event) => directSources.has(event.source))).toBe(true);
+    expect(directResearchHistory2026.every((event) => event.category === "research")).toBe(true);
   });
 
   it("keeps every priority model vendor connected to sources and searchable events", () => {

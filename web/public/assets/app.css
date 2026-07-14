@@ -4908,16 +4908,27 @@ body:is([data-page="scout"], [data-page="actors"], [data-page="resources"], [dat
   .trend-shift-card {
     border-radius: 19px;
   }
-  .trend-shift-header,
+  .trend-shift-header {
+    display: grid;
+    align-items: start;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    padding: 18px 20px;
+  }
   .trend-shift-footer {
     align-items: flex-start;
     flex-direction: column;
     padding: 18px 20px;
   }
   .trend-shift-header > div {
+    min-width: 0;
     align-items: flex-start;
     flex-direction: column;
     gap: 5px;
+  }
+  .trend-shift-randomize {
+    justify-self: end;
+    min-height: 44px;
   }
   .trend-shift-judgment,
   .trend-shift-evidence {
