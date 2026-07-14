@@ -49,3 +49,12 @@ git diff --check
 - AI 周报：[Issue #13](https://github.com/barretlee/agent-pulse/issues/13)
 
 首轮 artifact 暴露了 npm banner 混入 `.json` 的次级问题，因此机器证据解析验收保持未完成，待修复后的 Actions 运行验证后再关闭 TASKS。
+
+## 6. 最终闭环证据
+
+- 机器证据修复：[PR #20](https://github.com/barretlee/agent-pulse/pull/20)；分支 CI [29303090401](https://github.com/barretlee/agent-pulse/actions/runs/29303090401)
+- 最终增量回流：[Data Refresh 29303163556](https://github.com/barretlee/agent-pulse/actions/runs/29303163556)
+- 最终 snapshot commit：[96af244](https://github.com/barretlee/agent-pulse/commit/96af2441dad4ecf975d5b727aeea8dbaebdc8df6)
+- 最终 Pages：[29303373351](https://github.com/barretlee/agent-pulse/actions/runs/29303373351)
+- `quality-evidence-29303163556` 中 `ai-enrichment.json`、`evaluation.json`、`weekly-status.json` 均通过直接 `JSON.parse`。
+- 公开首页与 `data/timeline.json` 均返回 HTTP 200；线上 timeline `generatedAt=2026-07-14T03:23:02.763Z`，包含 126 个 Event。

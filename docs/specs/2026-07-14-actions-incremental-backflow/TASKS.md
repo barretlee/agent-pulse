@@ -29,4 +29,4 @@
 - [x] 合入 main
 - [x] main Data Refresh 增量运行成功
 - [x] snapshot commit 或明确 no-change 证据
-- [ ] quality artifact 可直接解析、Pages 与公开站验证成功
+- [x] quality artifact 可直接解析、Pages 与公开站验证成功
