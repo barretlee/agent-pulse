@@ -87,5 +87,5 @@ GitHub Actions
 
 - 首页 JS 失败时回退到第一项静态内容。
 - `signals.json` 加载失败时观察页显示静态首批记录与错误提示，不影响 Event 页面。
-- 周更 workflow 失败时不推进 snapshot，不创建重复 Issue；可用同一周 marker 手动重跑。
+- 周报是 Data Refresh 的隔离增强层：失败时不创建重复 Issue并保留上一版，但已经通过隐私校验的 snapshot 仍先行写回仓库；可用同一周 marker 手动重跑。
 - Release 或 Pages 失败时保留已验证 commit/tag，但不得宣称发布完成，修复后重跑对应 workflow。

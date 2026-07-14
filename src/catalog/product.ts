@@ -541,6 +541,7 @@ export const releases = [
       "紧凑 GitHub 周报",
       "空周报发布门禁",
       "实时 GitHub Star",
+      "Actions 增量数据可靠回流",
     ],
     changes: [
       "DeepSeek 只处理已有一手证据的 review Event，结构化结果必须通过 Schema、证据引用、主线与 readiness 门禁后才能发布",
@@ -551,6 +552,8 @@ export const releases = [
       "周报按 Event 去重，只保留最多三个关键变化和三项行动；空趋势合并，覆盖指标默认折叠",
       "当周没有公开 Event 通过门禁时不生成周报正文，Data Refresh 跳过 Issue 创建与更新",
       "顶部 Star 在页面加载时请求 GitHub 官方 API；构建值和本地缓存仅作为失败兜底",
+      "Data Refresh 先完成快照 merge、隐私校验、commit、push 与 Pages dispatch，再尝试可选 AI 周报；模型失败不会丢失确定性增量",
+      "AI 周报结构失败会进行一次有界修复重试并留下安全状态，Monitor 生命周期百分比与 CI 失败定位同步修正",
     ],
   },
   {

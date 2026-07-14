@@ -22,7 +22,11 @@ import { loadConfig } from "../config/env.js";
 import { createDatabase } from "../db/database.js";
 import { migrateToLatest } from "../db/migrate.js";
 import { seedDatabase } from "../db/seed.js";
-import { generateMonitorReport, getSeverityLevel } from "../pipeline/monitor.js";
+import {
+  generateMonitorReport,
+  getSeverityLevel,
+  sourceLifecyclePercentages,
+} from "../pipeline/monitor.js";
 import { restoreRepositorySnapshot } from "../pipeline/snapshot.js";
 
 // ─── Types ────────────────────────────────────────────────────────────────
@@ -147,20 +151,13 @@ async function checkSourceHealth(
     }
 
     const report = await generateMonitorReport(db);
-    const effective = report.totalSources - report.shadowSources - report.draftSources || 1;
-    const healthyPercent = Math.round(
-      ((report.activeSources - report.degradedSources) / effective) * 100,
-    );
-    const degradedPercent = Math.round((report.degradedSources / effective) * 100);
-    const failedPercent = Math.round(
-      ((report.quarantinedSources + report.retiredSources) / effective) * 100,
-    );
+    const { activePercent, degradedPercent, failedPercent } = sourceLifecyclePercentages(report);
 
     const severity = getSeverityLevel(report);
 
     return {
       status: severity,
-      message: `Source health: ${healthyPercent}% healthy (avg score ${report.avgHealthScore}/100)`,
+      message: `Production lifecycle: ${activePercent}% active; latest audit: ${report.auditHealthyPercent ?? "N/A"}% healthy (avg observed score ${report.avgHealthScore}/100)`,
       detail: {
         totalSources: report.totalSources,
         activeSources: report.activeSources,
@@ -176,7 +173,7 @@ async function checkSourceHealth(
         needsAttentionCount: report.sourcesNeedingAttention.length,
       },
       totalSources: report.totalSources,
-      healthyPercent,
+      healthyPercent: activePercent,
       degradedPercent,
       failedPercent,
       avgHealthScore: report.avgHealthScore,

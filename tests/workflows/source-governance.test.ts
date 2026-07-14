@@ -92,8 +92,23 @@ describe("GitHub source governance workflows", () => {
     expect(refresh.indexOf("npm run ai:enrich -- --require-success")).toBeLessThan(
       refresh.indexOf("npm run auto:publish"),
     );
+    expect(refresh).toContain(['status="', "$", '{PIPESTATUS[0]}"'].join(""));
+    expect(refresh).toContain("AI Event enrichment unavailable");
+    expect(refresh.indexOf("npm run db:snapshot -- write")).toBeLessThan(
+      refresh.indexOf("git push origin HEAD:main"),
+    );
+    expect(refresh.indexOf("git push origin HEAD:main")).toBeLessThan(
+      refresh.indexOf("gh workflow run pages.yml --ref main"),
+    );
+    expect(refresh.indexOf("gh workflow run pages.yml --ref main")).toBeLessThan(
+      refresh.indexOf("npm run --silent weekly:issue"),
+    );
     expect(refresh).toContain("--ai");
     expect(refresh).toContain("--require-success");
+    expect(refresh).toContain("weekly-status.json");
+    expect(refresh).toContain("AI weekly brief skipped");
+    expect(refresh).toContain("if: always()");
+    expect(refresh).toContain("if-no-files-found: ignore");
     expect(refresh).not.toContain(
       "steps.commit.outputs.changed == 'true' && steps.public.outputs.changed == 'true'",
     );
@@ -103,6 +118,25 @@ describe("GitHub source governance workflows", () => {
     expect(audit).toContain(
       "steps.commit.outputs.changed == 'true' && steps.public.outputs.changed == 'true'",
     );
+  });
+
+  it("keeps CI deterministic while exposing the exact failing phase", async () => {
+    const ci = await workflow("ci.yml");
+    for (const step of [
+      "name: Lint",
+      "run: npm run lint",
+      "name: Typecheck",
+      "run: npm run typecheck",
+      "name: Test",
+      "run: npm test",
+      "name: Export static site",
+      "run: npm run export",
+      "name: Build",
+      "run: npm run build",
+    ]) {
+      expect(ci).toContain(step);
+    }
+    expect(ci).not.toContain("run: npm run check");
   });
 
   it("runs weekly guards and dispatches one cooled-down refresh when quality is below 60", async () => {

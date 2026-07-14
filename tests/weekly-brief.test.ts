@@ -113,6 +113,7 @@ describe("weekly GitHub Issue brief", () => {
   });
 
   it("renders a validated AI decision brief without trusting model Markdown", async () => {
+    let completionCalls = 0;
     const result = await renderAiWeeklyBrief(
       {
         timeline: {
@@ -153,7 +154,8 @@ describe("weekly GitHub Issue brief", () => {
       "2026-07-19",
       {
         async completeJson() {
-          return {
+          completionCalls += 1;
+          const response = {
             model: "deepseek-v4-flash",
             usage: { promptTokens: 100, completionTokens: 200, totalTokens: 300 },
             value: {
@@ -211,6 +213,9 @@ describe("weekly GitHub Issue brief", () => {
               ],
             },
           };
+          const firstChange = response.value.thesisChanges[0];
+          if (completionCalls === 1 && firstChange) firstChange.eventSlug = "unknown-weekly-event";
+          return response;
         },
       },
     );
@@ -223,7 +228,9 @@ describe("weekly GitHub Issue brief", () => {
     );
     expect(result.body).toContain("https://barretlee.github.io/agent-pulse/events/weekly-event/");
     expect(result.body).not.toContain("```json");
-    expect(result.usage.totalTokens).toBe(300);
+    expect(completionCalls).toBe(2);
+    expect(result.repairAttempts).toBe(1);
+    expect(result.usage.totalTokens).toBe(600);
   });
 
   it("does not render a weekly Issue when no public Event clears the gate", () => {
@@ -237,5 +244,42 @@ describe("weekly GitHub Issue brief", () => {
     );
 
     expect(body).toBe("");
+  });
+
+  it("bounds schema repair to one retry and still rejects an invalid draft", async () => {
+    let completionCalls = 0;
+    const render = renderAiWeeklyBrief(
+      {
+        timeline: {
+          events: [
+            {
+              slug: "weekly-event",
+              title: "Official release",
+              happenedAt: "2026-07-13T03:00:00.000Z",
+              category: "product",
+              factSummary: "The vendor published a documented product release.",
+              industryInsight: "The release may change the workflow control point.",
+              futureOutlook: "Watch independent adoption and failure recovery.",
+            },
+          ],
+        },
+        scout: { insights: [] },
+        product: {},
+      },
+      "2026-07-19",
+      {
+        async completeJson() {
+          completionCalls += 1;
+          return {
+            model: "deepseek-v4-flash",
+            usage: { promptTokens: 1, completionTokens: 1, totalTokens: 2 },
+            value: {},
+          };
+        },
+      },
+    );
+
+    await expect(render).rejects.toThrow("invalid_ai_weekly_schema_headline_invalid_type");
+    expect(completionCalls).toBe(2);
   });
 });

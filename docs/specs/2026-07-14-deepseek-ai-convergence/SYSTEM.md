@@ -76,7 +76,7 @@ AI_ENRICHMENT_TIMEOUT_MS    default 60000
 ## 6. 失败与回滚
 
 - 单 Event 超时、429、5xx、非法 JSON 或校验失败：保留原 Event，继续下一个。
-- 全部尝试失败且启用 `--require-success`：命令非零退出，Actions 停止写快照和发布。
+- 全部尝试失败且启用 `--require-success`：命令非零退出；Actions 记录 warning 与机器证据，Event 保持 review，但确定性采集增量继续写入快照。显式本地验证仍可使用该非零状态作为硬失败。
 - 无候选：成功退出，不调用模型。
 - 回滚：设置 `AI_ENRICHMENT_ENABLED=false` 或移除 workflow step；最后成功快照和 Pages 保持可用。
 - 模型输出应用前保存内存中的旧值；数据库更新与 Track 绑定在事务中完成。
@@ -94,6 +94,7 @@ restore snapshot
  -> export + snapshot write
  -> commit/rebase/push
  -> Pages dispatch
+ -> optional AI weekly brief
 ```
 
 模型密钥只存在于 enrichment step 的环境，不设置为 job 级环境，减少暴露面。
@@ -110,4 +111,4 @@ restore snapshot
 - `uncertainties[]`：待验证问题、当前证据边界、下一信号、Event slugs
 - `watchlist[]`：观察项、触发条件、Event slugs
 
-所有 slug 必须来自本周输入；Markdown 链接、编号、折叠区和 HTML 转义由确定性 renderer 生成。AI 失败时不更新周报 Issue，保留上一版，而不是回退到低价值模板并伪装成功。
+所有 slug 必须来自本周输入；Markdown 链接、编号、折叠区和 HTML 转义由确定性 renderer 生成。结构校验失败时允许一次只修结构、不新增事实的有界重试。AI 仍失败时不更新周报 Issue，保留上一版并记录安全 warning；已经完成的 snapshot push 与 Pages dispatch 不回滚。

@@ -65,6 +65,29 @@ export interface MonitorReport {
   recommendations: string[];
 }
 
+export function sourceLifecyclePercentages(
+  report: Pick<
+    MonitorReport,
+    | "totalSources"
+    | "activeSources"
+    | "degradedSources"
+    | "quarantinedSources"
+    | "retiredSources"
+    | "shadowSources"
+    | "draftSources"
+  >,
+): { activePercent: number; degradedPercent: number; failedPercent: number } {
+  const effective = Math.max(0, report.totalSources - report.shadowSources - report.draftSources);
+  if (effective === 0) return { activePercent: 0, degradedPercent: 0, failedPercent: 0 };
+  const percent = (count: number) =>
+    Math.max(0, Math.min(100, Math.round((Math.max(0, count) / effective) * 100)));
+  return {
+    activePercent: percent(report.activeSources),
+    degradedPercent: percent(report.degradedSources),
+    failedPercent: percent(report.quarantinedSources + report.retiredSources),
+  };
+}
+
 /**
  * Generate a full monitoring report.
  */

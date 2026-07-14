@@ -10,6 +10,7 @@
 - 合法输出在事务中更新 Event 与 Track，随后通过 readiness；非法输出不产生部分写入。
 - AI 周报中的未知 Event slug、空决策、占位词或越界数组被拒绝。
 - 周报模型只返回 JSON，最终 Markdown 中的链接由本地 renderer 从 slug 构造。
+- 周报结构失败最多修复重试一次；二次失败保留旧 Issue，但不阻断确定性 snapshot 回流。
 
 ## 2. 本地真实 API
 
@@ -43,6 +44,7 @@ snapshot restore -> AI enrich one candidate -> auto-publish -> export
 - 合入 main 后手动触发一次 Data Refresh；
 - 日志显示候选/成功/失败/Token 汇总，不显示输入输出正文；
 - bot 快照提交成功，Pages workflow 成功；
+- AI enrichment 或 weekly 失败时保留 warning/artifact，已完成的确定性增量仍能写回仓库；
 - 线上 `signals.json`、`timeline.json` 的 generatedAt 更新；
 - 若有合格 Event，Event 页面可打开并回链 Evidence；若无合格 Event，运行仍应明确报告 `candidates=0` 或阻塞原因。
 - 使用同一公开 DTO 真实更新 Issue #13，检查核心判断、角色决策、停止条件和观察清单。

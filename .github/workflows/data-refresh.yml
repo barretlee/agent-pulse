@@ -88,6 +88,7 @@ jobs:
         run: npm run repair:provenance -- --confirm
 
       - name: Enrich evidence-ready review Events with DeepSeek
+        id: enrichment
         env:
           AI_ENRICHMENT_ENABLED: "true"
           AI_ENRICHMENT_MAX_EVENTS: "8"
@@ -96,7 +97,19 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          set +e
           npm run ai:enrich -- --require-success | tee "$RUNNER_TEMP/ai-enrichment.json"
+          status="${PIPESTATUS[0]}"
+          set -e
+          if [[ "$status" -eq 0 ]]; then
+            echo "status=ok" >> "$GITHUB_OUTPUT"
+          else
+            if [[ ! -s "$RUNNER_TEMP/ai-enrichment.json" ]]; then
+              printf '%s\n' '{"enabled":true,"workflowStatus":"failed","error":"ai_enrichment_failed"}' > "$RUNNER_TEMP/ai-enrichment.json"
+            fi
+            echo "status=failed" >> "$GITHUB_OUTPUT"
+            echo "::warning title=AI Event enrichment unavailable::Eligible Events remain in review; deterministic collection and snapshot persistence will continue."
+          fi
 
       - name: Generate and publish qualified Scout opportunities
         run: npm run scout:generate -- 12
@@ -129,37 +142,6 @@ jobs:
             echo "Material public content changed."
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
-
-      - name: Render an eligible weekly intelligence review
-        env:
-          AI_ENRICHMENT_ENABLED: "true"
-          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
-          DEEPSEEK_MODEL: deepseek-v4-flash
-        shell: bash
-        run: |
-          set -euo pipefail
-          report_date="$(TZ=Asia/Shanghai date +%F)"
-          report_week="$(TZ=Asia/Shanghai date +%G-W%V)"
-          weekday="$(TZ=Asia/Shanghai date +%u)"
-          hour="$(TZ=Asia/Shanghai date +%H)"
-          publish_weekly=false
-          if [[ "$PUBLISH_WEEKLY" == "true" || ( "$weekday" == "7" && "$hour" -ge 20 ) ]]; then
-            npm run --silent weekly:issue -- \
-              --ai \
-              --require-success \
-              --timeline dist/data/timeline.json \
-              --scout dist/data/scout.json \
-              --product dist/data/product.json \
-              --end-date "$report_date" \
-              --time-zone Asia/Shanghai > "$RUNNER_TEMP/weekly-brief.md"
-            if [[ -s "$RUNNER_TEMP/weekly-brief.md" ]]; then
-              publish_weekly=true
-            else
-              echo "No public Event cleared this week's gate; skipping the weekly Issue."
-            fi
-          fi
-          echo "publish_weekly=$publish_weekly" >> "$GITHUB_ENV"
-          echo "report_week=$report_week" >> "$GITHUB_ENV"
 
       - name: Write privacy-safe text snapshot
         run: npm run db:snapshot -- write
@@ -197,16 +179,71 @@ jobs:
           git push origin HEAD:main
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
-      - name: Upload quality evidence
-        uses: actions/upload-artifact@v7
-        with:
-          name: quality-evidence-${{ github.run_id }}
-          path: |
-            ${{ runner.temp }}/evaluation.json
-            ${{ runner.temp }}/ai-enrichment.json
-          retention-days: 14
+      # Pushes made with GITHUB_TOKEN intentionally do not trigger other push workflows.
+      - name: Dispatch Pages deployment after the daily refresh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref main
+
+      - name: Render an eligible weekly intelligence review
+        id: weekly
+        env:
+          AI_ENRICHMENT_ENABLED: "true"
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          DEEPSEEK_MODEL: deepseek-v4-flash
+        shell: bash
+        run: |
+          set -euo pipefail
+          report_date="$(TZ=Asia/Shanghai date +%F)"
+          report_week="$(TZ=Asia/Shanghai date +%G-W%V)"
+          weekday="$(TZ=Asia/Shanghai date +%u)"
+          hour="$(TZ=Asia/Shanghai date +%H)"
+          publish_weekly=false
+          weekly_status=not_requested
+          weekly_attempted=false
+          weekly_error=""
+          if [[ "$PUBLISH_WEEKLY" == "true" || ( "$weekday" == "7" && "$hour" -ge 20 ) ]]; then
+            weekly_attempted=true
+            set +e
+            npm run --silent weekly:issue -- \
+              --ai \
+              --require-success \
+              --timeline dist/data/timeline.json \
+              --scout dist/data/scout.json \
+              --product dist/data/product.json \
+              --end-date "$report_date" \
+              --time-zone Asia/Shanghai > "$RUNNER_TEMP/weekly-brief.md" 2> "$RUNNER_TEMP/weekly-error.log"
+            status=$?
+            set -e
+            if [[ "$status" -ne 0 ]]; then
+              weekly_status=failed
+              weekly_error="$(sed -n -E 's/^(DeepSeekError|Error): //p' "$RUNNER_TEMP/weekly-error.log" | tail -n 1 | tr -cd '[:alnum:]_:-')"
+              weekly_error="${weekly_error:-weekly_render_failed}"
+              echo "::warning title=AI weekly brief skipped::$weekly_error"
+            elif [[ -s "$RUNNER_TEMP/weekly-brief.md" ]]; then
+              weekly_status=ready
+              publish_weekly=true
+            else
+              weekly_status=empty
+              echo "No public Event cleared this week's gate; skipping the weekly Issue."
+            fi
+          fi
+          WEEKLY_STATUS="$weekly_status" WEEKLY_ATTEMPTED="$weekly_attempted" WEEKLY_ERROR="$weekly_error" \
+            node --input-type=module <<'NODE' > "$RUNNER_TEMP/weekly-status.json"
+          const status = process.env.WEEKLY_STATUS || "unknown";
+          process.stdout.write(`${JSON.stringify({
+            status,
+            attempted: process.env.WEEKLY_ATTEMPTED === "true",
+            published: false,
+            errorCode: process.env.WEEKLY_ERROR || null,
+          }, null, 2)}\n`);
+          NODE
+          echo "publish_weekly=$publish_weekly" >> "$GITHUB_ENV"
+          echo "report_week=$report_week" >> "$GITHUB_ENV"
+          echo "status=$weekly_status" >> "$GITHUB_OUTPUT"
 
       - name: Create or update this week's GitHub Issue
+        id: weekly_issue
         if: env.publish_weekly == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -224,9 +261,33 @@ jobs:
           else
             gh issue create --title "$title" --body-file "$RUNNER_TEMP/weekly-brief.md" --label weekly-brief
           fi
+          WEEKLY_STATUS_PATH="$RUNNER_TEMP/weekly-status.json" node --input-type=module <<'NODE'
+          import { readFile, writeFile } from "node:fs/promises";
+          const path = process.env.WEEKLY_STATUS_PATH;
+          const status = JSON.parse(await readFile(path, "utf8"));
+          await writeFile(path, `${JSON.stringify({ ...status, status: "published", published: true }, null, 2)}\n`);
+          NODE
 
-      # Pushes made with GITHUB_TOKEN intentionally do not trigger other push workflows.
-      - name: Dispatch Pages deployment after the daily refresh
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow run pages.yml --ref main
+      - name: Record refresh summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## Data Refresh"
+            echo "- AI enrichment: ${{ steps.enrichment.outputs.status || 'not-run' }}"
+            echo "- Snapshot changed: ${{ steps.commit.outputs.changed || 'unknown' }}"
+            echo "- Weekly render: ${{ steps.weekly.outputs.status || 'not-run' }}"
+            echo "- Weekly Issue: ${{ steps.weekly_issue.outcome || 'skipped' }}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload quality evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: quality-evidence-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/evaluation.json
+            ${{ runner.temp }}/ai-enrichment.json
+            ${{ runner.temp }}/weekly-status.json
+          if-no-files-found: ignore
+          retention-days: 14

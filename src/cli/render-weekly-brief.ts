@@ -118,6 +118,7 @@ export interface AiWeeklyBriefResult {
   usage: ModelUsage;
   model: string | null;
   eventCount: number;
+  repairAttempts: number;
 }
 
 export function renderWeeklyBrief(
@@ -243,6 +244,7 @@ export async function renderAiWeeklyBrief(
       usage: { promptTokens: 0, completionTokens: 0, totalTokens: 0 },
       model: null,
       eventCount: 0,
+      repairAttempts: 0,
     };
   }
   const scout = input.scout.insights
@@ -335,21 +337,50 @@ export async function renderAiWeeklyBrief(
       sourceCoverage: input.product.sourceCoverage,
     },
   });
+  const system = [
+    "你是 Agent Pulse 的主编，服务 CEO、投资负责人、创业者和技术负责人。",
+    "你只使用提供的公开 Event 和 Evidence，不把推断写成事实。",
+    "输出必须具体、可执行、可证伪，并返回严格 JSON。",
+  ].join("\n");
   const completion = await client.completeJson({
-    system: [
-      "你是 Agent Pulse 的主编，服务 CEO、投资负责人、创业者和技术负责人。",
-      "你只使用提供的公开 Event 和 Evidence，不把推断写成事实。",
-      "输出必须具体、可执行、可证伪，并返回严格 JSON。",
-    ].join("\n"),
+    system,
     user: prompt,
     maxTokens: 2_400,
   });
-  const brief = validateAiWeeklyBrief(completion.value, events);
+  let brief: AiWeeklyBrief;
+  let model = completion.model;
+  let usage = { ...completion.usage };
+  let repairAttempts = 0;
+  try {
+    brief = validateAiWeeklyBrief(completion.value, events);
+  } catch (error) {
+    repairAttempts = 1;
+    const repaired = await client.completeJson({
+      system,
+      user: JSON.stringify({
+        task: "修复这份 AI 周报 JSON，使其通过本地结构与引用校验。只修结构和表达，不新增事实。",
+        validationError: safeWeeklyErrorCode(error),
+        allowedEventSlugs: events.map((event) => event.slug),
+        rules: [
+          "保留原草稿中有输入证据支持的内容。",
+          "所有 eventSlug/eventSlugs 只能来自 allowedEventSlugs。",
+          "补齐缺失字段并满足原数组数量、长度和枚举约束。",
+          "不要输出 Markdown，只返回修复后的 JSON object。",
+        ],
+        invalidDraft: completion.value,
+      }),
+      maxTokens: 2_400,
+    });
+    usage = addModelUsage(usage, repaired.usage);
+    model = repaired.model;
+    brief = validateAiWeeklyBrief(repaired.value, events, true);
+  }
   return {
     body: renderAiWeeklyMarkdown(input, window, endDate, events, brief),
-    usage: completion.usage,
-    model: completion.model,
+    usage,
+    model,
     eventCount: events.length,
+    repairAttempts,
   };
 }
 
@@ -386,7 +417,7 @@ export async function runWeeklyBriefCli(args = process.argv.slice(2)): Promise<v
       timeZone,
     );
     process.stderr.write(
-      `${JSON.stringify({ mode: "ai-weekly-brief", model: result.model, eventCount: result.eventCount, usage: result.usage })}\n`,
+      `${JSON.stringify({ mode: "ai-weekly-brief", model: result.model, eventCount: result.eventCount, repairAttempts: result.repairAttempts, usage: result.usage })}\n`,
     );
     process.stdout.write(result.body);
     return;
@@ -412,7 +443,11 @@ function weeklyEvents(
     );
 }
 
-function validateAiWeeklyBrief(value: unknown, events: WeeklyEvent[]): AiWeeklyBrief {
+function validateAiWeeklyBrief(
+  value: unknown,
+  events: WeeklyEvent[],
+  allowStopConditionFallback = false,
+): AiWeeklyBrief {
   const unwrapped =
     value && typeof value === "object" && "weeklyBrief" in value
       ? (value as { weeklyBrief: unknown }).weeklyBrief
@@ -422,6 +457,14 @@ function validateAiWeeklyBrief(value: unknown, events: WeeklyEvent[]): AiWeeklyB
     const issue = parsed.error.issues[0];
     const path = issue?.path.join("_").replace(/[^a-zA-Z0-9_]/g, "_") || "root";
     throw new Error(`invalid_ai_weekly_schema_${path}_${issue?.code ?? "unknown"}`);
+  }
+  const invalidStopCondition = parsed.data.decisionCards.findIndex(
+    (card) => !STOP_CONDITION.test(card.stopCondition),
+  );
+  if (invalidStopCondition >= 0 && !allowStopConditionFallback) {
+    throw new Error(
+      `invalid_ai_weekly_schema_decisionCards_${invalidStopCondition}_stopCondition_custom`,
+    );
   }
   const brief: AiWeeklyBrief = {
     ...parsed.data,
@@ -442,6 +485,19 @@ function validateAiWeeklyBrief(value: unknown, events: WeeklyEvent[]): AiWeeklyB
   if (referenced.some((slug) => !slugs.has(slug))) throw new Error("unknown_weekly_event_slug");
   if (containsPlaceholder(brief)) throw new Error("weekly_brief_contains_placeholder");
   return brief;
+}
+
+function safeWeeklyErrorCode(error: unknown): string {
+  const value = error instanceof Error ? error.message : "invalid_ai_weekly_output";
+  return value.replace(/[^a-zA-Z0-9_:-]/g, "_").slice(0, 160) || "invalid_ai_weekly_output";
+}
+
+function addModelUsage(left: ModelUsage, right: ModelUsage): ModelUsage {
+  return {
+    promptTokens: left.promptTokens + right.promptTokens,
+    completionTokens: left.completionTokens + right.completionTokens,
+    totalTokens: left.totalTokens + right.totalTokens,
+  };
 }
 
 function renderAiWeeklyMarkdown(

@@ -14,6 +14,8 @@
 - GitHub 周报改为一句话判断、关键变化、三项行动和仍需验证的紧凑结构；同一 Event 不再按趋势重复展开，空趋势合并为一行，运行指标收进折叠区。
 - 周报增加“本周至少一个公开 Event”硬门禁；没有关键变化时 renderer 输出为空，Data Refresh 不创建或更新当周 Issue。
 - 顶部 GitHub Star 数在页面加载时立即通过官方仓库 API 无缓存刷新；构建值与短期本地缓存仅作接口失败时的可用性兜底。
+- Data Refresh 将快照 merge、隐私校验、commit、push 与 Pages dispatch 提前到可选 AI 周报之前；Event enrichment 或周报失败只留下安全 warning 与 artifact，不再丢失已经采集的增量数据。
+- AI 周报对结构校验失败执行一次有界修复重试，并修复 Monitor 将 active 与 degraded 相减导致负百分比的问题；CI 同时拆分为可定位的 lint、typecheck、test、export 和 build 步骤。
 
 ## [0.10.0] - 2026-07-14
 

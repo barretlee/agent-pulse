@@ -3,7 +3,11 @@ import { Kysely, SqliteDialect } from "kysely";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { Repository } from "../../src/db/repository.js";
 import type { DatabaseSchema } from "../../src/db/types.js";
-import { applyAdaptiveHealth, generateMonitorReport } from "../../src/pipeline/monitor.js";
+import {
+  applyAdaptiveHealth,
+  generateMonitorReport,
+  sourceLifecyclePercentages,
+} from "../../src/pipeline/monitor.js";
 
 let db: Kysely<DatabaseSchema>;
 
@@ -207,6 +211,36 @@ describe("generateMonitorReport", () => {
   it("generates recommendations", async () => {
     const report = await generateMonitorReport(db);
     expect(report.recommendations.length).toBeGreaterThan(0);
+  });
+});
+
+describe("sourceLifecyclePercentages", () => {
+  it("never subtracts mutually exclusive active and degraded lifecycles", () => {
+    expect(
+      sourceLifecyclePercentages({
+        totalSources: 411,
+        activeSources: 5,
+        degradedSources: 12,
+        quarantinedSources: 62,
+        retiredSources: 0,
+        shadowSources: 332,
+        draftSources: 0,
+      }),
+    ).toEqual({ activePercent: 6, degradedPercent: 15, failedPercent: 78 });
+  });
+
+  it("returns zero percentages when there are no effective production sources", () => {
+    expect(
+      sourceLifecyclePercentages({
+        totalSources: 10,
+        activeSources: 0,
+        degradedSources: 0,
+        quarantinedSources: 0,
+        retiredSources: 0,
+        shadowSources: 8,
+        draftSources: 2,
+      }),
+    ).toEqual({ activePercent: 0, degradedPercent: 0, failedPercent: 0 });
   });
 });
 
