@@ -1,6 +1,6 @@
 # 重大事件驱动的趋势阶段晋级
 
-- 状态：实现与本地验证完成，待 Actions 验收
+- 状态：已完成并通过 Actions 验收
 - 日期：2026-07-14
 - 目标版本：Unreleased
 - 前置规格：`2026-07-13-timeline-design-and-daily-brief`
