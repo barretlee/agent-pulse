@@ -78,6 +78,9 @@
 * {
   box-sizing: border-box;
 }
+[hidden] {
+  display: none !important;
+}
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 84px;
