@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "5e8c4f90-af70-489c-b139-95bef1ab2bb4",
+  "id": "214ec8c8-d2d6-402f-bb96-5b9b84b96ee3",
   "releaseVersion": "0.11.1",
   "status": "partial",
   "overallScore": 52,
@@ -68,14 +68,14 @@
       "scoreCap": 100,
       "weight": 10,
       "status": "measured",
-      "sampleSize": 5382,
+      "sampleSize": 5718,
       "sampleTarget": 100,
-      "summary": "5382 条信号中 4047 条来自 primary/research/policy，488 条证据进入事件。",
+      "summary": "5718 条信号中 4324 条来自 primary/research/policy，530 条证据进入事件。",
       "evidence": {
-        "signals": 5382,
-        "direct": 5382,
-        "primary": 4047,
-        "linkedEvidence": 488,
+        "signals": 5718,
+        "direct": 5718,
+        "primary": 4324,
+        "linkedEvidence": 530,
         "linkedSourceCount": 50,
         "aggregatorDebt": 0
       },
@@ -99,8 +99,8 @@
         "degraded": 27,
         "failed": 70,
         "skipped": 51,
-        "latestRuns": 242,
-        "latestRunSuccess": 234,
+        "latestRuns": 199,
+        "latestRunSuccess": 198,
         "auditWindows": 2
       },
       "penalties": [
@@ -116,14 +116,14 @@
       "scoreCap": 42,
       "weight": 12,
       "status": "insufficient_data",
-      "sampleSize": 343,
+      "sampleSize": 348,
       "sampleTarget": 30,
-      "summary": "343 个公开事件仅 4 个拥有多源证据，318 个通过当前就绪门禁；人工置信分只占 10%。",
+      "summary": "348 个公开事件仅 4 个拥有多源证据，323 个通过当前就绪门禁；人工置信分只占 10%。",
       "evidence": {
-        "published": 343,
-        "primaryEvidence": 335,
+        "published": 348,
+        "primaryEvidence": 340,
         "multiSource": 4,
-        "readyPublished": 318,
+        "readyPublished": 323,
         "averageEvidence": 1.03,
         "averageSelfReportedConfidence": 91
       },
@@ -144,9 +144,9 @@
       "sampleTarget": 30,
       "summary": "洞察字段完整不等于有价值；当前没有读者保存、引用、决策帮助度或付费反馈样本。",
       "evidence": {
-        "published": 343,
+        "published": 348,
         "fieldCompleteness": 100,
-        "readyPublished": 318,
+        "readyPublished": 323,
         "multiSource": 4,
         "outcomeFeedback": 0
       },
@@ -158,17 +158,17 @@
     {
       "slug": "realtime",
       "name": "端到端实时性",
-      "score": 85,
-      "rawScore": 85,
+      "score": 86,
+      "rawScore": 86,
       "scoreCap": 100,
       "weight": 8,
       "status": "measured",
-      "sampleSize": 242,
+      "sampleSize": 199,
       "sampleTarget": 100,
       "summary": "collector 耗时不是上游发布到页面可见的端到端延迟；以成功运行比例作为实时性估算。",
       "evidence": {
-        "latestSourceRuns": 242,
-        "latestRunSuccess": 234,
+        "latestSourceRuns": 199,
+        "latestRunSuccess": 198,
         "freshHealthySources": 143,
         "activeWithRecentSuccess": 5,
         "endToEndLatencySamples": 0
@@ -188,14 +188,14 @@
       "status": "measured",
       "sampleSize": 266,
       "sampleTarget": 100,
-      "summary": "143/266 个健康来源在 7 天窗口内有新内容，最近 30 天公开事件 69 个。",
+      "summary": "143/266 个健康来源在 7 天窗口内有新内容，最近 30 天公开事件 71 个。",
       "evidence": {
         "healthy": 266,
         "freshHealthy": 143,
         "active": 5,
         "activeWithRecentSuccess": 5,
-        "published": 343,
-        "recentPublished": 69
+        "published": 348,
+        "recentPublished": 71
       },
       "penalties": [],
       "nextAction": "按 cadence 衡量来源 freshness lag，并补齐从事件发生到页面发布的延迟。"
@@ -226,7 +226,7 @@
       "slug": "governance",
       "name": "安全与治理",
       "score": 60,
-      "rawScore": 94,
+      "rawScore": 93,
       "scoreCap": 60,
       "weight": 8,
       "status": "insufficient_data",
@@ -238,8 +238,8 @@
         "checked": 414,
         "licenseDeclared": 414,
         "restrictedEnabled": 0,
-        "readyEvents": 318,
-        "totalEvents": 461,
+        "readyEvents": 323,
+        "totalEvents": 503,
         "rollbackDrills": 0
       },
       "penalties": [
@@ -692,8 +692,8 @@
     }
   ],
   "notes": "5 dimensions lack sufficient evidence; calibrated weighted score 59, evidence coverage 50%, final score 52",
-  "startedAt": "2026-07-15T12:52:40.270Z",
-  "finishedAt": "2026-07-15T12:52:40.385Z",
+  "startedAt": "2026-07-16T12:57:07.967Z",
+  "finishedAt": "2026-07-16T12:57:08.082Z",
   "target": 80,
   "targetReached": false,
   "policy": "measured-evidence-only",
@@ -775,9 +775,9 @@
   ],
   "comparison": {
     "passed": true,
-    "baselineScore": 51,
+    "baselineScore": 52,
     "currentScore": 52,
-    "scoreDelta": 1,
+    "scoreDelta": 0,
     "baselineEvidenceCoverage": 50,
     "currentEvidenceCoverage": 50,
     "evidenceCoverageDelta": 0,
