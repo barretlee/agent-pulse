@@ -107,8 +107,7 @@ describe("SQLite application", () => {
     const perEventActors = vi.spyOn(Repository.prototype, "eventActors");
     const batchedRelations = vi.spyOn(Repository.prototype, "publicEventRelations");
     vi.useFakeTimers({ now: new Date("2026-07-13T12:00:00.000Z"), toFake: ["Date"] });
-    const result = await exportStaticSite(db, config);
-    vi.useRealTimers();
+    const result = await exportStaticSite(db, config).finally(() => vi.useRealTimers());
     expect(perEventEvidence).not.toHaveBeenCalled();
     expect(perEventTracks).not.toHaveBeenCalled();
     expect(perEventActors).not.toHaveBeenCalled();
