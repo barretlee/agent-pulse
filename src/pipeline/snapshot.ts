@@ -871,8 +871,10 @@ async function restoreSnapshot(
       details_json: JSON.stringify(value.details ?? {}),
       updated_at: optionalString(value.updatedAt) ?? requiredString(value, "createdAt"),
     };
-    if (existing && compareTimestamp(row.updated_at, existing.updated_at) >= 0) {
-      await db.updateTable("signal_triage").set(row).where("signal_id", "=", signalId).execute();
+    if (existing) {
+      if (compareTimestamp(row.updated_at, existing.updated_at) >= 0) {
+        await db.updateTable("signal_triage").set(row).where("signal_id", "=", signalId).execute();
+      }
     } else {
       await db
         .insertInto("signal_triage")
