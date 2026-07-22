@@ -165,7 +165,7 @@ describe("Scout deterministic cards", () => {
         ["venture", "media", "work", "learning", "artifact", "influence"][index % 6] ?? "venture",
       title: `Pool fixture ${index}`,
       cooldown_key: `pool:fixture-${index}`,
-      expires_at: "2026-07-20T00:00:00.000Z",
+      expires_at: "2099-12-31T00:00:00.000Z",
     }));
     await db.insertInto("scout_insights").values(fixtures).execute();
 
