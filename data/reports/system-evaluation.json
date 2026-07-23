@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "id": "d1c0f78e-aeb5-4e70-8572-58c558be91e6",
+  "id": "d7fed1b6-384a-4d4b-82c2-8b36db4843fc",
   "releaseVersion": "0.11.1",
   "status": "partial",
-  "overallScore": 56,
-  "rawWeightedScore": 62,
+  "overallScore": 57,
+  "rawWeightedScore": 63,
   "evidenceCoverage": 60,
   "dimensions": [
     {
@@ -58,20 +58,20 @@
     {
       "slug": "primary-source-provenance",
       "name": "一手来源归属",
-      "score": 63,
-      "rawScore": 63,
+      "score": 62,
+      "rawScore": 62,
       "scoreCap": 100,
       "weight": 10,
       "status": "measured",
-      "sampleSize": 6669,
+      "sampleSize": 7085,
       "sampleTarget": 100,
-      "summary": "6669 条信号中 5079 条来自 primary/research/policy，739 条证据进入事件。",
+      "summary": "7085 条信号中 5341 条来自 primary/research/policy，820 条证据进入事件。",
       "evidence": {
-        "signals": 6669,
-        "direct": 6669,
-        "primary": 5079,
-        "linkedEvidence": 739,
-        "linkedSourceCount": 86,
+        "signals": 7085,
+        "direct": 7085,
+        "primary": 5341,
+        "linkedEvidence": 820,
+        "linkedSourceCount": 91,
         "aggregatorDebt": 0
       },
       "penalties": [],
@@ -94,8 +94,8 @@
         "degraded": 28,
         "failed": 68,
         "skipped": 53,
-        "latestRuns": 197,
-        "latestRunSuccess": 197,
+        "latestRuns": 223,
+        "latestRunSuccess": 223,
         "auditWindows": 3
       },
       "penalties": [],
@@ -109,15 +109,15 @@
       "scoreCap": 42,
       "weight": 12,
       "status": "insufficient_data",
-      "sampleSize": 363,
+      "sampleSize": 368,
       "sampleTarget": 30,
-      "summary": "363 个公开事件仅 4 个拥有多源证据，338 个通过当前就绪门禁；人工置信分只占 10%。",
+      "summary": "368 个公开事件仅 4 个拥有多源证据，343 个通过当前就绪门禁；人工置信分只占 10%。",
       "evidence": {
-        "published": 363,
-        "primaryEvidence": 355,
+        "published": 368,
+        "primaryEvidence": 360,
         "multiSource": 4,
-        "readyPublished": 338,
-        "averageEvidence": 1.03,
+        "readyPublished": 343,
+        "averageEvidence": 1.04,
         "averageSelfReportedConfidence": 90
       },
       "penalties": [
@@ -137,9 +137,9 @@
       "sampleTarget": 30,
       "summary": "洞察字段完整不等于有价值；当前没有读者保存、引用、决策帮助度或付费反馈样本。",
       "evidence": {
-        "published": 363,
+        "published": 368,
         "fieldCompleteness": 100,
-        "readyPublished": 338,
+        "readyPublished": 343,
         "multiSource": 4,
         "outcomeFeedback": 0
       },
@@ -151,19 +151,19 @@
     {
       "slug": "realtime",
       "name": "端到端实时性",
-      "score": 78,
-      "rawScore": 78,
+      "score": 86,
+      "rawScore": 86,
       "scoreCap": 100,
       "weight": 8,
       "status": "measured",
-      "sampleSize": 197,
+      "sampleSize": 223,
       "sampleTarget": 100,
       "summary": "collector 耗时不是上游发布到页面可见的端到端延迟；以成功运行比例作为实时性估算。",
       "evidence": {
-        "latestSourceRuns": 197,
-        "latestRunSuccess": 197,
+        "latestSourceRuns": 223,
+        "latestRunSuccess": 223,
         "freshHealthySources": 143,
-        "activeWithRecentSuccess": 99,
+        "activeWithRecentSuccess": 125,
         "endToEndLatencySamples": 0
       },
       "penalties": [
@@ -174,21 +174,21 @@
     {
       "slug": "timeliness",
       "name": "内容时效性",
-      "score": 53,
-      "rawScore": 53,
+      "score": 60,
+      "rawScore": 60,
       "scoreCap": 100,
       "weight": 10,
       "status": "measured",
       "sampleSize": 265,
       "sampleTarget": 100,
-      "summary": "143/265 个健康来源在 7 天窗口内有新内容，最近 30 天公开事件 84 个。",
+      "summary": "143/265 个健康来源在 7 天窗口内有新内容，最近 30 天公开事件 88 个。",
       "evidence": {
         "healthy": 265,
         "freshHealthy": 143,
         "active": 127,
-        "activeWithRecentSuccess": 99,
-        "published": 363,
-        "recentPublished": 84
+        "activeWithRecentSuccess": 125,
+        "published": 368,
+        "recentPublished": 88
       },
       "penalties": [],
       "nextAction": "按 cadence 衡量来源 freshness lag，并补齐从事件发生到页面发布的延迟。"
@@ -219,7 +219,7 @@
       "slug": "governance",
       "name": "安全与治理",
       "score": 60,
-      "rawScore": 90,
+      "rawScore": 89,
       "scoreCap": 60,
       "weight": 8,
       "status": "insufficient_data",
@@ -231,8 +231,8 @@
         "checked": 414,
         "licenseDeclared": 415,
         "restrictedEnabled": 0,
-        "readyEvents": 338,
-        "totalEvents": 663,
+        "readyEvents": 343,
+        "totalEvents": 729,
         "rollbackDrills": 0
       },
       "penalties": [
@@ -684,9 +684,9 @@
       "evidence": "capability map links status, maturity, release and implementation evidence"
     }
   ],
-  "notes": "4 dimensions lack sufficient evidence; calibrated weighted score 62, evidence coverage 60%, final score 56",
-  "startedAt": "2026-07-22T12:54:39.404Z",
-  "finishedAt": "2026-07-22T12:54:39.493Z",
+  "notes": "4 dimensions lack sufficient evidence; calibrated weighted score 63, evidence coverage 60%, final score 57",
+  "startedAt": "2026-07-23T12:56:02.470Z",
+  "finishedAt": "2026-07-23T12:56:02.545Z",
   "target": 80,
   "targetReached": false,
   "policy": "measured-evidence-only",
@@ -725,15 +725,6 @@
       "nextAction": "采集至少 30 条读后帮助度、保存/引用、行动与付费意愿反馈。"
     },
     {
-      "slug": "timeliness",
-      "name": "内容时效性",
-      "score": 53,
-      "status": "measured",
-      "weightedGap": 3,
-      "penalties": [],
-      "nextAction": "按 cadence 衡量来源 freshness lag，并补齐从事件发生到页面发布的延迟。"
-    },
-    {
       "slug": "governance",
       "name": "安全与治理",
       "score": 60,
@@ -745,9 +736,18 @@
       "nextAction": "增加 audit log、策略版本、release snapshot hash 与定期回滚演练。"
     },
     {
+      "slug": "timeliness",
+      "name": "内容时效性",
+      "score": 60,
+      "status": "measured",
+      "weightedGap": 2,
+      "penalties": [],
+      "nextAction": "按 cadence 衡量来源 freshness lag，并补齐从事件发生到页面发布的延迟。"
+    },
+    {
       "slug": "primary-source-provenance",
       "name": "一手来源归属",
-      "score": 63,
+      "score": 62,
       "status": "measured",
       "weightedGap": 2,
       "penalties": [],
@@ -756,15 +756,14 @@
   ],
   "comparison": {
     "passed": false,
-    "baselineScore": 52,
-    "currentScore": 56,
-    "scoreDelta": 4,
-    "baselineEvidenceCoverage": 50,
+    "baselineScore": 56,
+    "currentScore": 57,
+    "scoreDelta": 1,
+    "baselineEvidenceCoverage": 60,
     "currentEvidenceCoverage": 60,
-    "evidenceCoverageDelta": 10,
+    "evidenceCoverageDelta": 0,
     "regressions": [
-      "dimension realtime regressed from 86 to 78",
-      "dimension timeliness regressed from 60 to 53"
+      "dimension primary-source-provenance regressed from 63 to 62"
     ]
   }
 }
