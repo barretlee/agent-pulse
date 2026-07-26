@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "policyVersion": "2026-07-14.v2",
-  "generatedAt": "2026-07-25T12:45:33.032Z",
+  "generatedAt": "2026-07-26T12:46:40.493Z",
   "source": {
     "name": "OpenAlex",
     "url": "https://developers.openalex.org/",
@@ -41,20 +41,26 @@
       "eventSlug": "3d-aware-vlms-with-implicit-and-explicit-geometries-2026-07-24",
       "arxivId": "2607.21595",
       "paperTitle": "3D-Aware VLMs with Implicit and Explicit Geometries",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170563183",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21595"
+        "https://arxiv.org/abs/2607.21595",
+        "https://openalex.org/W7170563183"
       ]
     },
     {
@@ -74,7 +80,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -100,7 +106,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -126,7 +132,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=11",
+        "age_days=12",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -152,7 +158,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=12",
+        "age_days=13",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -178,7 +184,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -204,7 +210,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -217,20 +223,26 @@
       "eventSlug": "active-inference-as-a-convex-markov-decision-process-2026-07-23",
       "arxivId": "2607.20152",
       "paperTitle": "Active Inference as a Convex Markov Decision Process",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170181775",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20152"
+        "https://arxiv.org/abs/2607.20152",
+        "https://openalex.org/W7170181775"
       ]
     },
     {
@@ -250,7 +262,7 @@
         "title_match=1",
         "citations=2",
         "recent_citations=2",
-        "age_days=53",
+        "age_days=54",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -263,20 +275,26 @@
       "eventSlug": "adaptive-identity-anchoring-closed-loop-keyframe-placement-for-synthetic-paired-supervisio-2026-07-24",
       "arxivId": "2607.21434",
       "paperTitle": "Adaptive Identity Anchoring: Closed-Loop Keyframe Placement for Synthetic Paired Supervision in Video Face Swapping",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170749647",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": false,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
       "route": "rejected",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "outside_core_ai_research_scope"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21434"
+        "https://arxiv.org/abs/2607.21434",
+        "https://openalex.org/W7170749647"
       ]
     },
     {
@@ -296,7 +314,7 @@
         "title_match=0",
         "citations=0",
         "recent_citations=0",
-        "age_days=169",
+        "age_days=170",
         "publication_date_delta_days=0",
         "paper_title_identity_mismatch"
       ],
@@ -322,7 +340,7 @@
         "title_match=1",
         "citations=4",
         "recent_citations=4",
-        "age_days=199",
+        "age_days=200",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -335,20 +353,26 @@
       "eventSlug": "agent-guided-relational-concept-discovery-toward-interpretable-surgical-margin-assessment-2026-07-24",
       "arxivId": "2607.21437",
       "paperTitle": "Agent-Guided Relational Concept Discovery: Toward Interpretable Surgical Margin Assessment",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170335068",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21437"
+        "https://arxiv.org/abs/2607.21437",
+        "https://openalex.org/W7170335068"
       ]
     },
     {
@@ -368,7 +392,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=12",
+        "age_days=13",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -394,7 +418,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -407,40 +431,52 @@
       "eventSlug": "agentic-coding-without-the-cloud-evaluating-open-weight-large-language-models-on-longitudi-2026-07-24",
       "arxivId": "2607.21482",
       "paperTitle": "Agentic coding without the cloud: evaluating open-weight large language models on longitudinal data preparation tasks",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170805738",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21482"
+        "https://arxiv.org/abs/2607.21482",
+        "https://openalex.org/W7170805738"
       ]
     },
     {
       "eventSlug": "agentic-context-management-solving-agent-memory-and-cost-by-treating-them-as-lifecycle-and-2026-07-24",
       "arxivId": "2607.21503",
       "paperTitle": "Agentic Context Management: Solving Agent Memory and Cost by Treating Them as Lifecycle and Architecture Problems",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170546313",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21503"
+        "https://arxiv.org/abs/2607.21503",
+        "https://openalex.org/W7170546313"
       ]
     },
     {
@@ -460,7 +496,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=201",
+        "age_days=202",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -486,7 +522,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -512,7 +548,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -538,7 +574,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -564,7 +600,7 @@
         "title_match=1",
         "citations=13",
         "recent_citations=11",
-        "age_days=735",
+        "age_days=736",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -590,7 +626,7 @@
         "title_match=1",
         "citations=188",
         "recent_citations=67",
-        "age_days=1024",
+        "age_days=1025",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -616,7 +652,7 @@
         "title_match=1",
         "citations=1",
         "recent_citations=1",
-        "age_days=59",
+        "age_days=60",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -642,7 +678,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=39",
+        "age_days=40",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -668,7 +704,7 @@
         "title_match=0.333",
         "citations=0",
         "recent_citations=0",
-        "age_days=116",
+        "age_days=117",
         "publication_date_delta_days=6",
         "paper_title_identity_mismatch"
       ],
@@ -694,7 +730,7 @@
         "title_match=1",
         "citations=26",
         "recent_citations=26",
-        "age_days=471",
+        "age_days=472",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -720,7 +756,7 @@
         "title_match=0.167",
         "citations=107",
         "recent_citations=91",
-        "age_days=1009",
+        "age_days=1010",
         "publication_date_delta_days=0",
         "paper_title_identity_mismatch"
       ],
@@ -746,7 +782,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -772,7 +808,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -798,7 +834,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -824,7 +860,7 @@
         "title_match=1",
         "citations=7",
         "recent_citations=7",
-        "age_days=404",
+        "age_days=405",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -838,8 +874,8 @@
       "arxivId": "2402.04845",
       "paperTitle": "AlphaFold Meets Flow Matching for Generating Protein Ensembles",
       "openAlexId": "https://openalex.org/W4391673325",
-      "citedByCount": 82,
-      "recentCitations": 57,
+      "citedByCount": 83,
+      "recentCitations": 58,
       "titleMatchScore": 1,
       "topicRelevant": false,
       "publicationDate": "2024-02-07",
@@ -848,9 +884,9 @@
       "route": "rejected",
       "reasons": [
         "title_match=1",
-        "citations=82",
-        "recent_citations=57",
-        "age_days=899",
+        "citations=83",
+        "recent_citations=58",
+        "age_days=900",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -876,7 +912,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=12",
+        "age_days=13",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -888,21 +924,21 @@
     {
       "eventSlug": "anatomically-faithful-but-temporally-blind-auditing-attribution-for-left-ventricular-eject-2026-07-16",
       "arxivId": "2607.13738",
-      "paperTitle": "Anatomically Faithful but Temporally Blind: Auditing Attribution for Left-Ventricular Ejection-Fraction Estimation from Echocardiography",
+      "paperTitle": "Anatomically Faithful but Temporally Diffuse: Auditing Attribution for Left-Ventricular Ejection-Fraction Estimation from Echocardiography",
       "openAlexId": "https://openalex.org/W7168669224",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 1,
+      "titleMatchScore": 0.929,
       "topicRelevant": true,
       "publicationDate": "2026-07-15",
       "publicationDateDeltaDays": 0,
       "qualified": false,
       "route": "watch",
       "reasons": [
-        "title_match=1",
+        "title_match=0.929",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -979,7 +1015,7 @@
         "title_match=1",
         "citations=297",
         "recent_citations=84",
-        "age_days=1360",
+        "age_days=1361",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -1004,7 +1040,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -1017,20 +1053,26 @@
       "eventSlug": "arex-towards-a-recursively-self-improving-agent-for-deep-research-2026-07-24",
       "arxivId": "2607.21461",
       "paperTitle": "AREX: Towards a Recursively Self-Improving Agent for Deep Research",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170368133",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21461"
+        "https://arxiv.org/abs/2607.21461",
+        "https://openalex.org/W7170368133"
       ]
     },
     {
@@ -1050,7 +1092,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -1076,7 +1118,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=11",
+        "age_days=12",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -1089,20 +1131,26 @@
       "eventSlug": "audio-zero-label-free-self-evolution-for-fine-grained-audio-reasoning-2026-07-23",
       "arxivId": "2607.20166",
       "paperTitle": "Audio-Zero: Label-Free Self-Evolution for Fine-Grained Audio Reasoning",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170134232",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20166"
+        "https://arxiv.org/abs/2607.20166",
+        "https://openalex.org/W7170134232"
       ]
     },
     {
@@ -1122,7 +1170,7 @@
         "title_match=0.125",
         "citations=166",
         "recent_citations=104",
-        "age_days=1074",
+        "age_days=1075",
         "publication_date_delta_days=0",
         "paper_title_identity_mismatch"
       ],
@@ -1153,7 +1201,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -1179,7 +1227,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -1205,7 +1253,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -1231,7 +1279,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -1257,7 +1305,7 @@
         "title_match=1",
         "citations=125",
         "recent_citations=60",
-        "age_days=1040",
+        "age_days=1041",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -1283,7 +1331,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -1309,7 +1357,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -1335,7 +1383,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -1361,7 +1409,7 @@
         "title_match=0",
         "citations=0",
         "recent_citations=0",
-        "age_days=96",
+        "age_days=97",
         "publication_date_delta_days=0",
         "paper_title_identity_mismatch"
       ],
@@ -1387,7 +1435,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -1413,7 +1461,7 @@
         "title_match=1",
         "citations=3",
         "recent_citations=3",
-        "age_days=234",
+        "age_days=235",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -1439,7 +1487,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -1465,7 +1513,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -1478,40 +1526,52 @@
       "eventSlug": "beyond-sufficiency-time-series-explanation-with-counterfactual-necessity-2026-07-24",
       "arxivId": "2607.21573",
       "paperTitle": "Beyond Sufficiency: Time Series Explanation with Counterfactual Necessity",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170915867",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": false,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
       "route": "rejected",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "outside_core_ai_research_scope"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21573"
+        "https://arxiv.org/abs/2607.21573",
+        "https://openalex.org/W7170915867"
       ]
     },
     {
       "eventSlug": "beyond-sycophancy-structured-resistance-and-compliance-in-llm-moral-reasoning-2026-07-24",
       "arxivId": "2607.21558",
       "paperTitle": "Beyond Sycophancy: Structured Resistance and Compliance in LLM Moral Reasoning",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170939061",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21558"
+        "https://arxiv.org/abs/2607.21558",
+        "https://openalex.org/W7170939061"
       ]
     },
     {
@@ -1531,7 +1591,7 @@
         "title_match=1",
         "citations=36",
         "recent_citations=28",
-        "age_days=850",
+        "age_days=851",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -1557,7 +1617,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -1583,7 +1643,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -1609,7 +1669,7 @@
         "title_match=1",
         "citations=920",
         "recent_citations=247",
-        "age_days=1272",
+        "age_days=1273",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -1654,7 +1714,7 @@
         "title_match=1",
         "citations=304",
         "recent_citations=89",
-        "age_days=1213",
+        "age_days=1214",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -1679,7 +1739,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -1705,7 +1765,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -1718,20 +1778,26 @@
       "eventSlug": "bridging-the-gap-between-plausibility-and-admissibility-constraint-aware-flow-maps-for-dyn-2026-07-24",
       "arxivId": "2607.21421",
       "paperTitle": "Bridging the Gap Between Plausibility and Admissibility: Constraint-Aware Flow Maps for Dynamic Graph Systems",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170277527",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21421"
+        "https://arxiv.org/abs/2607.21421",
+        "https://openalex.org/W7170277527"
       ]
     },
     {
@@ -1751,7 +1817,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=11",
+        "age_days=12",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -1797,7 +1863,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -1823,7 +1889,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -1849,7 +1915,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -1875,7 +1941,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -1901,7 +1967,7 @@
         "title_match=1",
         "citations=2",
         "recent_citations=2",
-        "age_days=355",
+        "age_days=356",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -1934,40 +2000,52 @@
       "eventSlug": "clark-closed-loop-learning-for-adaptive-reasoning-over-knowledge-graphs-2026-07-23",
       "arxivId": "2607.19996",
       "paperTitle": "CLARK: Closed-loop Learning for Adaptive Reasoning over Knowledge Graphs",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170143405",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.19996"
+        "https://arxiv.org/abs/2607.19996",
+        "https://openalex.org/W7170143405"
       ]
     },
     {
       "eventSlug": "closing-the-lab-to-store-gap-a-data-efficient-post-training-and-experience-driven-learning-2026-07-23",
       "arxivId": "2607.20345",
       "paperTitle": "Closing the Lab-to-Store Gap: A Data-Efficient Post-Training and Experience-Driven Learning VLA Framework for Retail Humanoids",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170158653",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20345"
+        "https://arxiv.org/abs/2607.20345",
+        "https://openalex.org/W7170158653"
       ]
     },
     {
@@ -1987,7 +2065,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=12",
+        "age_days=13",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -2000,20 +2078,26 @@
       "eventSlug": "co-evolving-llm-evaluators-and-policies-via-dynamicrubric-2026-07-23",
       "arxivId": "2607.20083",
       "paperTitle": "Co-Evolving LLM Evaluators and Policies via DynamicRubric",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170175357",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20083"
+        "https://arxiv.org/abs/2607.20083",
+        "https://openalex.org/W7170175357"
       ]
     },
     {
@@ -2033,7 +2117,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -2059,7 +2143,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -2085,7 +2169,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -2098,20 +2182,26 @@
       "eventSlug": "compact-latent-coordination-for-autonomous-vehicles-at-unsignalized-intersections-2026-07-24",
       "arxivId": "2607.21488",
       "paperTitle": "Compact Latent Coordination for Autonomous Vehicles at Unsignalized Intersections",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170723650",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21488"
+        "https://arxiv.org/abs/2607.21488",
+        "https://openalex.org/W7170723650"
       ]
     },
     {
@@ -2131,7 +2221,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -2157,7 +2247,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -2183,7 +2273,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -2209,7 +2299,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -2235,7 +2325,7 @@
         "title_match=1",
         "citations=191",
         "recent_citations=92",
-        "age_days=1073",
+        "age_days=1074",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -2260,7 +2350,7 @@
         "title_match=1",
         "citations=3",
         "recent_citations=3",
-        "age_days=292",
+        "age_days=293",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -2286,7 +2376,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -2300,8 +2390,8 @@
       "arxivId": "2302.05543",
       "paperTitle": "Adding Conditional Control to Text-to-Image Diffusion Models",
       "openAlexId": "https://openalex.org/W4320831569",
-      "citedByCount": 219,
-      "recentCitations": 73,
+      "citedByCount": 220,
+      "recentCitations": 74,
       "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2023-02-10",
@@ -2310,9 +2400,9 @@
       "route": "established-field-impact",
       "reasons": [
         "title_match=1",
-        "citations=219",
-        "recent_citations=73",
-        "age_days=1261",
+        "citations=220",
+        "recent_citations=74",
+        "age_days=1262",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -2324,20 +2414,26 @@
       "eventSlug": "coordinating-from-memory-graph-structured-experience-reuse-for-multi-agent-adaptation-in-d-2026-07-23",
       "arxivId": "2607.19985",
       "paperTitle": "Coordinating from Memory: Graph-Structured Experience Reuse for Multi-Agent Adaptation in Dynamic Manufacturing",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170144773",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.19985"
+        "https://arxiv.org/abs/2607.19985",
+        "https://openalex.org/W7170144773"
       ]
     },
     {
@@ -2357,7 +2453,7 @@
         "title_match=1",
         "citations=3",
         "recent_citations=3",
-        "age_days=343",
+        "age_days=344",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -2370,40 +2466,52 @@
       "eventSlug": "cusum-shaped-inference-time-monitoring-and-targeted-re-decoding-for-quantized-small-langua-2026-07-23",
       "arxivId": "2607.20129",
       "paperTitle": "CUSUM-Shaped Inference-Time Monitoring and Targeted Re-Decoding for Quantized Small Language Model Reasoning",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170195842",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20129"
+        "https://arxiv.org/abs/2607.20129",
+        "https://openalex.org/W7170195842"
       ]
     },
     {
       "eventSlug": "cycle-consistent-and-uncertainty-aware-neural-surrogates-for-tokamak-edge-plasmas-2026-07-24",
       "arxivId": "2607.21407",
       "paperTitle": "Cycle-Consistent and Uncertainty-Aware Neural Surrogates for Tokamak Edge Plasmas",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170359423",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": false,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
       "route": "rejected",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "outside_core_ai_research_scope"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21407"
+        "https://arxiv.org/abs/2607.21407",
+        "https://openalex.org/W7170359423"
       ]
     },
     {
@@ -2423,7 +2531,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=44",
+        "age_days=45",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -2449,7 +2557,7 @@
         "title_match=1",
         "citations=170",
         "recent_citations=54",
-        "age_days=1030",
+        "age_days=1031",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -2493,7 +2601,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -2519,7 +2627,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -2545,7 +2653,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -2571,7 +2679,7 @@
         "title_match=1",
         "citations=5",
         "recent_citations=5",
-        "age_days=235",
+        "age_days=236",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -2597,7 +2705,7 @@
         "title_match=1",
         "citations=47",
         "recent_citations=42",
-        "age_days=869",
+        "age_days=870",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -2611,8 +2719,8 @@
       "arxivId": "2412.10302",
       "paperTitle": "DeepSeek-VL2: Mixture-of-Experts Vision-Language Models for Advanced\\n Multimodal Understanding",
       "openAlexId": "https://openalex.org/W4405434026",
-      "citedByCount": 23,
-      "recentCitations": 23,
+      "citedByCount": 24,
+      "recentCitations": 24,
       "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2024-12-13",
@@ -2621,9 +2729,9 @@
       "route": "watch",
       "reasons": [
         "title_match=1",
-        "citations=23",
-        "recent_citations=23",
-        "age_days=589",
+        "citations=24",
+        "recent_citations=24",
+        "age_days=590",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -2649,7 +2757,7 @@
         "title_match=0.5",
         "citations=1",
         "recent_citations=1",
-        "age_days=99",
+        "age_days=100",
         "publication_date_delta_days=0",
         "paper_title_identity_mismatch"
       ],
@@ -2675,7 +2783,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -2719,7 +2827,7 @@
         "title_match=1",
         "citations=17",
         "recent_citations=17",
-        "age_days=661",
+        "age_days=662",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -2732,20 +2840,26 @@
       "eventSlug": "detecting-llm-generated-tokens-in-human-llm-coauthored-text-2026-07-24",
       "arxivId": "2607.21458",
       "paperTitle": "Detecting LLM-Generated Tokens in Human--LLM Coauthored Text",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170960264",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21458"
+        "https://arxiv.org/abs/2607.21458",
+        "https://openalex.org/W7170960264"
       ]
     },
     {
@@ -2765,7 +2879,7 @@
         "title_match=0",
         "citations=16",
         "recent_citations=15",
-        "age_days=599",
+        "age_days=600",
         "publication_date_delta_days=0",
         "paper_title_identity_mismatch"
       ],
@@ -2791,7 +2905,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -2804,20 +2918,26 @@
       "eventSlug": "dinode-continuous-vision-text-alignment-for-open-vocabulary-semantic-segmentation-2026-07-24",
       "arxivId": "2607.21371",
       "paperTitle": "DINOde: Continuous Vision-Text Alignment for Open-Vocabulary Semantic Segmentation",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170496825",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21371"
+        "https://arxiv.org/abs/2607.21371",
+        "https://openalex.org/W7170496825"
       ]
     },
     {
@@ -2825,8 +2945,8 @@
       "arxivId": "2304.07193",
       "paperTitle": "DINOv2: Learning Robust Visual Features without Supervision",
       "openAlexId": "https://openalex.org/W4366208220",
-      "citedByCount": 1054,
-      "recentCitations": 476,
+      "citedByCount": 1055,
+      "recentCitations": 477,
       "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2023-04-14",
@@ -2835,9 +2955,9 @@
       "route": "established-field-impact",
       "reasons": [
         "title_match=1",
-        "citations=1054",
-        "recent_citations=476",
-        "age_days=1198",
+        "citations=1055",
+        "recent_citations=477",
+        "age_days=1199",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -2862,7 +2982,7 @@
         "title_match=1",
         "citations=286",
         "recent_citations=170",
-        "age_days=1153",
+        "age_days=1154",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -2887,7 +3007,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -2913,7 +3033,7 @@
         "title_match=1",
         "citations=169",
         "recent_citations=100",
-        "age_days=1125",
+        "age_days=1126",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -2938,7 +3058,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -2964,7 +3084,7 @@
         "title_match=1",
         "citations=92",
         "recent_citations=18",
-        "age_days=1292",
+        "age_days=1293",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -2997,20 +3117,26 @@
       "eventSlug": "drift-aware-rl-based-wavelet-denoising-for-network-traffic-anomaly-detection-2026-07-23",
       "arxivId": "2607.20011",
       "paperTitle": "Drift-Aware RL-based Wavelet Denoising for Network-Traffic Anomaly Detection",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170162757",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20011"
+        "https://arxiv.org/abs/2607.20011",
+        "https://openalex.org/W7170162757"
       ]
     },
     {
@@ -3030,7 +3156,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -3056,7 +3182,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -3082,7 +3208,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -3095,40 +3221,52 @@
       "eventSlug": "elasticttt-prior-preserving-test-time-tuning-for-video-editing-2026-07-24",
       "arxivId": "2607.21529",
       "paperTitle": "ElasticTTT: Prior-Preserving Test-Time Tuning for Video Editing",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170352877",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21529"
+        "https://arxiv.org/abs/2607.21529",
+        "https://openalex.org/W7170352877"
       ]
     },
     {
       "eventSlug": "elsaa-efficient-low-rank-and-sparse-attention-approximation-for-training-transformers-2026-07-23",
       "arxivId": "2607.20214",
       "paperTitle": "ELSAA: Efficient Low-Rank and Sparse Attention Approximation for Training Transformers",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170186514",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20214"
+        "https://arxiv.org/abs/2607.20214",
+        "https://openalex.org/W7170186514"
       ]
     },
     {
@@ -3148,7 +3286,7 @@
         "title_match=1",
         "citations=6",
         "recent_citations=6",
-        "age_days=331",
+        "age_days=332",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -3174,7 +3312,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=12",
+        "age_days=13",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -3187,20 +3325,26 @@
       "eventSlug": "entrap-vl-a-taxonomic-probe-for-dual-contextual-entrainment-in-vision-language-models-2026-07-23",
       "arxivId": "2607.20092",
       "paperTitle": "ENTRAP-VL: A Taxonomic Probe for Dual Contextual Entrainment in Vision-Language Models",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170188353",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20092"
+        "https://arxiv.org/abs/2607.20092",
+        "https://openalex.org/W7170188353"
       ]
     },
     {
@@ -3220,7 +3364,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=12",
+        "age_days=13",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -3233,20 +3377,26 @@
       "eventSlug": "evodrc-a-self-evolving-agentic-framework-for-automated-drc-violation-repair-2026-07-23",
       "arxivId": "2607.20019",
       "paperTitle": "EvoDRC: A Self-Evolving Agentic Framework for Automated DRC Violation Repair",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170131960",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20019"
+        "https://arxiv.org/abs/2607.20019",
+        "https://openalex.org/W7170131960"
       ]
     },
     {
@@ -3266,7 +3416,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -3292,7 +3442,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -3318,7 +3468,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -3344,7 +3494,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -3370,7 +3520,7 @@
         "title_match=1",
         "citations=99",
         "recent_citations=16",
-        "age_days=1272",
+        "age_days=1273",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -3396,7 +3546,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -3422,7 +3572,7 @@
         "title_match=1",
         "citations=117",
         "recent_citations=57",
-        "age_days=970",
+        "age_days=971",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -3448,7 +3598,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -3474,7 +3624,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -3500,7 +3650,7 @@
         "title_match=1",
         "citations=33",
         "recent_citations=32",
-        "age_days=773",
+        "age_days=774",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -3526,7 +3676,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -3539,20 +3689,26 @@
       "eventSlug": "formal-foundations-for-known-good-reliable-die-screening-in-chiplet-based-ai-systems-on-ch-2026-07-23",
       "arxivId": "2607.20141",
       "paperTitle": "Formal Foundations for Known Good Reliable Die Screening in Chiplet-Based AI Systems-on-Chip",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170152439",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20141"
+        "https://arxiv.org/abs/2607.20141",
+        "https://openalex.org/W7170152439"
       ]
     },
     {
@@ -3572,7 +3728,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -3598,7 +3754,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=11",
+        "age_days=12",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -3624,7 +3780,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -3650,7 +3806,7 @@
         "title_match=0",
         "citations=93",
         "recent_citations=66",
-        "age_days=988",
+        "age_days=989",
         "publication_date_delta_days=0",
         "paper_title_identity_mismatch"
       ],
@@ -3676,7 +3832,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -3702,7 +3858,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -3728,7 +3884,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -3754,7 +3910,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -3767,40 +3923,52 @@
       "eventSlug": "from-resource-flow-to-executable-tests-petri-net-guided-llm-test-generation-for-concurrent-2026-07-24",
       "arxivId": "2607.21530",
       "paperTitle": "From Resource Flow to Executable Tests: Petri-Net-Guided LLM Test Generation for Concurrent Stateful Rust APIs",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170766821",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21530"
+        "https://arxiv.org/abs/2607.21530",
+        "https://openalex.org/W7170766821"
       ]
     },
     {
       "eventSlug": "from-static-bibliometrics-to-dynamic-knowledge-graphs-an-llm-powered-framework-for-moderni-2026-07-24",
       "arxivId": "2607.21327",
       "paperTitle": "From Static Bibliometrics to Dynamic Knowledge Graphs: An LLM-Powered Framework for Modernizing Science, Technology, and Innovation (STI) Analytics",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170259629",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21327"
+        "https://arxiv.org/abs/2607.21327",
+        "https://openalex.org/W7170259629"
       ]
     },
     {
@@ -3820,7 +3988,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=12",
+        "age_days=13",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -3846,7 +4014,7 @@
         "title_match=1",
         "citations=8",
         "recent_citations=7",
-        "age_days=625",
+        "age_days=626",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -3872,7 +4040,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -3898,7 +4066,7 @@
         "title_match=1",
         "citations=263",
         "recent_citations=55",
-        "age_days=1347",
+        "age_days=1348",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -3923,7 +4091,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -3937,8 +4105,8 @@
       "arxivId": "2312.11805",
       "paperTitle": "Gemini: A Family of Highly Capable Multimodal Models",
       "openAlexId": "https://openalex.org/W4390041933",
-      "citedByCount": 826,
-      "recentCitations": 465,
+      "citedByCount": 828,
+      "recentCitations": 467,
       "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2023-12-19",
@@ -3947,9 +4115,9 @@
       "route": "established-field-impact",
       "reasons": [
         "title_match=1",
-        "citations=826",
-        "recent_citations=465",
-        "age_days=949",
+        "citations=828",
+        "recent_citations=467",
+        "age_days=950",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -3974,7 +4142,7 @@
         "title_match=1",
         "citations=5",
         "recent_citations=5",
-        "age_days=487",
+        "age_days=488",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -4018,7 +4186,7 @@
         "title_match=0",
         "citations=171",
         "recent_citations=75",
-        "age_days=970",
+        "age_days=971",
         "publication_date_delta_days=0",
         "paper_title_identity_mismatch"
       ],
@@ -4044,7 +4212,7 @@
         "title_match=1",
         "citations=175",
         "recent_citations=86",
-        "age_days=1205",
+        "age_days=1206",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -4069,7 +4237,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -4095,7 +4263,7 @@
         "title_match=1",
         "citations=9",
         "recent_citations=9",
-        "age_days=529",
+        "age_days=530",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -4109,8 +4277,8 @@
       "arxivId": "2309.11331",
       "paperTitle": "Gold-YOLO: Efficient Object Detector via Gather-and-Distribute Mechanism",
       "openAlexId": "https://openalex.org/W4386976814",
-      "citedByCount": 255,
-      "recentCitations": 150,
+      "citedByCount": 257,
+      "recentCitations": 152,
       "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2023-09-20",
@@ -4119,9 +4287,9 @@
       "route": "established-field-impact",
       "reasons": [
         "title_match=1",
-        "citations=255",
-        "recent_citations=150",
-        "age_days=1039",
+        "citations=257",
+        "recent_citations=152",
+        "age_days=1040",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -4146,7 +4314,7 @@
         "title_match=1",
         "citations=5",
         "recent_citations=5",
-        "age_days=338",
+        "age_days=339",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -4224,7 +4392,7 @@
         "title_match=1",
         "citations=2",
         "recent_citations=2",
-        "age_days=311",
+        "age_days=312",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -4237,20 +4405,26 @@
       "eventSlug": "gradrag-cross-component-prompt-adaptation-for-coordinated-multi-agent-rag-2026-07-24",
       "arxivId": "2607.21324",
       "paperTitle": "GRADRAG: Cross-Component Prompt Adaptation for Coordinated Multi-Agent RAG",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170243812",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21324"
+        "https://arxiv.org/abs/2607.21324",
+        "https://openalex.org/W7170243812"
       ]
     },
     {
@@ -4270,7 +4444,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -4296,7 +4470,7 @@
         "title_match=1",
         "citations=170",
         "recent_citations=43",
-        "age_days=1309",
+        "age_days=1310",
         "publication_date_delta_days=0",
         "science_publication_and_official_method_evidence"
       ],
@@ -4314,40 +4488,52 @@
       "eventSlug": "graphvid-interactive-graph-controllable-video-generation-2026-07-24",
       "arxivId": "2607.21580",
       "paperTitle": "GraphVid: Interactive Graph-Controllable Video Generation",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170701141",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": false,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
       "route": "rejected",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "outside_core_ai_research_scope"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21580"
+        "https://arxiv.org/abs/2607.21580",
+        "https://openalex.org/W7170701141"
       ]
     },
     {
       "eventSlug": "gs-agent-creating-4d-physical-worlds-with-generative-simulation-2026-07-24",
       "arxivId": "2607.21522",
       "paperTitle": "GS-Agent: Creating 4D Physical Worlds With Generative Simulation",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170839028",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21522"
+        "https://arxiv.org/abs/2607.21522",
+        "https://openalex.org/W7170839028"
       ]
     },
     {
@@ -4367,7 +4553,7 @@
         "title_match=1",
         "citations=54",
         "recent_citations=49",
-        "age_days=656",
+        "age_days=657",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -4393,7 +4579,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -4419,7 +4605,7 @@
         "title_match=1",
         "citations=118",
         "recent_citations=62",
-        "age_days=1305",
+        "age_days=1306",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -4445,7 +4631,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=11",
+        "age_days=12",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -4471,7 +4657,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=12",
+        "age_days=13",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -4497,7 +4683,7 @@
         "title_match=1",
         "citations=22",
         "recent_citations=17",
-        "age_days=762",
+        "age_days=763",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -4510,20 +4696,26 @@
       "eventSlug": "hilbert-operator-for-progressive-encoding-hope-a-mathematical-framework-for-deconstructing-2026-07-24",
       "arxivId": "2607.21366",
       "paperTitle": "Hilbert Operator for Progressive Encoding (HOPE): A Mathematical Framework for Deconstructing Learned Representations in Deep Networks",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170416155",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21366"
+        "https://arxiv.org/abs/2607.21366",
+        "https://openalex.org/W7170416155"
       ]
     },
     {
@@ -4543,7 +4735,7 @@
         "title_match=0.857",
         "citations=21",
         "recent_citations=20",
-        "age_days=793",
+        "age_days=794",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -4569,7 +4761,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -4595,7 +4787,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=11",
+        "age_days=12",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -4621,7 +4813,7 @@
         "title_match=1",
         "citations=264",
         "recent_citations=61",
-        "age_days=1213",
+        "age_days=1214",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -4646,7 +4838,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=11",
+        "age_days=12",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -4672,7 +4864,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -4698,7 +4890,7 @@
         "title_match=1",
         "citations=8",
         "recent_citations=8",
-        "age_days=550",
+        "age_days=551",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -4724,7 +4916,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -4750,7 +4942,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -4776,7 +4968,7 @@
         "title_match=1",
         "citations=317",
         "recent_citations=1",
-        "age_days=927",
+        "age_days=928",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -4802,7 +4994,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -4828,7 +5020,7 @@
         "title_match=1",
         "citations=130",
         "recent_citations=84",
-        "age_days=992",
+        "age_days=993",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -4853,7 +5045,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=12",
+        "age_days=13",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -4879,7 +5071,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=11",
+        "age_days=12",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -4905,7 +5097,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -4931,7 +5123,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=11",
+        "age_days=12",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -4945,8 +5137,8 @@
       "arxivId": "2306.05685",
       "paperTitle": "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena",
       "openAlexId": "https://openalex.org/W4380353763",
-      "citedByCount": 472,
-      "recentCitations": 235,
+      "citedByCount": 473,
+      "recentCitations": 236,
       "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2023-06-09",
@@ -4955,9 +5147,9 @@
       "route": "established-field-impact",
       "reasons": [
         "title_match=1",
-        "citations=472",
-        "recent_citations=235",
-        "age_days=1142",
+        "citations=473",
+        "recent_citations=236",
+        "age_days=1143",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -5002,7 +5194,7 @@
         "title_match=1",
         "citations=11",
         "recent_citations=11",
-        "age_days=549",
+        "age_days=550",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5028,7 +5220,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=11",
+        "age_days=12",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5054,7 +5246,7 @@
         "title_match=1",
         "citations=11",
         "recent_citations=11",
-        "age_days=263",
+        "age_days=264",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5067,20 +5259,26 @@
       "eventSlug": "language-specific-versus-cross-lingual-knowledge-graphs-for-implicit-aspect-identification-2026-07-23",
       "arxivId": "2607.20056",
       "paperTitle": "Language-Specific versus Cross-Lingual Knowledge Graphs for Implicit Aspect Identification in Arabic: A Comparative Study of Reasoning and Adaptation Strategies",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170149723",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20056"
+        "https://arxiv.org/abs/2607.20056",
+        "https://openalex.org/W7170149723"
       ]
     },
     {
@@ -5100,7 +5298,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5126,7 +5324,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -5152,7 +5350,7 @@
         "title_match=1",
         "citations=3932",
         "recent_citations=1198",
-        "age_days=1244",
+        "age_days=1245",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -5177,7 +5375,7 @@
         "title_match=1",
         "citations=229",
         "recent_citations=128",
-        "age_days=1150",
+        "age_days=1151",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -5202,7 +5400,7 @@
         "title_match=1",
         "citations=25",
         "recent_citations=23",
-        "age_days=745",
+        "age_days=746",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5228,7 +5426,7 @@
         "title_match=1",
         "citations=687",
         "recent_citations=280",
-        "age_days=1195",
+        "age_days=1196",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -5253,7 +5451,7 @@
         "title_match=1",
         "citations=40",
         "recent_citations=39",
-        "age_days=617",
+        "age_days=618",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5279,7 +5477,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5323,7 +5521,7 @@
         "title_match=1",
         "citations=41",
         "recent_citations=35",
-        "age_days=687",
+        "age_days=688",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5349,7 +5547,7 @@
         "title_match=1",
         "citations=10",
         "recent_citations=10",
-        "age_days=481",
+        "age_days=482",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5375,7 +5573,7 @@
         "title_match=1",
         "citations=21",
         "recent_citations=13",
-        "age_days=837",
+        "age_days=838",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5401,7 +5599,7 @@
         "title_match=1",
         "citations=32",
         "recent_citations=25",
-        "age_days=863",
+        "age_days=864",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5427,7 +5625,7 @@
         "title_match=1",
         "citations=38",
         "recent_citations=27",
-        "age_days=844",
+        "age_days=845",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -5453,7 +5651,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -5479,7 +5677,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5505,7 +5703,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=12",
+        "age_days=13",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5531,7 +5729,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5544,20 +5742,26 @@
       "eventSlug": "m-3-gen-interpretable-multimodal-generation-of-gene-expression-profiles-using-clinical-and-2026-07-24",
       "arxivId": "2607.21343",
       "paperTitle": "M$^3$-Gen: Interpretable Multimodal Generation of Gene Expression Profiles Using Clinical and Imaging Data",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170805703",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21343"
+        "https://arxiv.org/abs/2607.21343",
+        "https://openalex.org/W7170805703"
       ]
     },
     {
@@ -5577,7 +5781,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5603,7 +5807,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=12",
+        "age_days=13",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5629,7 +5833,7 @@
         "title_match=1",
         "citations=12",
         "recent_citations=12",
-        "age_days=393",
+        "age_days=394",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5643,8 +5847,8 @@
       "arxivId": "2312.00752",
       "paperTitle": "Mamba: Linear-Time Sequence Modeling with Selective State Spaces",
       "openAlexId": "https://openalex.org/W4389326242",
-      "citedByCount": 1026,
-      "recentCitations": 785,
+      "citedByCount": 1027,
+      "recentCitations": 786,
       "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2023-12-01",
@@ -5653,9 +5857,9 @@
       "route": "established-field-impact",
       "reasons": [
         "title_match=1",
-        "citations=1026",
-        "recent_citations=785",
-        "age_days=967",
+        "citations=1027",
+        "recent_citations=786",
+        "age_days=968",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -5680,7 +5884,7 @@
         "title_match=1",
         "citations=87",
         "recent_citations=67",
-        "age_days=899",
+        "age_days=900",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5706,7 +5910,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5732,7 +5936,7 @@
         "title_match=1",
         "citations=9",
         "recent_citations=9",
-        "age_days=506",
+        "age_days=507",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5758,7 +5962,7 @@
         "title_match=1",
         "citations=13",
         "recent_citations=12",
-        "age_days=710",
+        "age_days=711",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5784,7 +5988,7 @@
         "title_match=1",
         "citations=97",
         "recent_citations=91",
-        "age_days=808",
+        "age_days=809",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -5809,7 +6013,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=11",
+        "age_days=12",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5835,7 +6039,7 @@
         "title_match=1",
         "citations=9",
         "recent_citations=9",
-        "age_days=576",
+        "age_days=577",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5861,7 +6065,7 @@
         "title_match=1",
         "citations=10",
         "recent_citations=10",
-        "age_days=425",
+        "age_days=426",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5887,7 +6091,7 @@
         "title_match=1",
         "citations=7",
         "recent_citations=7",
-        "age_days=477",
+        "age_days=478",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5901,8 +6105,8 @@
       "arxivId": "2408.00874",
       "paperTitle": "Medical SAM 2: Segment medical images as video via Segment Anything Model 2",
       "openAlexId": "https://openalex.org/W4406301628",
-      "citedByCount": 38,
-      "recentCitations": 37,
+      "citedByCount": 39,
+      "recentCitations": 38,
       "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2024-08-01",
@@ -5911,9 +6115,9 @@
       "route": "watch",
       "reasons": [
         "title_match=1",
-        "citations=38",
-        "recent_citations=37",
-        "age_days=723",
+        "citations=39",
+        "recent_citations=38",
+        "age_days=724",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5939,7 +6143,7 @@
         "title_match=1",
         "citations=6",
         "recent_citations=6",
-        "age_days=453",
+        "age_days=454",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5965,7 +6169,7 @@
         "title_match=1",
         "citations=1",
         "recent_citations=1",
-        "age_days=197",
+        "age_days=198",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -5991,7 +6195,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=157",
+        "age_days=158",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -6017,7 +6221,7 @@
         "title_match=1",
         "citations=5",
         "recent_citations=5",
-        "age_days=117",
+        "age_days=118",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -6068,7 +6272,7 @@
         "title_match=1",
         "citations=21",
         "recent_citations=17",
-        "age_days=837",
+        "age_days=838",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -6094,7 +6298,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -6107,20 +6311,26 @@
       "eventSlug": "mirror-learning-from-the-other-view-for-multi-modal-reasoning-2026-07-24",
       "arxivId": "2607.21552",
       "paperTitle": "MIRROR: Learning from the Other View for Multi-Modal Reasoning",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170855385",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21552"
+        "https://arxiv.org/abs/2607.21552",
+        "https://openalex.org/W7170855385"
       ]
     },
     {
@@ -6140,7 +6350,7 @@
         "title_match=1",
         "citations=303",
         "recent_citations=196",
-        "age_days=1019",
+        "age_days=1020",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -6166,7 +6376,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -6192,7 +6402,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=12",
+        "age_days=13",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -6218,7 +6428,7 @@
         "title_match=1",
         "citations=33",
         "recent_citations=29",
-        "age_days=782",
+        "age_days=783",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -6244,7 +6454,7 @@
         "title_match=1",
         "citations=26",
         "recent_citations=26",
-        "age_days=584",
+        "age_days=585",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -6270,7 +6480,7 @@
         "title_match=1",
         "citations=223",
         "recent_citations=114",
-        "age_days=1107",
+        "age_days=1108",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -6282,20 +6492,26 @@
       "eventSlug": "msbram-a-multi-scale-self-supervised-brain-foundation-model-for-hierarchical-eeg-dynamics--2026-07-24",
       "arxivId": "2607.21402",
       "paperTitle": "MSBraM: A Multi-scale Self-supervised Brain Foundation Model for Hierarchical EEG Dynamics Learning",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170698103",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21402"
+        "https://arxiv.org/abs/2607.21402",
+        "https://openalex.org/W7170698103"
       ]
     },
     {
@@ -6315,7 +6531,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -6341,7 +6557,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -6367,7 +6583,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -6380,20 +6596,26 @@
       "eventSlug": "multimodal-pretraining-for-generalizable-eeg-representation-learning-2026-07-24",
       "arxivId": "2607.21384",
       "paperTitle": "Multimodal Pretraining for Generalizable EEG Representation Learning",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170406347",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21384"
+        "https://arxiv.org/abs/2607.21384",
+        "https://openalex.org/W7170406347"
       ]
     },
     {
@@ -6413,7 +6635,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -6439,7 +6661,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -6465,7 +6687,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -6491,7 +6713,7 @@
         "title_match=1",
         "citations=4",
         "recent_citations=4",
-        "age_days=221",
+        "age_days=222",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -6517,7 +6739,7 @@
         "title_match=1",
         "citations=7",
         "recent_citations=7",
-        "age_days=289",
+        "age_days=290",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -6543,7 +6765,7 @@
         "title_match=1",
         "citations=2",
         "recent_citations=2",
-        "age_days=236",
+        "age_days=237",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -6569,7 +6791,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -6595,7 +6817,7 @@
         "title_match=1",
         "citations=20",
         "recent_citations=14",
-        "age_days=831",
+        "age_days=832",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -6621,7 +6843,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -6647,7 +6869,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -6673,7 +6895,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -6699,7 +6921,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -6725,7 +6947,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -6751,7 +6973,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -6777,7 +6999,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -6790,20 +7012,26 @@
       "eventSlug": "on-the-systematic-challenges-of-culturally-loaded-machine-translation-dream-of-the-red-cha-2026-07-23",
       "arxivId": "2607.20241",
       "paperTitle": "On the Systematic Challenges of Culturally Loaded Machine Translation: Dream of the Red Chamber as the Cultural Lens",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170197404",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20241"
+        "https://arxiv.org/abs/2607.20241",
+        "https://openalex.org/W7170197404"
       ]
     },
     {
@@ -6823,7 +7051,7 @@
         "title_match=1",
         "citations=6",
         "recent_citations=6",
-        "age_days=544",
+        "age_days=545",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -6849,7 +7077,7 @@
         "title_match=1",
         "citations=101",
         "recent_citations=35",
-        "age_days=1016",
+        "age_days=1017",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -6944,7 +7172,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -6957,20 +7185,26 @@
       "eventSlug": "openforgerl-train-harness-native-agents-in-any-environment-2026-07-24",
       "arxivId": "2607.21557",
       "paperTitle": "OpenForgeRL: Train Harness-native Agents in Any Environment",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170285085",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21557"
+        "https://arxiv.org/abs/2607.21557",
+        "https://openalex.org/W7170285085"
       ]
     },
     {
@@ -6990,7 +7224,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -7016,7 +7250,7 @@
         "title_match=1",
         "citations=1",
         "recent_citations=1",
-        "age_days=131",
+        "age_days=132",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -7042,7 +7276,7 @@
         "title_match=1",
         "citations=41",
         "recent_citations=38",
-        "age_days=772",
+        "age_days=773",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -7068,7 +7302,7 @@
         "title_match=1",
         "citations=45",
         "recent_citations=44",
-        "age_days=634",
+        "age_days=635",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -7080,21 +7314,27 @@
     {
       "eventSlug": "orbitall-unified-quantum-ml",
       "arxivId": "2507.03853",
-      "paperTitle": "OrbitAll: A Unified Quantum Mechanical Representation Deep Learning Framework for All Molecular Systems：统一量子力学深度学习框架，覆盖任意电荷自旋分子体系",
-      "openAlexId": null,
-      "citedByCount": 0,
-      "recentCitations": 0,
-      "titleMatchScore": 0,
+      "paperTitle": "OrbitAll: A Unified Quantum Mechanical Representation Deep Learning Framework for All Molecular Systems",
+      "openAlexId": "https://openalex.org/W4415345232",
+      "citedByCount": 3,
+      "recentCitations": 3,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2025-07-05",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=3",
+        "recent_citations=3",
+        "age_days=386",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2507.03853"
+        "https://arxiv.org/abs/2507.03853",
+        "https://openalex.org/W4415345232"
       ]
     },
     {
@@ -7114,7 +7354,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -7140,7 +7380,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -7166,7 +7406,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -7192,7 +7432,7 @@
         "title_match=1",
         "citations=3",
         "recent_citations=3",
-        "age_days=320",
+        "age_days=321",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -7218,7 +7458,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -7244,7 +7484,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -7270,7 +7510,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -7296,7 +7536,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -7322,7 +7562,7 @@
         "title_match=1",
         "citations=549",
         "recent_citations=302",
-        "age_days=1336",
+        "age_days=1337",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -7347,7 +7587,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -7360,40 +7600,52 @@
       "eventSlug": "pats-policy-aware-training-scaffolding-for-agentic-reinforcement-learning-2026-07-24",
       "arxivId": "2607.21419",
       "paperTitle": "PATS: Policy-Aware Training Scaffolding for Agentic Reinforcement Learning",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170722420",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21419"
+        "https://arxiv.org/abs/2607.21419",
+        "https://openalex.org/W7170722420"
       ]
     },
     {
       "eventSlug": "pc-edit-prompt-contrastive-region-discovery-and-region-guided-editing-2026-07-24",
       "arxivId": "2607.21318",
       "paperTitle": "PC-Edit: Prompt-Contrastive Region Discovery and Region-Guided Editing",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170558546",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": false,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
       "route": "rejected",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "outside_core_ai_research_scope"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21318"
+        "https://arxiv.org/abs/2607.21318",
+        "https://openalex.org/W7170558546"
       ]
     },
     {
@@ -7413,7 +7665,7 @@
         "title_match=1",
         "citations=20",
         "recent_citations=13",
-        "age_days=807",
+        "age_days=808",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -7426,20 +7678,26 @@
       "eventSlug": "persian-pixel-a-large-scale-synthetic-ocr-dataset-for-persian-language-2026-07-23",
       "arxivId": "2607.20385",
       "paperTitle": "Persian Pixel: A large-scale synthetic OCR dataset for Persian language",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170135021",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": false,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
       "route": "rejected",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "outside_core_ai_research_scope"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20385"
+        "https://arxiv.org/abs/2607.20385",
+        "https://openalex.org/W7170135021"
       ]
     },
     {
@@ -7459,7 +7717,7 @@
         "title_match=1",
         "citations=18",
         "recent_citations=16",
-        "age_days=680",
+        "age_days=681",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -7472,20 +7730,26 @@
       "eventSlug": "phonetic-forced-alignment-for-low-resource-language-varieties-model-training-and-evaluatio-2026-07-24",
       "arxivId": "2607.21332",
       "paperTitle": "Phonetic forced alignment for low-resource language varieties: Model training and evaluation on Chengdu Mandarin",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170547632",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21332"
+        "https://arxiv.org/abs/2607.21332",
+        "https://openalex.org/W7170547632"
       ]
     },
     {
@@ -7505,7 +7769,7 @@
         "title_match=1",
         "citations=9",
         "recent_citations=9",
-        "age_days=632",
+        "age_days=633",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -7538,40 +7802,52 @@
       "eventSlug": "post-training-in-time-series-foundation-models-a-unifying-framework-2026-07-23",
       "arxivId": "2607.20002",
       "paperTitle": "Post-Training in Time Series Foundation Models: A Unifying Framework",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170134548",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20002"
+        "https://arxiv.org/abs/2607.20002",
+        "https://openalex.org/W7170134548"
       ]
     },
     {
       "eventSlug": "potre-test-time-reasoning-inspired-by-cognitive-heterogeneity-2026-07-23",
       "arxivId": "2607.20268",
       "paperTitle": "PoTRE: Test-Time Reasoning inspired by Cognitive Heterogeneity",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170181965",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20268"
+        "https://arxiv.org/abs/2607.20268",
+        "https://openalex.org/W7170181965"
       ]
     },
     {
@@ -7591,7 +7867,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -7617,7 +7893,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -7643,7 +7919,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -7656,20 +7932,26 @@
       "eventSlug": "pro-long-programmatic-memory-enables-long-horizon-reasoning-2026-07-23",
       "arxivId": "2607.20064",
       "paperTitle": "PRO-LONG: Programmatic Memory Enables Long-Horizon Reasoning",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170173822",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20064"
+        "https://arxiv.org/abs/2607.20064",
+        "https://openalex.org/W7170173822"
       ]
     },
     {
@@ -7689,7 +7971,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -7715,7 +7997,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -7741,7 +8023,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -7774,20 +8056,26 @@
       "eventSlug": "pushing-the-frontier-of-full-song-generation-hierarchical-autoregressive-planning-meets-fl-2026-07-23",
       "arxivId": "2607.20253",
       "paperTitle": "Pushing the Frontier of Full-Song Generation: Hierarchical Autoregressive Planning Meets Flow-Matching Rendering",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170162893",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20253"
+        "https://arxiv.org/abs/2607.20253",
+        "https://openalex.org/W7170162893"
       ]
     },
     {
@@ -7807,7 +8095,7 @@
         "title_match=1",
         "citations=501",
         "recent_citations=200",
-        "age_days=1159",
+        "age_days=1160",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -7832,7 +8120,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -7858,7 +8146,7 @@
         "title_match=1",
         "citations=143",
         "recent_citations=76",
-        "age_days=1066",
+        "age_days=1067",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -7884,7 +8172,7 @@
         "title_match=1",
         "citations=81",
         "recent_citations=77",
-        "age_days=675",
+        "age_days=676",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -7910,7 +8198,7 @@
         "title_match=1",
         "citations=95",
         "recent_citations=95",
-        "age_days=437",
+        "age_days=438",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -7935,7 +8223,7 @@
         "title_match=1",
         "citations=12",
         "recent_citations=12",
-        "age_days=241",
+        "age_days=242",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -7961,7 +8249,7 @@
         "title_match=1",
         "citations=1",
         "recent_citations=1",
-        "age_days=114",
+        "age_days=115",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -7974,20 +8262,26 @@
       "eventSlug": "reading-and-steering-representations-of-materials-science-mechanisms-in-an-open-weight-lan-2026-07-23",
       "arxivId": "2607.20058",
       "paperTitle": "Reading and Steering Representations of Materials-Science Mechanisms in an Open-Weight Language Model",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170177592",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20058"
+        "https://arxiv.org/abs/2607.20058",
+        "https://openalex.org/W7170177592"
       ]
     },
     {
@@ -8007,7 +8301,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=11",
+        "age_days=12",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -8033,7 +8327,7 @@
         "title_match=1",
         "citations=7",
         "recent_citations=7",
-        "age_days=443",
+        "age_days=444",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -8059,7 +8353,7 @@
         "title_match=1",
         "citations=18",
         "recent_citations=12",
-        "age_days=613",
+        "age_days=614",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -8085,7 +8379,7 @@
         "title_match=1",
         "citations=157",
         "recent_citations=34",
-        "age_days=1150",
+        "age_days=1151",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -8111,7 +8405,7 @@
         "title_match=1",
         "citations=272",
         "recent_citations=129",
-        "age_days=1223",
+        "age_days=1224",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -8123,20 +8417,26 @@
       "eventSlug": "reinforcement-learning-for-large-language-model-selective-evidence-adoption-from-contamina-2026-07-23",
       "arxivId": "2607.20090",
       "paperTitle": "Reinforcement Learning for Large Language Model Selective Evidence Adoption from Contaminated Retrieval Results",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170181201",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20090"
+        "https://arxiv.org/abs/2607.20090",
+        "https://openalex.org/W7170181201"
       ]
     },
     {
@@ -8156,7 +8456,7 @@
         "title_match=1",
         "citations=9",
         "recent_citations=9",
-        "age_days=690",
+        "age_days=691",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -8182,7 +8482,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -8208,7 +8508,7 @@
         "title_match=1",
         "citations=1",
         "recent_citations=1",
-        "age_days=186",
+        "age_days=187",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -8234,7 +8534,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -8260,7 +8560,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=11",
+        "age_days=12",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -8286,7 +8586,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -8312,7 +8612,7 @@
         "title_match=0",
         "citations=686",
         "recent_citations=469",
-        "age_days=950",
+        "age_days=951",
         "publication_date_delta_days=0",
         "paper_title_identity_mismatch"
       ],
@@ -8338,7 +8638,7 @@
         "title_match=1",
         "citations=254",
         "recent_citations=112",
-        "age_days=1045",
+        "age_days=1046",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -8363,7 +8663,7 @@
         "title_match=1",
         "citations=8",
         "recent_citations=8",
-        "age_days=432",
+        "age_days=433",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -8389,7 +8689,7 @@
         "title_match=1",
         "citations=271",
         "recent_citations=106",
-        "age_days=1093",
+        "age_days=1094",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -8402,8 +8702,8 @@
       "arxivId": "2304.08069",
       "paperTitle": "DETRs Beat YOLOs on Real-time Object Detection",
       "openAlexId": "https://openalex.org/W4366400469",
-      "citedByCount": 238,
-      "recentCitations": 129,
+      "citedByCount": 239,
+      "recentCitations": 130,
       "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2023-04-17",
@@ -8412,9 +8712,9 @@
       "route": "established-field-impact",
       "reasons": [
         "title_match=1",
-        "citations=238",
-        "recent_citations=129",
-        "age_days=1195",
+        "citations=239",
+        "recent_citations=130",
+        "age_days=1196",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -8426,40 +8726,52 @@
       "eventSlug": "rumba-russian-user-memory-benchmark-2026-07-24",
       "arxivId": "2607.21447",
       "paperTitle": "RUMBA: Russian User Memory Benchmark",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170764753",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21447"
+        "https://arxiv.org/abs/2607.21447",
+        "https://openalex.org/W7170764753"
       ]
     },
     {
       "eventSlug": "safe-remediation-as-risk-constrained-intervention-decision-in-microservice-systems-2026-07-23",
       "arxivId": "2607.20005",
       "paperTitle": "Safe Remediation as Risk-Constrained Intervention Decision in Microservice Systems",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170161260",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20005"
+        "https://arxiv.org/abs/2607.20005",
+        "https://openalex.org/W7170161260"
       ]
     },
     {
@@ -8479,7 +8791,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -8505,7 +8817,7 @@
         "title_match=1",
         "citations=11",
         "recent_citations=11",
-        "age_days=247",
+        "age_days=248",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -8519,8 +8831,8 @@
       "arxivId": "2408.00714",
       "paperTitle": "SAM 2: Segment Anything in Images and Videos",
       "openAlexId": "https://openalex.org/W4401307635",
-      "citedByCount": 252,
-      "recentCitations": 235,
+      "citedByCount": 253,
+      "recentCitations": 236,
       "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2024-08-01",
@@ -8529,9 +8841,9 @@
       "route": "established-field-impact",
       "reasons": [
         "title_match=1",
-        "citations=252",
-        "recent_citations=235",
-        "age_days=723",
+        "citations=253",
+        "recent_citations=236",
+        "age_days=724",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -8543,20 +8855,26 @@
       "eventSlug": "same-dangerous-objective-opposite-advice-direct-exposure-versus-multi-agent-mediation-2026-07-24",
       "arxivId": "2607.21518",
       "paperTitle": "Same Dangerous Objective, Opposite Advice: Direct Exposure versus Multi-Agent Mediation",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170335614",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21518"
+        "https://arxiv.org/abs/2607.21518",
+        "https://openalex.org/W7170335614"
       ]
     },
     {
@@ -8576,7 +8894,7 @@
         "title_match=1",
         "citations=10",
         "recent_citations=10",
-        "age_days=614",
+        "age_days=615",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -8602,7 +8920,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -8628,7 +8946,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=62",
+        "age_days=63",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -8654,7 +8972,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -8680,7 +8998,7 @@
         "title_match=1",
         "citations=12",
         "recent_citations=11",
-        "age_days=724",
+        "age_days=725",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -8694,8 +9012,8 @@
       "arxivId": "2403.03206",
       "paperTitle": "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis",
       "openAlexId": "https://openalex.org/W4392538976",
-      "citedByCount": 86,
-      "recentCitations": 66,
+      "citedByCount": 87,
+      "recentCitations": 67,
       "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2024-03-05",
@@ -8704,9 +9022,9 @@
       "route": "watch",
       "reasons": [
         "title_match=1",
-        "citations=86",
-        "recent_citations=66",
-        "age_days=872",
+        "citations=87",
+        "recent_citations=67",
+        "age_days=873",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -8732,7 +9050,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -8758,7 +9076,7 @@
         "title_match=0",
         "citations=0",
         "recent_citations=0",
-        "age_days=45",
+        "age_days=46",
         "publication_date_delta_days=0",
         "paper_title_identity_mismatch"
       ],
@@ -8784,7 +9102,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -8810,7 +9128,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -8836,7 +9154,7 @@
         "title_match=1",
         "citations=320",
         "recent_citations=118",
-        "age_days=1117",
+        "age_days=1118",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -8861,7 +9179,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=149",
+        "age_days=150",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -8887,7 +9205,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -8913,7 +9231,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=12",
+        "age_days=13",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -8939,7 +9257,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -8965,7 +9283,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -8991,7 +9309,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -9017,7 +9335,7 @@
         "title_match=1",
         "citations=118",
         "recent_citations=19",
-        "age_days=1313",
+        "age_days=1314",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -9030,20 +9348,26 @@
       "eventSlug": "self-supervision-drives-representational-convergence-in-medical-foundation-models-more-tha-2026-07-23",
       "arxivId": "2607.20274",
       "paperTitle": "Self-supervision drives representational convergence in medical foundation models more than clinical supervision",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170173991",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20274"
+        "https://arxiv.org/abs/2607.20274",
+        "https://openalex.org/W7170173991"
       ]
     },
     {
@@ -9063,7 +9387,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -9089,7 +9413,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -9115,7 +9439,7 @@
         "title_match=1",
         "citations=2",
         "recent_citations=2",
-        "age_days=285",
+        "age_days=286",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -9141,7 +9465,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -9167,7 +9491,7 @@
         "title_match=1",
         "citations=77",
         "recent_citations=53",
-        "age_days=939",
+        "age_days=940",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -9193,7 +9517,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -9219,7 +9543,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -9245,7 +9569,7 @@
         "title_match=1",
         "citations=13",
         "recent_citations=13",
-        "age_days=520",
+        "age_days=521",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -9271,7 +9595,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=11",
+        "age_days=12",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -9297,7 +9621,7 @@
         "title_match=1",
         "citations=3",
         "recent_citations=3",
-        "age_days=305",
+        "age_days=306",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -9323,7 +9647,7 @@
         "title_match=1",
         "citations=190",
         "recent_citations=80",
-        "age_days=1094",
+        "age_days=1095",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -9348,7 +9672,7 @@
         "title_match=1",
         "citations=9",
         "recent_citations=9",
-        "age_days=403",
+        "age_days=404",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -9374,7 +9698,7 @@
         "title_match=1",
         "citations=2",
         "recent_citations=2",
-        "age_days=73",
+        "age_days=74",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -9387,20 +9711,26 @@
       "eventSlug": "slai-t-rex-full-parameter-post-training-of-the-deepseek-v4-family-on-ascend-superpod-2026-07-23",
       "arxivId": "2607.20145",
       "paperTitle": "SLAI T-Rex: Full-Parameter Post-training of the DeepSeek-V4 Family on Ascend SuperPOD",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170181210",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20145"
+        "https://arxiv.org/abs/2607.20145",
+        "https://openalex.org/W7170181210"
       ]
     },
     {
@@ -9420,7 +9750,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -9446,7 +9776,7 @@
         "title_match=1",
         "citations=4",
         "recent_citations=4",
-        "age_days=381",
+        "age_days=382",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -9459,20 +9789,26 @@
       "eventSlug": "small-free-and-effective-orchestrating-open-weight-small-language-models-to-outperform-sin-2026-07-23",
       "arxivId": "2607.20216",
       "paperTitle": "Small, Free, and Effective: Orchestrating Open-Weight Small Language Models to Outperform Single LLM for Malware Analysis",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170148060",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20216"
+        "https://arxiv.org/abs/2607.20216",
+        "https://openalex.org/W7170148060"
       ]
     },
     {
@@ -9492,7 +9828,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -9518,7 +9854,7 @@
         "title_match=1",
         "citations=10",
         "recent_citations=10",
-        "age_days=536",
+        "age_days=537",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -9544,7 +9880,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -9557,20 +9893,26 @@
       "eventSlug": "softreason-a-fully-differentiable-neuro-soft-symbolic-deductive-reasoning-architecture-ove-2026-07-23",
       "arxivId": "2607.20402",
       "paperTitle": "SoftReason: A Fully Differentiable Neuro-Soft-Symbolic Deductive Reasoning Architecture over High-Dimensional Perceptual Data",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170139393",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20402"
+        "https://arxiv.org/abs/2607.20402",
+        "https://openalex.org/W7170139393"
       ]
     },
     {
@@ -9590,7 +9932,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -9616,7 +9958,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=11",
+        "age_days=12",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -9629,20 +9971,26 @@
       "eventSlug": "sound-probabilistic-safety-bounds-for-large-language-models-2026-07-23",
       "arxivId": "2607.20286",
       "paperTitle": "Sound Probabilistic Safety Bounds for Large Language Models",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170132150",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20286"
+        "https://arxiv.org/abs/2607.20286",
+        "https://openalex.org/W7170132150"
       ]
     },
     {
@@ -9662,7 +10010,7 @@
         "title_match=1",
         "citations=337",
         "recent_citations=33",
-        "age_days=1084",
+        "age_days=1085",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -9675,8 +10023,8 @@
       "arxivId": "2303.12712",
       "paperTitle": "Sparks of Artificial General Intelligence: Early experiments with GPT-4",
       "openAlexId": "https://openalex.org/W4360836968",
-      "citedByCount": 1559,
-      "recentCitations": 389,
+      "citedByCount": 1560,
+      "recentCitations": 390,
       "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2023-03-22",
@@ -9685,9 +10033,9 @@
       "route": "established-field-impact",
       "reasons": [
         "title_match=1",
-        "citations=1559",
-        "recent_citations=389",
-        "age_days=1221",
+        "citations=1560",
+        "recent_citations=390",
+        "age_days=1222",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -9712,7 +10060,7 @@
         "title_match=1",
         "citations=8",
         "recent_citations=8",
-        "age_days=455",
+        "age_days=456",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -9738,7 +10086,7 @@
         "title_match=0",
         "citations=0",
         "recent_citations=0",
-        "age_days=102",
+        "age_days=103",
         "publication_date_delta_days=0",
         "paper_title_identity_mismatch"
       ],
@@ -9764,7 +10112,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=65",
+        "age_days=66",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -9790,7 +10138,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -9816,7 +10164,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -9842,7 +10190,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -9868,7 +10216,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=12",
+        "age_days=13",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -9881,20 +10229,26 @@
       "eventSlug": "streamhoi-interaction-aware-temporal-memory-adaptation-for-streaming-hoi-video-generation-2026-07-23",
       "arxivId": "2607.20174",
       "paperTitle": "StreamHOI: Interaction-aware Temporal Memory Adaptation for Streaming HOI Video Generation",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170145971",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20174"
+        "https://arxiv.org/abs/2607.20174",
+        "https://openalex.org/W7170145971"
       ]
     },
     {
@@ -9914,7 +10268,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -9960,7 +10314,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -10004,7 +10358,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -10030,7 +10384,7 @@
         "title_match=1",
         "citations=168",
         "recent_citations=46",
-        "age_days=1258",
+        "age_days=1259",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -10043,20 +10397,26 @@
       "eventSlug": "synthetic-data-generation-framework-for-quality-control-automation-in-gravure-printing-2026-07-24",
       "arxivId": "2607.21577",
       "paperTitle": "Synthetic data generation framework for quality control automation in gravure printing",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170902681",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21577"
+        "https://arxiv.org/abs/2607.21577",
+        "https://openalex.org/W7170902681"
       ]
     },
     {
@@ -10076,7 +10436,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -10102,7 +10462,7 @@
         "title_match=1",
         "citations=2",
         "recent_citations=2",
-        "age_days=256",
+        "age_days=257",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -10115,20 +10475,26 @@
       "eventSlug": "taming-the-security-energy-paradox-a-green-ai-approach-to-optimized-android-malware-detect-2026-07-23",
       "arxivId": "2607.20003",
       "paperTitle": "Taming the Security-Energy Paradox: A Green AI Approach to Optimized Android Malware Detection",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170180349",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20003"
+        "https://arxiv.org/abs/2607.20003",
+        "https://openalex.org/W7170180349"
       ]
     },
     {
@@ -10148,7 +10514,7 @@
         "title_match=0",
         "citations=0",
         "recent_citations=0",
-        "age_days=173",
+        "age_days=174",
         "publication_date_delta_days=0",
         "paper_title_identity_mismatch"
       ],
@@ -10174,7 +10540,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -10200,7 +10566,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=12",
+        "age_days=13",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -10226,7 +10592,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -10239,20 +10605,26 @@
       "eventSlug": "test-case-prioritization-for-dnns-via-neural-collapse-instability-2026-07-23",
       "arxivId": "2607.20046",
       "paperTitle": "Test Case Prioritization for DNNs via Neural Collapse Instability",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170200603",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20046"
+        "https://arxiv.org/abs/2607.20046",
+        "https://openalex.org/W7170200603"
       ]
     },
     {
@@ -10272,7 +10644,7 @@
         "title_match=1",
         "citations=14",
         "recent_citations=9",
-        "age_days=750",
+        "age_days=751",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -10298,7 +10670,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=11",
+        "age_days=12",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -10324,7 +10696,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -10350,7 +10722,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -10376,7 +10748,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -10402,7 +10774,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=12",
+        "age_days=13",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -10415,40 +10787,52 @@
       "eventSlug": "the-ethics-of-autonomous-ai-agents-for-offensive-security-2026-07-23",
       "arxivId": "2607.20255",
       "paperTitle": "The Ethics of Autonomous AI Agents for Offensive Security",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170159520",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20255"
+        "https://arxiv.org/abs/2607.20255",
+        "https://openalex.org/W7170159520"
       ]
     },
     {
       "eventSlug": "the-giant-hippocampus-from-structural-monoculture-to-a-system-of-systems-2026-07-23",
       "arxivId": "2607.19973",
       "paperTitle": "The Giant Hippocampus: From Structural Monoculture to a System of Systems",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170197992",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.19973"
+        "https://arxiv.org/abs/2607.19973",
+        "https://openalex.org/W7170197992"
       ]
     },
     {
@@ -10468,7 +10852,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -10481,40 +10865,52 @@
       "eventSlug": "the-maskability-index-predicting-task-objective-alignment-in-pretrained-language-models-2026-07-23",
       "arxivId": "2607.20265",
       "paperTitle": "The Maskability Index: Predicting Task-Objective Alignment in Pretrained Language Models",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170173599",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20265"
+        "https://arxiv.org/abs/2607.20265",
+        "https://openalex.org/W7170173599"
       ]
     },
     {
       "eventSlug": "the-quadrilateral-loss-additivity-as-a-measurable-behavior-of-dense-neural-networks-2026-07-23",
       "arxivId": "2607.20201",
       "paperTitle": "The Quadrilateral Loss: Additivity as a Measurable Behavior of Dense Neural Networks",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170173831",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20201"
+        "https://arxiv.org/abs/2607.20201",
+        "https://openalex.org/W7170173831"
       ]
     },
     {
@@ -10534,7 +10930,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -10560,7 +10956,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -10586,7 +10982,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -10612,7 +11008,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=12",
+        "age_days=13",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -10625,20 +11021,26 @@
       "eventSlug": "thinkink-2d-spatial-ink-native-interaction-with-llms-2026-07-24",
       "arxivId": "2607.21468",
       "paperTitle": "Thinkink: 2D Spatial Ink-native Interaction with LLMs",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170769364",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21468"
+        "https://arxiv.org/abs/2607.21468",
+        "https://openalex.org/W7170769364"
       ]
     },
     {
@@ -10658,7 +11060,7 @@
         "title_match=1",
         "citations=4",
         "recent_citations=4",
-        "age_days=292",
+        "age_days=293",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -10671,20 +11073,26 @@
       "eventSlug": "token-budget-saturation-and-mechanistic-early-detection-of-reasoning-non-convergence-in-ch-2026-07-24",
       "arxivId": "2607.21433",
       "paperTitle": "Token Budget Saturation and Mechanistic Early Detection of Reasoning Non-Convergence in Chain-of-Thought Models",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170427944",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21433"
+        "https://arxiv.org/abs/2607.21433",
+        "https://openalex.org/W7170427944"
       ]
     },
     {
@@ -10704,7 +11112,7 @@
         "title_match=1",
         "citations=1",
         "recent_citations=1",
-        "age_days=128",
+        "age_days=129",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -10730,7 +11138,7 @@
         "title_match=1",
         "citations=395",
         "recent_citations=135",
-        "age_days=1262",
+        "age_days=1263",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -10755,7 +11163,7 @@
         "title_match=1",
         "citations=6",
         "recent_citations=6",
-        "age_days=301",
+        "age_days=302",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -10781,7 +11189,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -10794,40 +11202,52 @@
       "eventSlug": "toward-continuous-assurance-for-the-democratization-of-ai-agent-creation-in-industry-2026-07-24",
       "arxivId": "2607.21495",
       "paperTitle": "Toward Continuous Assurance for the Democratization of AI Agent Creation in Industry",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170387483",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21495"
+        "https://arxiv.org/abs/2607.21495",
+        "https://openalex.org/W7170387483"
       ]
     },
     {
       "eventSlug": "toward-cryptographically-verifiable-authorization-for-autonomous-ai-agents-a-security-hypo-2026-07-24",
       "arxivId": "2607.21325",
       "paperTitle": "Toward cryptographically verifiable authorization for autonomous AI agents: A security hypothesis, preliminary formal model, and proof-of-concept implementation",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170295689",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21325"
+        "https://arxiv.org/abs/2607.21325",
+        "https://openalex.org/W7170295689"
       ]
     },
     {
@@ -10847,7 +11267,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -10873,7 +11293,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -10899,7 +11319,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -10925,7 +11345,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -10951,7 +11371,7 @@
         "title_match=1",
         "citations=568",
         "recent_citations=253",
-        "age_days=1165",
+        "age_days=1166",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -10963,20 +11383,26 @@
       "eventSlug": "trust-esd-a-risk-calibrated-and-governance-aware-ai-framework-for-enterprise-strategic-dec-2026-07-23",
       "arxivId": "2607.20065",
       "paperTitle": "TRUST-ESD: A Risk-Calibrated and Governance-Aware AI Framework for Enterprise Strategic Decision Support Under Uncertainty",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170200647",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-22",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=4",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.20065"
+        "https://arxiv.org/abs/2607.20065",
+        "https://openalex.org/W7170200647"
       ]
     },
     {
@@ -10996,7 +11422,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11022,7 +11448,7 @@
         "title_match=1",
         "citations=223",
         "recent_citations=176",
-        "age_days=928",
+        "age_days=929",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -11047,7 +11473,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11073,7 +11499,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11087,8 +11513,8 @@
       "arxivId": "2506.23971",
       "paperTitle": "UMA: A Family of Universal Models for Atoms",
       "openAlexId": "https://openalex.org/W4416524231",
-      "citedByCount": 44,
-      "recentCitations": 44,
+      "citedByCount": 45,
+      "recentCitations": 45,
       "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2025-06-30",
@@ -11097,9 +11523,9 @@
       "route": "watch",
       "reasons": [
         "title_match=1",
-        "citations=44",
-        "recent_citations=44",
-        "age_days=390",
+        "citations=45",
+        "recent_citations=45",
+        "age_days=391",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11125,7 +11551,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=12",
+        "age_days=13",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11151,7 +11577,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11177,7 +11603,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=11",
+        "age_days=12",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11203,7 +11629,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=11",
+        "age_days=12",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11229,7 +11655,7 @@
         "title_match=0.286",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "paper_title_identity_mismatch"
       ],
@@ -11255,7 +11681,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11281,7 +11707,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11307,7 +11733,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=12",
+        "age_days=13",
         "publication_date_delta_days=0",
         "outside_core_ai_research_scope"
       ],
@@ -11333,7 +11759,7 @@
         "title_match=1",
         "citations=45",
         "recent_citations=42",
-        "age_days=723",
+        "age_days=724",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11359,7 +11785,7 @@
         "title_match=1",
         "citations=403",
         "recent_citations=310",
-        "age_days=920",
+        "age_days=921",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -11371,20 +11797,26 @@
       "eventSlug": "visual-contrastive-self-distillation-2026-07-24",
       "arxivId": "2607.21556",
       "paperTitle": "Visual Contrastive Self-Distillation",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170492302",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21556"
+        "https://arxiv.org/abs/2607.21556",
+        "https://openalex.org/W7170492302"
       ]
     },
     {
@@ -11404,7 +11836,7 @@
         "title_match=1",
         "citations=214",
         "recent_citations=157",
-        "age_days=902",
+        "age_days=903",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -11429,7 +11861,7 @@
         "title_match=1",
         "citations=371",
         "recent_citations=300",
-        "age_days=919",
+        "age_days=920",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -11454,7 +11886,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11467,20 +11899,26 @@
       "eventSlug": "voln-vision-only-long-horizon-navigation-paradigm-benchmark-and-method-2026-07-24",
       "arxivId": "2607.21400",
       "paperTitle": "VoLN: Vision-Only Long-Horizon Navigation---Paradigm, Benchmark, and Method",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170284610",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21400"
+        "https://arxiv.org/abs/2607.21400",
+        "https://openalex.org/W7170284610"
       ]
     },
     {
@@ -11500,7 +11938,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=12",
+        "age_days=13",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11526,7 +11964,7 @@
         "title_match=1",
         "citations=200",
         "recent_citations=71",
-        "age_days=1157",
+        "age_days=1158",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -11551,7 +11989,7 @@
         "title_match=1",
         "citations=9",
         "recent_citations=9",
-        "age_days=486",
+        "age_days=487",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11577,7 +12015,7 @@
         "title_match=1",
         "citations=113",
         "recent_citations=19",
-        "age_days=1278",
+        "age_days=1279",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11603,7 +12041,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11629,7 +12067,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11655,7 +12093,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11668,20 +12106,26 @@
       "eventSlug": "when-are-reasoning-based-guardrails-not-efficient-responseguard-a-fast-vision-language-gua-2026-07-24",
       "arxivId": "2607.21401",
       "paperTitle": "When Are Reasoning-Based Guardrails Not Efficient? ResponseGuard: A Fast Vision-Language Guard for Real-Time Moderation",
-      "openAlexId": null,
+      "openAlexId": "https://openalex.org/W7170435301",
       "citedByCount": 0,
       "recentCitations": 0,
-      "titleMatchScore": 0,
+      "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2026-07-23",
-      "publicationDateDeltaDays": null,
+      "publicationDateDeltaDays": 0,
       "qualified": false,
-      "route": "rejected",
+      "route": "watch",
       "reasons": [
-        "openalex_work_missing"
+        "title_match=1",
+        "citations=0",
+        "recent_citations=0",
+        "age_days=3",
+        "publication_date_delta_days=0",
+        "impact_threshold_not_met"
       ],
       "evidenceUrls": [
-        "https://arxiv.org/abs/2607.21401"
+        "https://arxiv.org/abs/2607.21401",
+        "https://openalex.org/W7170435301"
       ]
     },
     {
@@ -11701,7 +12145,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=10",
+        "age_days=11",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11727,7 +12171,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=11",
+        "age_days=12",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11753,7 +12197,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=15",
+        "age_days=16",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11779,7 +12223,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11805,7 +12249,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11831,7 +12275,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=16",
+        "age_days=17",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11857,7 +12301,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=9",
+        "age_days=10",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11883,7 +12327,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=4",
+        "age_days=5",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11909,7 +12353,7 @@
         "title_match=1",
         "citations=1167",
         "recent_citations=347",
-        "age_days=1327",
+        "age_days=1328",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -11934,7 +12378,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=11",
+        "age_days=12",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11978,7 +12422,7 @@
         "title_match=1",
         "citations=0",
         "recent_citations=0",
-        "age_days=12",
+        "age_days=13",
         "publication_date_delta_days=0",
         "impact_threshold_not_met"
       ],
@@ -11992,8 +12436,8 @@
       "arxivId": "2405.14458",
       "paperTitle": "YOLOv10: Real-Time End-to-End Object Detection",
       "openAlexId": "https://openalex.org/W4398810114",
-      "citedByCount": 1055,
-      "recentCitations": 877,
+      "citedByCount": 1057,
+      "recentCitations": 879,
       "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2024-05-23",
@@ -12002,9 +12446,9 @@
       "route": "established-field-impact",
       "reasons": [
         "title_match=1",
-        "citations=1055",
-        "recent_citations=877",
-        "age_days=793",
+        "citations=1057",
+        "recent_citations=879",
+        "age_days=794",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -12017,8 +12461,8 @@
       "arxivId": "2502.12524",
       "paperTitle": "YOLOv12: Attention-Centric Real-Time Object Detectors",
       "openAlexId": "https://openalex.org/W4407759488",
-      "citedByCount": 249,
-      "recentCitations": 249,
+      "citedByCount": 251,
+      "recentCitations": 251,
       "titleMatchScore": 1,
       "topicRelevant": true,
       "publicationDate": "2025-02-18",
@@ -12027,9 +12471,9 @@
       "route": "established-field-impact",
       "reasons": [
         "title_match=1",
-        "citations=249",
-        "recent_citations=249",
-        "age_days=522",
+        "citations=251",
+        "recent_citations=251",
+        "age_days=523",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
@@ -12054,7 +12498,7 @@
         "title_match=1",
         "citations=355",
         "recent_citations=251",
-        "age_days=885",
+        "age_days=886",
         "publication_date_delta_days=0"
       ],
       "evidenceUrls": [
