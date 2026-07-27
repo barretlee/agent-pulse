@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "id": "0f4c36cf-f09a-46e5-8a9f-99720fcf4bb9",
+  "id": "af0dbd26-8f3c-4dd3-beab-a0b8f167d652",
   "releaseVersion": "0.11.1",
   "status": "partial",
-  "overallScore": 60,
-  "rawWeightedScore": 64,
+  "overallScore": 61,
+  "rawWeightedScore": 65,
   "evidenceCoverage": 72,
   "dimensions": [
     {
@@ -58,20 +58,20 @@
     {
       "slug": "primary-source-provenance",
       "name": "一手来源归属",
-      "score": 62,
-      "rawScore": 62,
+      "score": 63,
+      "rawScore": 63,
       "scoreCap": 100,
       "weight": 10,
       "status": "measured",
-      "sampleSize": 7642,
+      "sampleSize": 7888,
       "sampleTarget": 100,
-      "summary": "7642 条信号中 5699 条来自 primary/research/policy，978 条证据进入事件。",
+      "summary": "7888 条信号中 5869 条来自 primary/research/policy，1096 条证据进入事件。",
       "evidence": {
-        "signals": 7642,
-        "direct": 7642,
-        "primary": 5699,
-        "linkedEvidence": 978,
-        "linkedSourceCount": 100,
+        "signals": 7888,
+        "direct": 7888,
+        "primary": 5869,
+        "linkedEvidence": 1096,
+        "linkedSourceCount": 108,
         "aggregatorDebt": 0
       },
       "penalties": [],
@@ -95,7 +95,7 @@
         "failed": 72,
         "skipped": 52,
         "latestRuns": 217,
-        "latestRunSuccess": 217,
+        "latestRunSuccess": 216,
         "auditWindows": 4
       },
       "penalties": [],
@@ -109,15 +109,15 @@
       "scoreCap": 100,
       "weight": 12,
       "status": "measured",
-      "sampleSize": 380,
+      "sampleSize": 382,
       "sampleTarget": 30,
-      "summary": "380 个公开事件仅 7 个拥有多源证据，355 个通过当前就绪门禁；人工置信分只占 10%。",
+      "summary": "382 个公开事件仅 7 个拥有多源证据，357 个通过当前就绪门禁；人工置信分只占 10%。",
       "evidence": {
-        "published": 380,
-        "primaryEvidence": 372,
+        "published": 382,
+        "primaryEvidence": 374,
         "multiSource": 7,
-        "readyPublished": 355,
-        "averageEvidence": 1.09,
+        "readyPublished": 357,
+        "averageEvidence": 1.1,
         "averageSelfReportedConfidence": 89
       },
       "penalties": [
@@ -137,9 +137,9 @@
       "sampleTarget": 30,
       "summary": "洞察字段完整不等于有价值；当前没有读者保存、引用、决策帮助度或付费反馈样本。",
       "evidence": {
-        "published": 380,
+        "published": 382,
         "fieldCompleteness": 100,
-        "readyPublished": 355,
+        "readyPublished": 357,
         "multiSource": 7,
         "outcomeFeedback": 0
       },
@@ -161,7 +161,7 @@
       "summary": "collector 耗时不是上游发布到页面可见的端到端延迟；以成功运行比例作为实时性估算。",
       "evidence": {
         "latestSourceRuns": 217,
-        "latestRunSuccess": 217,
+        "latestRunSuccess": 216,
         "freshHealthySources": 132,
         "activeWithRecentSuccess": 129,
         "endToEndLatencySamples": 0
@@ -174,21 +174,21 @@
     {
       "slug": "timeliness",
       "name": "内容时效性",
-      "score": 58,
-      "rawScore": 58,
+      "score": 59,
+      "rawScore": 59,
       "scoreCap": 100,
       "weight": 10,
       "status": "measured",
       "sampleSize": 263,
       "sampleTarget": 100,
-      "summary": "132/263 个健康来源在 7 天窗口内有新内容，最近 30 天公开事件 99 个。",
+      "summary": "132/263 个健康来源在 7 天窗口内有新内容，最近 30 天公开事件 101 个。",
       "evidence": {
         "healthy": 263,
         "freshHealthy": 132,
         "active": 132,
         "activeWithRecentSuccess": 129,
-        "published": 380,
-        "recentPublished": 99
+        "published": 382,
+        "recentPublished": 101
       },
       "penalties": [],
       "nextAction": "按 cadence 衡量来源 freshness lag，并补齐从事件发生到页面发布的延迟。"
@@ -196,17 +196,17 @@
     {
       "slug": "effectiveness",
       "name": "机会与行动效果",
-      "score": 19,
-      "rawScore": 19,
+      "score": 30,
+      "rawScore": 30,
       "scoreCap": 45,
       "weight": 8,
       "status": "insufficient_data",
       "sampleSize": 0,
       "sampleTarget": 30,
-      "summary": "19 条星探卡片的编辑状态不是用户行动结果，当前真实行动/产物复盘样本为 0。",
+      "summary": "31 条星探卡片的编辑状态不是用户行动结果，当前真实行动/产物复盘样本为 0。",
       "evidence": {
-        "ideas": 19,
-        "editorialAccepted": 19,
+        "ideas": 31,
+        "editorialAccepted": 23,
         "outcomeFeedback": 0,
         "completedArtifacts": 0
       },
@@ -219,7 +219,7 @@
       "slug": "governance",
       "name": "安全与治理",
       "score": 60,
-      "rawScore": 89,
+      "rawScore": 88,
       "scoreCap": 60,
       "weight": 8,
       "status": "insufficient_data",
@@ -231,8 +231,8 @@
         "checked": 414,
         "licenseDeclared": 415,
         "restrictedEnabled": 0,
-        "readyEvents": 355,
-        "totalEvents": 824,
+        "readyEvents": 357,
+        "totalEvents": 922,
         "rollbackDrills": 0
       },
       "penalties": [
@@ -684,9 +684,9 @@
       "evidence": "capability map links status, maturity, release and implementation evidence"
     }
   ],
-  "notes": "3 dimensions lack sufficient evidence; calibrated weighted score 64, evidence coverage 72%, final score 60",
-  "startedAt": "2026-07-26T12:47:15.173Z",
-  "finishedAt": "2026-07-26T12:47:15.271Z",
+  "notes": "3 dimensions lack sufficient evidence; calibrated weighted score 65, evidence coverage 72%, final score 61",
+  "startedAt": "2026-07-27T13:28:16.307Z",
+  "finishedAt": "2026-07-27T13:28:16.428Z",
   "target": 80,
   "targetReached": false,
   "policy": "measured-evidence-only",
@@ -694,9 +694,9 @@
     {
       "slug": "effectiveness",
       "name": "机会与行动效果",
-      "score": 19,
+      "score": 30,
       "status": "insufficient_data",
-      "weightedGap": 5,
+      "weightedGap": 4,
       "penalties": [
         "无 30 日行动结果样本，分数上限 45"
       ],
@@ -727,7 +727,7 @@
     {
       "slug": "timeliness",
       "name": "内容时效性",
-      "score": 58,
+      "score": 59,
       "status": "measured",
       "weightedGap": 2,
       "penalties": [],
@@ -747,7 +747,7 @@
     {
       "slug": "primary-source-provenance",
       "name": "一手来源归属",
-      "score": 62,
+      "score": 63,
       "status": "measured",
       "weightedGap": 2,
       "penalties": [],
@@ -755,19 +755,13 @@
     }
   ],
   "comparison": {
-    "passed": false,
+    "passed": true,
     "baselineScore": 60,
-    "currentScore": 60,
-    "scoreDelta": 0,
+    "currentScore": 61,
+    "scoreDelta": 1,
     "baselineEvidenceCoverage": 72,
     "currentEvidenceCoverage": 72,
     "evidenceCoverageDelta": 0,
-    "regressions": [
-      "raw weighted score regressed from 65 to 64",
-      "dimension source-coverage regressed from 99 to 97",
-      "dimension primary-source-provenance regressed from 63 to 62",
-      "dimension realtime regressed from 86 to 84",
-      "dimension timeliness regressed from 60 to 58"
-    ]
+    "regressions": []
   }
 }
