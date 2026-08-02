@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "dbbbbfaa-ab54-4ce9-ad26-26e3608ab45d",
+  "id": "c134e30d-5db6-445e-b18e-877b6180d317",
   "releaseVersion": "0.11.1",
   "status": "partial",
   "overallScore": 61,
@@ -15,21 +15,21 @@
       "scoreCap": 100,
       "weight": 10,
       "status": "measured",
-      "sampleSize": 132,
+      "sampleSize": 134,
       "sampleTarget": 100,
-      "summary": "415 个目录源中 263 个单轮健康、86 个处于隔离观察，只有 132 个既 active 且健康；E2/E3 不等同生产覆盖。",
+      "summary": "415 个目录源中 265 个单轮健康、85 个处于隔离观察，只有 134 个既 active 且健康；E2/E3 不等同生产覆盖。",
       "evidence": {
         "catalog": 415,
         "checked": 414,
-        "healthy": 263,
-        "degraded": 27,
+        "healthy": 265,
+        "degraded": 26,
         "failed": 72,
-        "skipped": 52,
-        "active": 132,
-        "activeHealthy": 132,
-        "observingHealthy": 86,
+        "skipped": 51,
+        "active": 134,
+        "activeHealthy": 134,
+        "observingHealthy": 85,
         "healthyCategories": 13,
-        "healthyChina": 60
+        "healthyChina": 59
       },
       "penalties": [],
       "nextAction": "让 E3 来源完成 20 次健康检查和 7 天观察，再由自动契约验证逐批晋级 E4。"
@@ -42,15 +42,15 @@
       "scoreCap": 100,
       "weight": 10,
       "status": "measured",
-      "sampleSize": 290,
+      "sampleSize": 291,
       "sampleTarget": 100,
-      "summary": "290 个可用/部分可用来源参与真实抓取质量计算；目录预填 quality_score 不再计分。",
+      "summary": "291 个可用/部分可用来源参与真实抓取质量计算；目录预填 quality_score 不再计分。",
       "evidence": {
-        "usableChecks": 290,
-        "healthy": 263,
-        "auditWindows": 4,
-        "averageObservedQuality": 66,
-        "schemaValid": 263
+        "usableChecks": 291,
+        "healthy": 265,
+        "auditWindows": 5,
+        "averageObservedQuality": 67,
+        "schemaValid": 265
       },
       "penalties": [],
       "nextAction": "连续 7 天抽检 100+ 健康源，补原创率、正文完整度和人工准确率标签。"
@@ -63,15 +63,15 @@
       "scoreCap": 100,
       "weight": 10,
       "status": "measured",
-      "sampleSize": 9275,
+      "sampleSize": 9427,
       "sampleTarget": 100,
-      "summary": "9275 条信号中 6829 条来自 primary/research/policy，1727 条证据进入事件。",
+      "summary": "9427 条信号中 6921 条来自 primary/research/policy，1788 条证据进入事件。",
       "evidence": {
-        "signals": 9275,
-        "direct": 9275,
-        "primary": 6829,
-        "linkedEvidence": 1727,
-        "linkedSourceCount": 126,
+        "signals": 9427,
+        "direct": 9427,
+        "primary": 6921,
+        "linkedEvidence": 1788,
+        "linkedSourceCount": 129,
         "aggregatorDebt": 0
       },
       "penalties": [],
@@ -87,16 +87,16 @@
       "status": "measured",
       "sampleSize": 414,
       "sampleTarget": 100,
-      "summary": "按每个来源最新一次检查/运行去重：263/414 健康，不再让单一来源的重复成功运行抬高分数。",
+      "summary": "按每个来源最新一次检查/运行去重：265/414 健康，不再让单一来源的重复成功运行抬高分数。",
       "evidence": {
         "checked": 414,
-        "healthy": 263,
-        "degraded": 27,
+        "healthy": 265,
+        "degraded": 26,
         "failed": 72,
-        "skipped": 52,
-        "latestRuns": 217,
-        "latestRunSuccess": 216,
-        "auditWindows": 4
+        "skipped": 51,
+        "latestRuns": 218,
+        "latestRunSuccess": 218,
+        "auditWindows": 5
       },
       "penalties": [],
       "nextAction": "连续运行 7 天，按来源计算成功率、异常空结果、P95 延迟和恢复时间。"
@@ -109,20 +109,18 @@
       "scoreCap": 100,
       "weight": 12,
       "status": "measured",
-      "sampleSize": 406,
+      "sampleSize": 411,
       "sampleTarget": 30,
-      "summary": "406 个公开事件仅 8 个拥有多源证据，381 个通过当前就绪门禁；人工置信分只占 10%。",
+      "summary": "411 个公开事件仅 10 个拥有多源证据，386 个通过当前就绪门禁；人工置信分只占 10%。",
       "evidence": {
-        "published": 406,
-        "primaryEvidence": 398,
-        "multiSource": 8,
-        "readyPublished": 381,
-        "averageEvidence": 1.16,
-        "averageSelfReportedConfidence": 89
+        "published": 411,
+        "primaryEvidence": 403,
+        "multiSource": 10,
+        "readyPublished": 386,
+        "averageEvidence": 1.17,
+        "averageSelfReportedConfidence": 88
       },
-      "penalties": [
-        "多源公开事件不足 10"
-      ],
+      "penalties": [],
       "nextAction": "优先把核心事件补成独立多源证据，并建立 claim 级事实错误标注集。"
     },
     {
@@ -137,10 +135,10 @@
       "sampleTarget": 30,
       "summary": "洞察字段完整不等于有价值；当前没有读者保存、引用、决策帮助度或付费反馈样本。",
       "evidence": {
-        "published": 406,
+        "published": 411,
         "fieldCompleteness": 100,
-        "readyPublished": 381,
-        "multiSource": 8,
+        "readyPublished": 386,
+        "multiSource": 10,
         "outcomeFeedback": 0
       },
       "penalties": [
@@ -151,19 +149,19 @@
     {
       "slug": "realtime",
       "name": "端到端实时性",
-      "score": 84,
-      "rawScore": 84,
+      "score": 85,
+      "rawScore": 85,
       "scoreCap": 100,
       "weight": 8,
       "status": "measured",
-      "sampleSize": 217,
+      "sampleSize": 218,
       "sampleTarget": 100,
       "summary": "collector 耗时不是上游发布到页面可见的端到端延迟；以成功运行比例作为实时性估算。",
       "evidence": {
-        "latestSourceRuns": 217,
-        "latestRunSuccess": 216,
-        "freshHealthySources": 132,
-        "activeWithRecentSuccess": 129,
+        "latestSourceRuns": 218,
+        "latestRunSuccess": 218,
+        "freshHealthySources": 141,
+        "activeWithRecentSuccess": 131,
         "endToEndLatencySamples": 0
       },
       "penalties": [
@@ -174,21 +172,21 @@
     {
       "slug": "timeliness",
       "name": "内容时效性",
-      "score": 60,
-      "rawScore": 60,
+      "score": 61,
+      "rawScore": 61,
       "scoreCap": 100,
       "weight": 10,
       "status": "measured",
-      "sampleSize": 263,
+      "sampleSize": 265,
       "sampleTarget": 100,
-      "summary": "132/263 个健康来源在 7 天窗口内有新内容，最近 30 天公开事件 125 个。",
+      "summary": "141/265 个健康来源在 7 天窗口内有新内容，最近 30 天公开事件 130 个。",
       "evidence": {
-        "healthy": 263,
-        "freshHealthy": 132,
-        "active": 132,
-        "activeWithRecentSuccess": 129,
-        "published": 406,
-        "recentPublished": 125
+        "healthy": 265,
+        "freshHealthy": 141,
+        "active": 134,
+        "activeWithRecentSuccess": 131,
+        "published": 411,
+        "recentPublished": 130
       },
       "penalties": [],
       "nextAction": "按 cadence 衡量来源 freshness lag，并补齐从事件发生到页面发布的延迟。"
@@ -231,8 +229,8 @@
         "checked": 414,
         "licenseDeclared": 415,
         "restrictedEnabled": 0,
-        "readyEvents": 381,
-        "totalEvents": 1411,
+        "readyEvents": 386,
+        "totalEvents": 1452,
         "rollbackDrills": 0
       },
       "penalties": [
@@ -685,8 +683,8 @@
     }
   ],
   "notes": "3 dimensions lack sufficient evidence; calibrated weighted score 66, evidence coverage 72%, final score 61",
-  "startedAt": "2026-08-01T12:44:41.308Z",
-  "finishedAt": "2026-08-01T12:44:41.448Z",
+  "startedAt": "2026-08-02T12:46:48.181Z",
+  "finishedAt": "2026-08-02T12:46:48.328Z",
   "target": 80,
   "targetReached": false,
   "policy": "measured-evidence-only",
@@ -719,9 +717,7 @@
       "score": 58,
       "status": "measured",
       "weightedGap": 3,
-      "penalties": [
-        "多源公开事件不足 10"
-      ],
+      "penalties": [],
       "nextAction": "优先把核心事件补成独立多源证据，并建立 claim 级事实错误标注集。"
     },
     {
@@ -738,7 +734,7 @@
     {
       "slug": "timeliness",
       "name": "内容时效性",
-      "score": 60,
+      "score": 61,
       "status": "measured",
       "weightedGap": 2,
       "penalties": [],
