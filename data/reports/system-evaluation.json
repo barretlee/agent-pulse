@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "930d7775-6860-4bc3-bd24-e05ebf73c139",
+  "id": "b4002ff3-f190-4dcc-a979-fc02332b7b24",
   "releaseVersion": "0.11.1",
   "status": "partial",
-  "overallScore": 62,
+  "overallScore": 61,
   "rawWeightedScore": 66,
   "evidenceCoverage": 72,
   "dimensions": [
@@ -63,15 +63,15 @@
       "scoreCap": 100,
       "weight": 10,
       "status": "measured",
-      "sampleSize": 12320,
+      "sampleSize": 12640,
       "sampleTarget": 100,
-      "summary": "12320 条信号中 9032 条来自 primary/research/policy，3238 条证据进入事件。",
+      "summary": "12640 条信号中 9263 条来自 primary/research/policy，3399 条证据进入事件。",
       "evidence": {
-        "signals": 12320,
-        "direct": 12320,
-        "primary": 9032,
-        "linkedEvidence": 3238,
-        "linkedSourceCount": 149,
+        "signals": 12640,
+        "direct": 12640,
+        "primary": 9263,
+        "linkedEvidence": 3399,
+        "linkedSourceCount": 150,
         "aggregatorDebt": 0
       },
       "penalties": [],
@@ -109,15 +109,15 @@
       "scoreCap": 100,
       "weight": 12,
       "status": "measured",
-      "sampleSize": 468,
+      "sampleSize": 475,
       "sampleTarget": 30,
-      "summary": "468 个公开事件仅 17 个拥有多源证据，443 个通过当前就绪门禁；人工置信分只占 10%。",
+      "summary": "475 个公开事件仅 19 个拥有多源证据，450 个通过当前就绪门禁；人工置信分只占 10%。",
       "evidence": {
-        "published": 468,
-        "primaryEvidence": 460,
-        "multiSource": 17,
-        "readyPublished": 443,
-        "averageEvidence": 1.26,
+        "published": 475,
+        "primaryEvidence": 467,
+        "multiSource": 19,
+        "readyPublished": 450,
+        "averageEvidence": 1.27,
         "averageSelfReportedConfidence": 87
       },
       "penalties": [],
@@ -135,10 +135,10 @@
       "sampleTarget": 30,
       "summary": "洞察字段完整不等于有价值；当前没有读者保存、引用、决策帮助度或付费反馈样本。",
       "evidence": {
-        "published": 468,
+        "published": 475,
         "fieldCompleteness": 100,
-        "readyPublished": 443,
-        "multiSource": 17,
+        "readyPublished": 450,
+        "multiSource": 19,
         "outcomeFeedback": 0
       },
       "penalties": [
@@ -172,21 +172,21 @@
     {
       "slug": "timeliness",
       "name": "内容时效性",
-      "score": 61,
-      "rawScore": 61,
+      "score": 60,
+      "rawScore": 60,
       "scoreCap": 100,
       "weight": 10,
       "status": "measured",
       "sampleSize": 266,
       "sampleTarget": 100,
-      "summary": "139/266 个健康来源在 7 天窗口内有新内容，最近 30 天公开事件 149 个。",
+      "summary": "139/266 个健康来源在 7 天窗口内有新内容，最近 30 天公开事件 139 个。",
       "evidence": {
         "healthy": 266,
         "freshHealthy": 139,
         "active": 134,
         "activeWithRecentSuccess": 131,
-        "published": 468,
-        "recentPublished": 149
+        "published": 475,
+        "recentPublished": 139
       },
       "penalties": [],
       "nextAction": "按 cadence 衡量来源 freshness lag，并补齐从事件发生到页面发布的延迟。"
@@ -201,10 +201,10 @@
       "status": "insufficient_data",
       "sampleSize": 0,
       "sampleTarget": 30,
-      "summary": "42 条星探卡片的编辑状态不是用户行动结果，当前真实行动/产物复盘样本为 0。",
+      "summary": "43 条星探卡片的编辑状态不是用户行动结果，当前真实行动/产物复盘样本为 0。",
       "evidence": {
-        "ideas": 42,
-        "editorialAccepted": 34,
+        "ideas": 43,
+        "editorialAccepted": 36,
         "outcomeFeedback": 0,
         "completedArtifacts": 0
       },
@@ -229,8 +229,8 @@
         "checked": 414,
         "licenseDeclared": 416,
         "restrictedEnabled": 0,
-        "readyEvents": 443,
-        "totalEvents": 2713,
+        "readyEvents": 450,
+        "totalEvents": 2848,
         "rollbackDrills": 0
       },
       "penalties": [
@@ -682,9 +682,9 @@
       "evidence": "capability map links status, maturity, release and implementation evidence"
     }
   ],
-  "notes": "3 dimensions lack sufficient evidence; calibrated weighted score 66, evidence coverage 72%, final score 62",
-  "startedAt": "2026-08-12T12:40:54.466Z",
-  "finishedAt": "2026-08-12T12:40:54.664Z",
+  "notes": "3 dimensions lack sufficient evidence; calibrated weighted score 66, evidence coverage 72%, final score 61",
+  "startedAt": "2026-08-13T12:41:41.958Z",
+  "finishedAt": "2026-08-13T12:41:42.167Z",
   "target": 80,
   "targetReached": false,
   "policy": "measured-evidence-only",
@@ -734,7 +734,7 @@
     {
       "slug": "timeliness",
       "name": "内容时效性",
-      "score": 61,
+      "score": 60,
       "status": "measured",
       "weightedGap": 2,
       "penalties": [],
@@ -751,13 +751,16 @@
     }
   ],
   "comparison": {
-    "passed": true,
+    "passed": false,
     "baselineScore": 62,
-    "currentScore": 62,
-    "scoreDelta": 0,
+    "currentScore": 61,
+    "scoreDelta": -1,
     "baselineEvidenceCoverage": 72,
     "currentEvidenceCoverage": 72,
     "evidenceCoverageDelta": 0,
-    "regressions": []
+    "regressions": [
+      "overall score regressed from 62 to 61",
+      "dimension timeliness regressed from 61 to 60"
+    ]
   }
 }
