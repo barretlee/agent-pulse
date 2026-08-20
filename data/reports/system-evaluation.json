@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "df6c165f-4415-40c1-8773-0253d66c44dc",
+  "id": "c4dc905d-4555-4c38-bf26-f4d9e0e05221",
   "releaseVersion": "0.11.1",
   "status": "partial",
-  "overallScore": 61,
+  "overallScore": 62,
   "rawWeightedScore": 66,
   "evidenceCoverage": 72,
   "dimensions": [
@@ -58,20 +58,20 @@
     {
       "slug": "primary-source-provenance",
       "name": "一手来源归属",
-      "score": 66,
-      "rawScore": 66,
+      "score": 67,
+      "rawScore": 67,
       "scoreCap": 100,
       "weight": 10,
       "status": "measured",
-      "sampleSize": 13867,
+      "sampleSize": 14221,
       "sampleTarget": 100,
-      "summary": "13867 条信号中 10115 条来自 primary/research/policy，3985 条证据进入事件。",
+      "summary": "14221 条信号中 10379 条来自 primary/research/policy，4165 条证据进入事件。",
       "evidence": {
-        "signals": 13867,
-        "direct": 13867,
-        "primary": 10115,
-        "linkedEvidence": 3985,
-        "linkedSourceCount": 157,
+        "signals": 14221,
+        "direct": 14221,
+        "primary": 10379,
+        "linkedEvidence": 4165,
+        "linkedSourceCount": 158,
         "aggregatorDebt": 0
       },
       "penalties": [],
@@ -95,7 +95,7 @@
         "failed": 71,
         "skipped": 52,
         "latestRuns": 215,
-        "latestRunSuccess": 214,
+        "latestRunSuccess": 215,
         "auditWindows": 7
       },
       "penalties": [],
@@ -109,14 +109,14 @@
       "scoreCap": 100,
       "weight": 12,
       "status": "measured",
-      "sampleSize": 495,
+      "sampleSize": 500,
       "sampleTarget": 30,
-      "summary": "495 个公开事件仅 25 个拥有多源证据，470 个通过当前就绪门禁；人工置信分只占 10%。",
+      "summary": "500 个公开事件仅 26 个拥有多源证据，475 个通过当前就绪门禁；人工置信分只占 10%。",
       "evidence": {
-        "published": 495,
-        "primaryEvidence": 487,
-        "multiSource": 25,
-        "readyPublished": 470,
+        "published": 500,
+        "primaryEvidence": 492,
+        "multiSource": 26,
+        "readyPublished": 475,
         "averageEvidence": 1.33,
         "averageSelfReportedConfidence": 87
       },
@@ -127,7 +127,7 @@
       "slug": "value",
       "name": "认知与决策价值",
       "score": 45,
-      "rawScore": 59,
+      "rawScore": 60,
       "scoreCap": 45,
       "weight": 12,
       "status": "insufficient_data",
@@ -135,10 +135,10 @@
       "sampleTarget": 30,
       "summary": "洞察字段完整不等于有价值；当前没有读者保存、引用、决策帮助度或付费反馈样本。",
       "evidence": {
-        "published": 495,
+        "published": 500,
         "fieldCompleteness": 100,
-        "readyPublished": 470,
-        "multiSource": 25,
+        "readyPublished": 475,
+        "multiSource": 26,
         "outcomeFeedback": 0
       },
       "penalties": [
@@ -159,7 +159,7 @@
       "summary": "collector 耗时不是上游发布到页面可见的端到端延迟；以成功运行比例作为实时性估算。",
       "evidence": {
         "latestSourceRuns": 215,
-        "latestRunSuccess": 214,
+        "latestRunSuccess": 215,
         "freshHealthySources": 140,
         "activeWithRecentSuccess": 130,
         "endToEndLatencySamples": 0
@@ -179,14 +179,14 @@
       "status": "measured",
       "sampleSize": 265,
       "sampleTarget": 100,
-      "summary": "140/265 个健康来源在 7 天窗口内有新内容，最近 30 天公开事件 137 个。",
+      "summary": "140/265 个健康来源在 7 天窗口内有新内容，最近 30 天公开事件 142 个。",
       "evidence": {
         "healthy": 265,
         "freshHealthy": 140,
         "active": 133,
         "activeWithRecentSuccess": 130,
-        "published": 495,
-        "recentPublished": 137
+        "published": 500,
+        "recentPublished": 142
       },
       "penalties": [],
       "nextAction": "按 cadence 衡量来源 freshness lag，并补齐从事件发生到页面发布的延迟。"
@@ -229,8 +229,8 @@
         "checked": 414,
         "licenseDeclared": 416,
         "restrictedEnabled": 0,
-        "readyEvents": 470,
-        "totalEvents": 3329,
+        "readyEvents": 475,
+        "totalEvents": 3481,
         "rollbackDrills": 0
       },
       "penalties": [
@@ -682,9 +682,9 @@
       "evidence": "capability map links status, maturity, release and implementation evidence"
     }
   ],
-  "notes": "3 dimensions lack sufficient evidence; calibrated weighted score 66, evidence coverage 72%, final score 61",
-  "startedAt": "2026-08-19T12:37:34.777Z",
-  "finishedAt": "2026-08-19T12:37:34.969Z",
+  "notes": "3 dimensions lack sufficient evidence; calibrated weighted score 66, evidence coverage 72%, final score 62",
+  "startedAt": "2026-08-20T12:38:43.953Z",
+  "finishedAt": "2026-08-20T12:38:44.148Z",
   "target": 80,
   "targetReached": false,
   "policy": "measured-evidence-only",
@@ -743,7 +743,7 @@
     {
       "slug": "primary-source-provenance",
       "name": "一手来源归属",
-      "score": 66,
+      "score": 67,
       "status": "measured",
       "weightedGap": 1,
       "penalties": [],
@@ -753,8 +753,8 @@
   "comparison": {
     "passed": true,
     "baselineScore": 61,
-    "currentScore": 61,
-    "scoreDelta": 0,
+    "currentScore": 62,
+    "scoreDelta": 1,
     "baselineEvidenceCoverage": 72,
     "currentEvidenceCoverage": 72,
     "evidenceCoverageDelta": 0,
