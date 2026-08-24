@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "7fdb992b-bc9e-442f-b909-406eb817670b",
+  "id": "f10088a8-2656-441f-80ea-b60c41f0a317",
   "releaseVersion": "0.11.1",
   "status": "partial",
   "overallScore": 62,
@@ -63,14 +63,14 @@
       "scoreCap": 100,
       "weight": 10,
       "status": "measured",
-      "sampleSize": 14820,
+      "sampleSize": 15077,
       "sampleTarget": 100,
-      "summary": "14820 条信号中 10770 条来自 primary/research/policy，4429 条证据进入事件。",
+      "summary": "15077 条信号中 10969 条来自 primary/research/policy，4563 条证据进入事件。",
       "evidence": {
-        "signals": 14820,
-        "direct": 14820,
-        "primary": 10770,
-        "linkedEvidence": 4429,
+        "signals": 15077,
+        "direct": 15077,
+        "primary": 10969,
+        "linkedEvidence": 4563,
         "linkedSourceCount": 159,
         "aggregatorDebt": 0
       },
@@ -109,15 +109,15 @@
       "scoreCap": 100,
       "weight": 12,
       "status": "measured",
-      "sampleSize": 520,
+      "sampleSize": 525,
       "sampleTarget": 30,
-      "summary": "520 个公开事件仅 29 个拥有多源证据，495 个通过当前就绪门禁；人工置信分只占 10%。",
+      "summary": "525 个公开事件仅 29 个拥有多源证据，500 个通过当前就绪门禁；人工置信分只占 10%。",
       "evidence": {
-        "published": 520,
-        "primaryEvidence": 512,
+        "published": 525,
+        "primaryEvidence": 517,
         "multiSource": 29,
-        "readyPublished": 495,
-        "averageEvidence": 1.35,
+        "readyPublished": 500,
+        "averageEvidence": 1.34,
         "averageSelfReportedConfidence": 86
       },
       "penalties": [],
@@ -135,9 +135,9 @@
       "sampleTarget": 30,
       "summary": "洞察字段完整不等于有价值；当前没有读者保存、引用、决策帮助度或付费反馈样本。",
       "evidence": {
-        "published": 520,
+        "published": 525,
         "fieldCompleteness": 100,
-        "readyPublished": 495,
+        "readyPublished": 500,
         "multiSource": 29,
         "outcomeFeedback": 0
       },
@@ -179,14 +179,14 @@
       "status": "measured",
       "sampleSize": 266,
       "sampleTarget": 100,
-      "summary": "145/266 个健康来源在 7 天窗口内有新内容，最近 30 天公开事件 149 个。",
+      "summary": "145/266 个健康来源在 7 天窗口内有新内容，最近 30 天公开事件 147 个。",
       "evidence": {
         "healthy": 266,
         "freshHealthy": 145,
         "active": 138,
         "activeWithRecentSuccess": 135,
-        "published": 520,
-        "recentPublished": 149
+        "published": 525,
+        "recentPublished": 147
       },
       "penalties": [],
       "nextAction": "按 cadence 衡量来源 freshness lag，并补齐从事件发生到页面发布的延迟。"
@@ -229,8 +229,8 @@
         "checked": 414,
         "licenseDeclared": 416,
         "restrictedEnabled": 0,
-        "readyEvents": 495,
-        "totalEvents": 3684,
+        "readyEvents": 500,
+        "totalEvents": 3814,
         "rollbackDrills": 0
       },
       "penalties": [
@@ -683,8 +683,8 @@
     }
   ],
   "notes": "3 dimensions lack sufficient evidence; calibrated weighted score 66, evidence coverage 72%, final score 62",
-  "startedAt": "2026-08-23T12:37:46.013Z",
-  "finishedAt": "2026-08-23T12:37:46.218Z",
+  "startedAt": "2026-08-24T12:38:50.472Z",
+  "finishedAt": "2026-08-24T12:38:50.732Z",
   "target": 80,
   "targetReached": false,
   "policy": "measured-evidence-only",
@@ -751,15 +751,13 @@
     }
   ],
   "comparison": {
-    "passed": false,
+    "passed": true,
     "baselineScore": 62,
     "currentScore": 62,
     "scoreDelta": 0,
     "baselineEvidenceCoverage": 72,
     "currentEvidenceCoverage": 72,
     "evidenceCoverageDelta": 0,
-    "regressions": [
-      "dimension source-coverage regressed from 97 to 96"
-    ]
+    "regressions": []
   }
 }
