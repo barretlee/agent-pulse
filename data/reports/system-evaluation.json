@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "0953fadb-4ef9-4148-a51e-6122279dfca6",
+  "id": "e308a9b6-13dd-4083-ad7c-7db524c128b7",
   "releaseVersion": "0.11.1",
   "status": "partial",
   "overallScore": 62,
@@ -63,15 +63,15 @@
       "scoreCap": 100,
       "weight": 10,
       "status": "measured",
-      "sampleSize": 15424,
+      "sampleSize": 15779,
       "sampleTarget": 100,
-      "summary": "15424 条信号中 11241 条来自 primary/research/policy，4741 条证据进入事件。",
+      "summary": "15779 条信号中 11505 条来自 primary/research/policy，4912 条证据进入事件。",
       "evidence": {
-        "signals": 15424,
-        "direct": 15424,
-        "primary": 11241,
-        "linkedEvidence": 4741,
-        "linkedSourceCount": 160,
+        "signals": 15779,
+        "direct": 15779,
+        "primary": 11505,
+        "linkedEvidence": 4912,
+        "linkedSourceCount": 161,
         "aggregatorDebt": 0
       },
       "penalties": [],
@@ -94,8 +94,8 @@
         "degraded": 25,
         "failed": 74,
         "skipped": 49,
-        "latestRuns": 217,
-        "latestRunSuccess": 217,
+        "latestRuns": 216,
+        "latestRunSuccess": 215,
         "auditWindows": 8
       },
       "penalties": [],
@@ -109,14 +109,14 @@
       "scoreCap": 100,
       "weight": 12,
       "status": "measured",
-      "sampleSize": 531,
+      "sampleSize": 538,
       "sampleTarget": 30,
-      "summary": "531 个公开事件仅 29 个拥有多源证据，506 个通过当前就绪门禁；人工置信分只占 10%。",
+      "summary": "538 个公开事件仅 29 个拥有多源证据，513 个通过当前就绪门禁；人工置信分只占 10%。",
       "evidence": {
-        "published": 531,
-        "primaryEvidence": 523,
+        "published": 538,
+        "primaryEvidence": 530,
         "multiSource": 29,
-        "readyPublished": 506,
+        "readyPublished": 513,
         "averageEvidence": 1.35,
         "averageSelfReportedConfidence": 86
       },
@@ -135,9 +135,9 @@
       "sampleTarget": 30,
       "summary": "洞察字段完整不等于有价值；当前没有读者保存、引用、决策帮助度或付费反馈样本。",
       "evidence": {
-        "published": 531,
+        "published": 538,
         "fieldCompleteness": 100,
-        "readyPublished": 506,
+        "readyPublished": 513,
         "multiSource": 29,
         "outcomeFeedback": 0
       },
@@ -149,17 +149,17 @@
     {
       "slug": "realtime",
       "name": "端到端实时性",
-      "score": 86,
-      "rawScore": 86,
+      "score": 85,
+      "rawScore": 85,
       "scoreCap": 100,
       "weight": 8,
       "status": "measured",
-      "sampleSize": 217,
+      "sampleSize": 216,
       "sampleTarget": 100,
       "summary": "collector 耗时不是上游发布到页面可见的端到端延迟；以成功运行比例作为实时性估算。",
       "evidence": {
-        "latestSourceRuns": 217,
-        "latestRunSuccess": 217,
+        "latestSourceRuns": 216,
+        "latestRunSuccess": 215,
         "freshHealthySources": 145,
         "activeWithRecentSuccess": 135,
         "endToEndLatencySamples": 0
@@ -179,14 +179,14 @@
       "status": "measured",
       "sampleSize": 266,
       "sampleTarget": 100,
-      "summary": "145/266 个健康来源在 7 天窗口内有新内容，最近 30 天公开事件 151 个。",
+      "summary": "145/266 个健康来源在 7 天窗口内有新内容，最近 30 天公开事件 157 个。",
       "evidence": {
         "healthy": 266,
         "freshHealthy": 145,
         "active": 138,
         "activeWithRecentSuccess": 135,
-        "published": 531,
-        "recentPublished": 151
+        "published": 538,
+        "recentPublished": 157
       },
       "penalties": [],
       "nextAction": "按 cadence 衡量来源 freshness lag，并补齐从事件发生到页面发布的延迟。"
@@ -204,7 +204,7 @@
       "summary": "48 条星探卡片的编辑状态不是用户行动结果，当前真实行动/产物复盘样本为 0。",
       "evidence": {
         "ideas": 48,
-        "editorialAccepted": 42,
+        "editorialAccepted": 43,
         "outcomeFeedback": 0,
         "completedArtifacts": 0
       },
@@ -229,8 +229,8 @@
         "checked": 414,
         "licenseDeclared": 416,
         "restrictedEnabled": 0,
-        "readyEvents": 506,
-        "totalEvents": 3975,
+        "readyEvents": 513,
+        "totalEvents": 4128,
         "rollbackDrills": 0
       },
       "penalties": [
@@ -683,8 +683,8 @@
     }
   ],
   "notes": "3 dimensions lack sufficient evidence; calibrated weighted score 66, evidence coverage 72%, final score 62",
-  "startedAt": "2026-08-25T12:39:23.234Z",
-  "finishedAt": "2026-08-25T12:39:23.483Z",
+  "startedAt": "2026-08-26T12:39:38.460Z",
+  "finishedAt": "2026-08-26T12:39:38.724Z",
   "target": 80,
   "targetReached": false,
   "policy": "measured-evidence-only",
@@ -751,13 +751,15 @@
     }
   ],
   "comparison": {
-    "passed": true,
+    "passed": false,
     "baselineScore": 62,
     "currentScore": 62,
     "scoreDelta": 0,
     "baselineEvidenceCoverage": 72,
     "currentEvidenceCoverage": 72,
     "evidenceCoverageDelta": 0,
-    "regressions": []
+    "regressions": [
+      "dimension realtime regressed from 86 to 85"
+    ]
   }
 }
