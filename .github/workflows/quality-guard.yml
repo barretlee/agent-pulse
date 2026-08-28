@@ -1,9 +1,9 @@
 name: Guard evaluation quality
 
 on:
-  schedule:
-    # Monday 08:47 Asia/Shanghai.
-    - cron: "47 0 * * 1"
+  # schedule:  # Paused: auto-refresh disabled to avoid unnecessary token consumption.
+  #   # Monday 08:47 Asia/Shanghai.
+  #   - cron: "47 0 * * 1"
   workflow_dispatch:
 
 permissions:
