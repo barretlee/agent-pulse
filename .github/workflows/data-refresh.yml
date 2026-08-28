@@ -1,9 +1,9 @@
 name: Refresh intelligence data
 
 on:
-  schedule:
-    # Daily at 20:17 Asia/Shanghai; the weekly Issue remains Sunday-gated below.
-    - cron: "17 12 * * *"
+  # schedule:  # Paused: auto-refresh disabled to avoid unnecessary token consumption.
+  #   # Daily at 20:17 Asia/Shanghai; the weekly Issue remains Sunday-gated below.
+  #   - cron: "17 12 * * *"
   workflow_dispatch:
     inputs:
       mode:

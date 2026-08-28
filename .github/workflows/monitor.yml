@@ -1,9 +1,9 @@
 name: Monitor system health
 
 on:
-  schedule:
-    # Monday 08:17 Asia/Shanghai, after the weekly refresh and Pages deployment.
-    - cron: "17 0 * * 1"
+  # schedule:  # Paused: auto-refresh disabled to avoid unnecessary token consumption.
+  #   # Monday 08:17 Asia/Shanghai, after the weekly refresh and Pages deployment.
+  #   - cron: "17 0 * * 1"
   workflow_dispatch:
     inputs:
       allow_notification:

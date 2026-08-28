@@ -1,9 +1,9 @@
 name: Audit source health
 
 on:
-  schedule:
-    # Sunday 06:37 Asia/Shanghai, before the weekly refresh.
-    - cron: "37 22 * * 6"
+  # schedule:  # Paused: auto-refresh disabled to avoid unnecessary token consumption.
+  #   # Sunday 06:37 Asia/Shanghai, before the weekly refresh.
+  #   - cron: "37 22 * * 6"
   workflow_dispatch:
 
 permissions:
